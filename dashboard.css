@@ -67,6 +67,13 @@ button{font-family:inherit;}
 .brand-mark img{ width:100%; height:100%; object-fit:contain; }
 .brand span{font-size:17px; font-weight:700; letter-spacing:.01em;}
 
+/* Menu "Tim" cuma tampil untuk Owner. Dicek SINKRON di <script> awal
+   <head> tiap halaman (sebelum render) lewat atribut data-role di <html>,
+   supaya tidak ada "kedipan"/pergeseran sidebar (FOUC) saat pindah halaman —
+   dulu ini di-toggle lewat JS belakangan (style="display:none" awal),
+   yang menyebabkan glitch nav bergeser tiap kali page reload. */
+html[data-role="member"] #navItemTim{ display:none; }
+
 .nav-section-label{
   font-size:10.5px;
   font-weight:600;

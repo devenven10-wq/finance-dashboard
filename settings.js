@@ -255,13 +255,16 @@ function dvSetupMobileNav() {
   }
 
   // Menu "Tim" di sidebar cuma tampil kalau profil device ini role-nya
-  // Owner (lihat storage.js: dvIsOwner). Dipanggil di setiap load halaman
-  // + tiap kali profil berubah, supaya konsisten di semua 12 halaman.
+  // Owner (lihat storage.js: dvIsOwner). Visibilitas awal sudah ditentukan
+  // SINKRON lewat <script> di <head> tiap halaman (atribut data-role di
+  // <html>, dicek CSS lewat html[data-role="member"] #navItemTim{display:none})
+  // supaya tidak ada glitch/pergeseran sidebar saat halaman baru dimuat.
+  // Fungsi ini cuma menjaga atribut itu tetap sinkron kalau role berubah
+  // SAAT halaman sedang terbuka (tanpa reload) — misal lewat toggle role
+  // testing di Pengaturan.
   function dvApplyTimNavVisibility() {
-    const navItem = document.getElementById('navItemTim');
-    if (!navItem) return;
     const isOwner = typeof dvIsOwner === 'function' ? dvIsOwner() : true;
-    navItem.style.display = isOwner ? '' : 'none';
+    document.documentElement.setAttribute('data-role', isOwner ? 'owner' : 'member');
   }
 
   if (document.readyState === 'loading') {
