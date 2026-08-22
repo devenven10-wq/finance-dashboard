@@ -16,7 +16,7 @@
   <!-- ================= SIDEBAR ================= -->
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-mark"><svg fill="none" height="17" viewBox="0 0 56 56" width="17"><path d="M28 3L50 15V41L28 53L6 41V15L28 3Z" stroke="#fff" stroke-width="3.5"></path><path d="M18 29L25 36L38 20" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"></path></svg></div>
+      <div class="brand-mark"><img src="logo.png" alt="DVpoint"/></div>
       <span>DVpoint</span>
     </div>
 
@@ -69,6 +69,10 @@
         <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
         <span data-i18n="nav.laporan">Laporan</span>
       </a></li>
+      <li class="nav-item" id="navItemTim" style="display:none;"><a href="tim.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 00-3-3.87"></path><path d="M16 3.13a4 4 0 010 7.75"></path></svg>
+        <span data-i18n="tim.nav">Tim</span>
+      </a></li>
       <li class="nav-item active"><a href="pengaturan.html">
         <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
         <span data-i18n="nav.pengaturan">Pengaturan</span>
@@ -78,7 +82,7 @@
     <div class="sidebar-bottom">
       <div class="user-card">
         <div class="avatar">DA</div>
-        <div><div class="user-name">Dicky Ade</div><div class="user-plan" data-i18n="nav.premium">⭐ Premium</div></div>
+        <div><div class="user-name">Dicky Ade</div></div>
         <button class="logout-btn" id="btnSidebarLogout" title="Keluar" data-i18n-title="nav.logout_title">
           <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
         </button>
@@ -132,10 +136,15 @@
               <h3 data-i18n="set.profil_title">Profil</h3>
               <p data-i18n="set.profil_sub">Kelola informasi pribadi Anda.</p>
             </div>
-            <button class="btn-ghost" id="btnEditProfil" type="button">
-              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 114 4L7.5 20.5 2 22l1.5-5.5z"></path></svg>
-              <span data-i18n="set.edit_profil">Edit Profil</span>
-            </button>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button class="btn-ghost" id="btnEditProfil" type="button">
+                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 114 4L7.5 20.5 2 22l1.5-5.5z"></path></svg>
+                <span data-i18n="set.edit_profil">Edit Profil</span>
+              </button>
+              <button class="btn-icon-x" id="btnBatalEditProfil" type="button" style="display:none;" title="Batal" data-i18n-title="set.batal_edit">
+                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+              </button>
+            </div>
           </div>
 
           <div class="set-profile-hero">
@@ -153,7 +162,6 @@
             <div class="set-hero-info">
               <div class="set-hero-name-row">
                 <span class="set-hero-name" id="heroName">Dicky Ade</span>
-                <span class="set-premium-badge" data-i18n="nav.premium">★ Premium</span>
               </div>
               <div class="set-hero-row">
                 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" opacity="0"></path><path d="M22 6l-10 7L2 6"></path><rect height="16" rx="2" width="20" x="2" y="4"></rect></svg>
@@ -176,13 +184,24 @@
             </div>
           </div>
 
+          <div class="set-role-box">
+            <div class="set-role-info">
+              <div class="set-role-title" data-i18n="set.role_title">Role Saya</div>
+              <div class="set-role-sub" data-i18n="set.role_sub">Untuk keperluan testing menu Tim. Owner bisa lihat &amp; kelola anggota, Member tidak.</div>
+            </div>
+            <select id="prefRole" class="set-role-select">
+              <option value="owner" data-i18n="tim.role_owner">Owner</option>
+              <option value="member" data-i18n="tim.role_member">Member</option>
+            </select>
+          </div>
+
           <div class="set-subsection-title" data-i18n="set.informasi_pribadi">Informasi Pribadi</div>
           <div class="set-form-grid set-form-grid-2">
-            <div class="form-group"><label data-i18n="set.lbl_nama_lengkap">Nama Lengkap</label><input id="inpNama" placeholder="Nama lengkap Anda" type="text" data-i18n-placeholder="set.nama_placeholder"/></div>
-            <div class="form-group"><label data-i18n="set.lbl_email">Email</label><input id="inpEmail" placeholder="nama@email.com" type="email" data-i18n-placeholder="set.email_placeholder"/></div>
-            <div class="form-group"><div class="form-label-row"><label data-i18n="set.lbl_telp">Nomor Telepon</label><span class="opt" data-i18n="set.opsional">Opsional</span></div><input id="inpTelp" placeholder="08xxxxxxxxxx" type="text" data-i18n-placeholder="set.telp_placeholder"/></div>
-            <div class="form-group"><div class="form-label-row"><label data-i18n="set.lbl_tanggal_lahir">Tanggal Lahir</label><span class="opt" data-i18n="set.opsional">Opsional</span></div><input id="inpTanggalLahir" placeholder="Contoh: 12 Januari 1998" type="text" data-i18n-placeholder="set.tanggal_lahir_placeholder"/></div>
-            <div class="form-group set-form-full"><div class="form-label-row"><label data-i18n="set.lbl_alamat">Alamat</label><span class="opt" data-i18n="set.opsional">Opsional</span></div><input id="inpAlamat" placeholder="Kota, Provinsi, Negara" type="text" data-i18n-placeholder="set.alamat_placeholder"/></div>
+            <div class="form-group"><label data-i18n="set.lbl_nama_lengkap">Nama Lengkap</label><input id="inpNama" placeholder="Nama lengkap Anda" type="text" disabled data-i18n-placeholder="set.nama_placeholder"/></div>
+            <div class="form-group"><label data-i18n="set.lbl_email">Email</label><input id="inpEmail" placeholder="nama@email.com" type="email" disabled data-i18n-placeholder="set.email_placeholder"/></div>
+            <div class="form-group"><div class="form-label-row"><label data-i18n="set.lbl_telp">Nomor Telepon</label><span class="opt" data-i18n="set.opsional">Opsional</span></div><input id="inpTelp" placeholder="08xxxxxxxxxx" type="text" disabled data-i18n-placeholder="set.telp_placeholder"/></div>
+            <div class="form-group"><div class="form-label-row"><label data-i18n="set.lbl_tanggal_lahir">Tanggal Lahir</label><span class="opt" data-i18n="set.opsional">Opsional</span></div><input id="inpTanggalLahir" type="date" disabled/></div>
+            <div class="form-group set-form-full"><div class="form-label-row"><label data-i18n="set.lbl_alamat">Alamat</label><span class="opt" data-i18n="set.opsional">Opsional</span></div><input id="inpAlamat" placeholder="Kota, Provinsi, Negara" type="text" disabled data-i18n-placeholder="set.alamat_placeholder"/></div>
           </div>
 
           <div class="set-form-error" id="profilError"></div>
@@ -256,14 +275,6 @@
               </select>
             </div>
             <div class="form-group">
-              <label data-i18n="set.format_mata_uang">Format Mata Uang</label>
-              <select id="prefMataUang">
-                <option value="IDR">Rupiah (Rp)</option>
-                <option value="USD">US Dollar ($)</option>
-                <option value="EUR">Euro (€)</option>
-              </select>
-            </div>
-            <div class="form-group">
               <label data-i18n="set.hari_awal_minggu">Hari Awal Minggu</label>
               <select id="prefHariAwal">
                 <option value="senin">Senin</option>
@@ -317,7 +328,7 @@
           </div>
 
           <div class="set-about-card">
-            <div class="set-about-mark"><svg fill="none" height="26" viewBox="0 0 56 56" width="26"><path d="M28 3L50 15V41L28 53L6 41V15L28 3Z" stroke="#fff" stroke-width="3.5"></path><path d="M18 29L25 36L38 20" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"></path></svg></div>
+            <div class="set-about-mark"><img src="logo.png" alt="DVpoint"/></div>
             <div class="set-about-name">DVpoint</div>
             <div class="set-about-tagline" data-i18n="set.about_tagline">Aplikasi manajemen keuangan pribadi.</div>
           </div>

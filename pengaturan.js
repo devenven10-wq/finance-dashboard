@@ -17,6 +17,7 @@
     btnAvatarCamera: document.getElementById('btnAvatarCamera'),
     btnAvatarRemove: document.getElementById('btnAvatarRemove'),
     btnEditProfil: document.getElementById('btnEditProfil'),
+    btnBatalEditProfil: document.getElementById('btnBatalEditProfil'),
     inpNama: document.getElementById('inpNama'),
     inpEmail: document.getElementById('inpEmail'),
     inpTelp: document.getElementById('inpTelp'),
@@ -27,6 +28,7 @@
     heroPhone: document.getElementById('heroPhone'),
     heroPhoneRow: document.getElementById('heroPhoneRow'),
     heroJoined: document.getElementById('heroJoined'),
+    prefRole: document.getElementById('prefRole'),
     profilError: document.getElementById('profilError'),
     btnSimpanProfil: document.getElementById('btnSimpanProfil'),
 
@@ -36,7 +38,6 @@
     // Preferensi
     prefBahasa: document.getElementById('prefBahasa'),
     prefTanggal: document.getElementById('prefTanggal'),
-    prefMataUang: document.getElementById('prefMataUang'),
     prefHariAwal: document.getElementById('prefHariAwal'),
     prefSaveIndicator: document.getElementById('prefSaveIndicator'),
 
@@ -135,12 +136,22 @@
     el.inpNama.value = p.nama || '';
     el.inpEmail.value = p.email || '';
     el.inpTelp.value = p.telp || '';
+    el.inpTanggalLahir.max = new Date().toISOString().slice(0, 10); // tidak boleh pilih tanggal masa depan
     el.inpTanggalLahir.value = p.tanggalLahir || '';
     el.inpAlamat.value = p.alamat || '';
+    if (el.prefRole) el.prefRole.value = p.role || 'owner';
     pendingFotoDataUrl = undefined;
     renderAvatarPreview(p.foto, p.nama);
     renderHeroDisplay(p);
   }
+
+  el.prefRole?.addEventListener('change', () => {
+    dvSetProfile({ role: el.prefRole.value });
+    // dvSetProfile() otomatis memanggil dvNotifySettingsChange(), yang sudah
+    // di-listen settings.js untuk refresh visibilitas menu Tim di semua halaman —
+    // jadi tidak perlu panggil manual di sini.
+    showToast(el.prefRole.value === 'owner' ? dvT('tim.role_owner') : dvT('tim.role_member'));
+  });
 
   el.btnAvatarCamera.addEventListener('click', () => el.inpFoto.click());
 
@@ -184,10 +195,32 @@
   });
 
   // "Edit Profil" — fokus ke field pertama supaya pengguna langsung bisa mengedit.
+  const profilFields = [el.inpNama, el.inpEmail, el.inpTelp, el.inpTanggalLahir, el.inpAlamat];
+
+  function unlockProfilFields() {
+    profilFields.forEach(f => f.disabled = false);
+    el.btnEditProfil.style.display = 'none';
+    el.btnBatalEditProfil.style.display = '';
+  }
+  function lockProfilFields() {
+    profilFields.forEach(f => f.disabled = true);
+    el.btnEditProfil.style.display = '';
+    el.btnBatalEditProfil.style.display = 'none';
+    el.profilError.textContent = '';
+  }
+
   el.btnEditProfil.addEventListener('click', () => {
+    unlockProfilFields();
     el.inpNama.focus();
     el.inpNama.select();
     document.querySelector('.set-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // "Batal" — buang perubahan yang belum disimpan (termasuk foto yang baru
+  // dipilih/dihapus tapi belum di-Simpan), kembalikan ke data tersimpan, kunci lagi.
+  el.btnBatalEditProfil.addEventListener('click', () => {
+    loadProfilForm();
+    lockProfilFields();
   });
 
   el.btnSimpanProfil.addEventListener('click', () => {
@@ -207,6 +240,7 @@
     const saved = dvSetProfile(updates);
     pendingFotoDataUrl = undefined;
     renderHeroDisplay(saved);
+    lockProfilFields();
     showToast(dvT('set.toast_profil_tersimpan'));
   });
 
@@ -236,7 +270,6 @@
     const pref = dvGetPreferences();
     el.prefBahasa.value = pref.bahasa;
     el.prefTanggal.value = pref.formatTanggal;
-    el.prefMataUang.value = pref.mataUang;
     el.prefHariAwal.value = pref.hariAwalMinggu;
   }
 
@@ -250,7 +283,6 @@
   [
     [el.prefBahasa, 'bahasa'],
     [el.prefTanggal, 'formatTanggal'],
-    [el.prefMataUang, 'mataUang'],
     [el.prefHariAwal, 'hariAwalMinggu']
   ].forEach(([node, key]) => {
     node.addEventListener('change', () => {
@@ -292,8 +324,8 @@
   function doLogout() {
     closeModal(el.logoutModal);
     showToast(dvT('set.toast_logout'));
-    // Placeholder: arahkan ke halaman login bila tersedia di aplikasi.
-    // window.location.href = 'login.html';
+    // Beri jeda sebentar supaya toast sempat terlihat sebelum halaman berpindah.
+    setTimeout(() => { window.location.href = 'index.html'; }, 700);
   }
 
   el.btnLogout.addEventListener('click', () => openModal(el.logoutModal));

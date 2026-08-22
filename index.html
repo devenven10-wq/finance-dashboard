@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>DVPoint — Sign In</title>
+  <title>DVpoint — Sign In</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -120,37 +120,42 @@ body::before{
       align-items: stretch;
     }
 
-    /* ===== LEFT PANEL ===== */
+    /* ===== LEFT PANEL — kanvas putih, kontras dengan panel login gelap ===== */
     .left-panel {
-      padding: 56px 64px;
+      padding: 22px 64px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 28px;
+      gap: 12px;
+      background: linear-gradient(160deg, #ffffff 0%, #f5f6fb 100%);
+      position: relative;
+      z-index: 2;
+      box-shadow: 8px 0 40px rgba(20,20,45,.06);
+      overflow-y: auto;
     }
 
     .brand-mark {
       display: flex; align-items: center; gap: 10px;
       font-weight: 700; font-size: 18px; letter-spacing: -0.2px;
+      color: #181528;
     }
     .brand-mark .mark-icon {
-      width: 32px; height: 32px; border-radius: 9px;
-      background: linear-gradient(135deg, #5b6cff, #8b5cf6);
+      width: 32px; height: 32px;
       display: flex; align-items: center; justify-content: center;
     }
-    .brand-mark .mark-icon svg { width: 17px; height: 17px; }
+    .brand-mark .mark-icon img { width: 100%; height: 100%; object-fit: contain; }
 
     .headline { line-height: 1.12; }
     .headline .line1 {
-      display: block; font-size: 46px; font-weight: 700; color: var(--text);
+      display: block; font-size: 48px; font-weight: 700; color: #181528;
     }
     .headline .line2 {
-      display: block; font-size: 46px; font-weight: 700;
-      background: linear-gradient(90deg, #7d8bff, #b18cff);
+      display: block; font-size: 48px; font-weight: 700;
+      background: linear-gradient(90deg, #5b6cff, #8b5cf6);
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
 
-    .tagline { font-size: 15.5px; color: var(--text-muted); max-width: 420px; line-height: 1.6; }
+    .tagline { font-size: 16px; color: #63607a; max-width: 440px; line-height: 1.6; }
 
     .mini-divider { width: 46px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, #5b6cff, #8b5cf6); margin: 2px 0 6px; }
 
@@ -160,26 +165,71 @@ body::before{
 
 .mock-wrap{
     perspective:1800px;
-    margin-top:12px;
+    margin-top:14px;
     position:relative;
 }
 
 .mock-wrap::before{
     content:"";
     position:absolute;
-    inset:-80px;
+    inset:-45px;
+    pointer-events:none;
 
     background:
         radial-gradient(circle at 25% 40%,
-            rgba(91,108,255,.14),
+            rgba(91,108,255,.09),
             transparent 35%),
 
         radial-gradient(circle at 85% 20%,
-            rgba(139,92,246,.12),
+            rgba(139,92,246,.07),
             transparent 28%);
 
-    filter:blur(70px);
+    filter:blur(50px);
     z-index:-1;
+}
+
+/* ===== FEATURE HIGHLIGHTS (baris 4 kolom di bawah mockup) ===== */
+.feature-row{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:22px;
+    margin-top:12px;
+}
+.feature-item{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    transition:transform 220ms cubic-bezier(.4,0,.2,1);
+}
+.feature-item:hover{
+    transform:translateY(-2px);
+}
+.feature-icon{
+    width:34px; height:34px;
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(91,108,255,.09);
+    border:1px solid rgba(91,108,255,.16);
+    box-shadow:0 4px 14px rgba(91,108,255,.08);
+    color:#5b6cff;
+    font-size:14px;
+    transition:background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+.feature-item:hover .feature-icon{
+    background:rgba(91,108,255,.15);
+    border-color:rgba(91,108,255,.3);
+    box-shadow:0 8px 20px rgba(91,108,255,.18);
+}
+.feature-item h4{
+    font-size:13px;
+    font-weight:700;
+    color:#181528;
+    letter-spacing:-.1px;
+}
+.feature-item p{
+    font-size:12px;
+    color:#6b6880;
+    line-height:1.5;
 }
 
 .mock-card{
@@ -201,25 +251,22 @@ body::before{
     border-radius:22px;
 
     box-shadow:
-        0 35px 90px rgba(0,0,0,.55),
-        0 0 60px rgba(91,108,255,.06);
+        0 24px 48px -16px rgba(0,0,0,.45),
+        0 8px 20px -8px rgba(0,0,0,.3),
+        0 0 40px rgba(91,108,255,.08);
 
-    transform:
-        rotateY(-5deg)
-        rotateX(2deg);
+    transform: none;
 
     transition:.35s ease;
 }
 
 .mock-card:hover{
-    transform:
-        rotateY(-3deg)
-        rotateX(1deg)
-        translateY(-6px);
+    transform: translateY(-6px);
 
     box-shadow:
-        0 50px 120px rgba(0,0,0,.6),
-        0 0 80px rgba(91,108,255,.10);
+        0 32px 60px -16px rgba(0,0,0,.5),
+        0 10px 24px -8px rgba(0,0,0,.32),
+        0 0 50px rgba(91,108,255,.10);
 }
 
 /* ==========================================
@@ -473,7 +520,7 @@ body::before{
       -webkit-backdrop-filter: blur(28px) saturate(160%);
       border: 1px solid var(--card-border);
       border-radius: 26px;
-      box-shadow: var(--shadow-card);
+      box-shadow: var(--shadow-card), 0 0 70px rgba(91,108,255,.05);
       padding: 48px 42px 36px;  
       animation: cardIn 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
     }
@@ -523,12 +570,11 @@ body::before{
     .card-header { text-align: center; margin-bottom: 26px; }
     .logo-wrap {
       width: 60px; height: 60px; margin: 0 auto 16px;
-      background: linear-gradient(135deg, #5b6cff, #8b5cf6);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 12px 32px rgba(91,108,255,0.35);
     }
-    .logo-wrap svg { width: 26px; height: 26px; }
+    .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
     .card-header h1 { font-size: 21px; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 6px; }
     .card-header p { font-size: 12px; color: var(--text-muted); letter-spacing: 0.4px; }
 
@@ -567,9 +613,25 @@ body::before{
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 24px; font-size: 13px;
     }
-    .check-label { display: flex; align-items: center; gap: 8px; color: var(--text-muted); cursor: pointer; }
+    .check-label { display: flex; align-items: center; gap: 9px; color: var(--text-muted); cursor: pointer; user-select: none; }
     .check-label:hover { color: var(--text); }
-    .check-label input { accent-color: var(--primary); width: 15px; height: 15px; }
+    .check-label input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .check-box {
+      width: 18px; height: 18px; border-radius: 6px; flex-shrink: 0;
+      border: 1.5px solid var(--input-border); background: var(--input-bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+    }
+    .check-box svg {
+      width: 11px; height: 11px; opacity: 0; transform: scale(0.5);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .check-label input:checked ~ .check-box {
+      background: linear-gradient(135deg, #5b6cff, #8b5cf6); border-color: transparent;
+    }
+    .check-label input:checked ~ .check-box svg { opacity: 1; transform: scale(1); }
+    .check-label input:focus-visible ~ .check-box { box-shadow: 0 0 0 3px rgba(91,108,255,0.25); }
+    .check-label:active .check-box { transform: scale(0.9); }
     .link-forgot { color: #9aa4ff; text-decoration: none; font-weight: 500; font-size: 13px; }
     .link-forgot:hover { opacity: 0.8; }
 
@@ -653,6 +715,33 @@ body::before{
 
     @keyframes cardIn { from { opacity: 0; transform: translateY(24px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
+    /* ===== ENTRANCE ANIMATION: panel kiri (brand, headline, tagline,
+       mockup, kotak fitur) — supaya seluruh halaman terasa "hidup"
+       serentak dengan kartu login, bukan cuma sisi kanan saja. ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .brand-mark, .headline .line1, .headline .line2, .tagline, .mini-divider, .mock-wrap {
+      opacity: 0;
+      animation: fadeInUp 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    .brand-mark   { animation-delay: 0.05s; }
+    .headline .line1 { animation-delay: 0.12s; }
+    .headline .line2 { animation-delay: 0.18s; }
+    .tagline      { animation-delay: 0.26s; }
+    .mini-divider { animation-delay: 0.32s; }
+    .mock-wrap    { animation-delay: 0.4s; }
+    .feature-item { opacity: 0; animation: fadeIn 0.6s ease forwards; }
+    .feature-item:nth-child(1) { animation-delay: 0.6s; }
+    .feature-item:nth-child(2) { animation-delay: 0.68s; }
+    .feature-item:nth-child(3) { animation-delay: 0.76s; }
+    .feature-item:nth-child(4) { animation-delay: 0.84s; }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1000px) {
       .page-container { grid-template-columns: 1fr; }
@@ -683,11 +772,9 @@ body::before{
     <div class="left-panel">
       <div class="brand-mark">
         <span class="mark-icon">
-          <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M28 3L50 15V41L28 53L6 41V15L28 3Z" stroke="#fff" stroke-width="4.5"/>
-          </svg>
+          <img src="logo.png" alt="DVpoint"/>
         </span>
-        DVPoint
+        DVpoint
       </div>
 
       <h1 class="headline serif">
@@ -701,7 +788,7 @@ body::before{
       <div class="mock-wrap">
         <div class="mock-card">
           <div class="mock-sidebar">
-            <div class="mock-brand"><span class="dot"></span> DVPoint</div>
+            <div class="mock-brand"><span class="dot"></span> DVpoint</div>
             <div class="mock-nav-item active"><i class="fas fa-grid-2"></i> Dashboard</div>
             <div class="mock-nav-item"><i class="fas fa-briefcase"></i> Portfolio</div>
             <div class="mock-nav-item"><i class="fas fa-chart-line"></i> Analytics</div>
@@ -761,6 +848,29 @@ body::before{
           </div>
         </div>
       </div>
+
+      <div class="feature-row">
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+          <h4>Real-time Insights</h4>
+          <p>Track your portfolio in real time.</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-shield-halved"></i></div>
+          <h4>Secure &amp; Private</h4>
+          <p>Your data is protected with bank-level security.</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-chart-column"></i></div>
+          <h4>Smart Analytics</h4>
+          <p>Make smarter decisions with powerful analytics.</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="fas fa-arrow-trend-up"></i></div>
+          <h4>Grow Your Wealth</h4>
+          <p>Stay on track toward your goals.</p>
+        </div>
+      </div>
     </div>
 
     <!-- RIGHT: login form -->
@@ -768,11 +878,9 @@ body::before{
       <div class="login-card">
         <div class="card-header">
           <div class="logo-wrap">
-            <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M28 3L50 15V41L28 53L6 41V15L28 3Z" stroke="#fff" stroke-width="3.6"/>
-            </svg>
+            <img src="logo.png" alt="DVpoint"/>
           </div>
-          <h1>DVPoint</h1>
+          <h1>DVpoint</h1>
           <p>— Portfolio Dashboard —</p>
         </div>
 
@@ -798,6 +906,7 @@ body::before{
         <div class="row-meta">
           <label class="check-label">
             <input type="checkbox" id="remember">
+            <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
             Remember me
           </label>
           <a href="#" id="forgotPassword" class="link-forgot">Forgot password?</a>
@@ -810,7 +919,7 @@ body::before{
         <div class="msg msg-success" id="loginSuccess"></div>
 
         <div class="card-footer">
-          <p>&copy; 2026 DVPoint. All rights reserved.</p>
+          <p>&copy; 2026 DVpoint. All rights reserved.</p>
           <div class="links">
             <a href="#">Privacy Policy</a><span class="sep">•</span><a href="#">Terms of Service</a>
           </div>
@@ -983,7 +1092,7 @@ body::before{
       fpSucc.innerHTML = `
         <i class="fas fa-circle-info" style="flex-shrink:0;margin-top:1px;"></i>
         <span>
-          Untuk mereset password, hubungi <strong>Admin DVPoint</strong> Anda.
+          Untuk mereset password, hubungi <strong>Admin DVpoint</strong> Anda.
           <br><small style="opacity:0.8;margin-top:4px;display:block;">Email: <strong>${email}</strong></small>
         </span>`;
       fpSucc.style.display = "flex";

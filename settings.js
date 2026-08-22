@@ -26,13 +26,14 @@ const DV_PROFILE_DEFAULT = {
   tanggalLahir: '',
   alamat: '',
   bergabungSejak: null, // ISO date string, di-set sekali otomatis saat profil pertama kali dibuka
-  foto: null // base64 data URL, atau null -> pakai inisial
+  foto: null, // base64 data URL, atau null -> pakai inisial
+  role: 'owner' // 'owner' | 'member' — menentukan akses menu Tim. Default owner
+                // karena siapa pun yang pertama kali setup di device ini dianggap pemilik.
 };
 
 const DV_PREF_DEFAULT = {
   bahasa: 'id',
   formatTanggal: 'DD/MM/YYYY',
-  mataUang: 'IDR',
   hariAwalMinggu: 'senin'
 };
 
@@ -250,6 +251,17 @@ function dvSetupMobileNav() {
     dvUpdateThemeToggleIcons(dvGetTheme());
     dvSetupMobileNav();
     if (typeof dvApplyLanguage === 'function') dvApplyLanguage();
+    dvApplyTimNavVisibility();
+  }
+
+  // Menu "Tim" di sidebar cuma tampil kalau profil device ini role-nya
+  // Owner (lihat storage.js: dvIsOwner). Dipanggil di setiap load halaman
+  // + tiap kali profil berubah, supaya konsisten di semua 12 halaman.
+  function dvApplyTimNavVisibility() {
+    const navItem = document.getElementById('navItemTim');
+    if (!navItem) return;
+    const isOwner = typeof dvIsOwner === 'function' ? dvIsOwner() : true;
+    navItem.style.display = isOwner ? '' : 'none';
   }
 
   if (document.readyState === 'loading') {
@@ -264,5 +276,16 @@ function dvSetupMobileNav() {
     dvApplyTheme(dvGetTheme());
     dvApplyProfileToDOM(dvGetProfile());
     if (typeof dvApplyLanguage === 'function') dvApplyLanguage();
+    dvApplyTimNavVisibility();
   });
 })();
+// ============================================================
+// ---------- Logout global (dipakai tombol logout di sidebar
+// setiap halaman lewat onclick="dvpointLogout()") ----------
+// ============================================================
+function dvpointLogout() {
+  if (typeof dvShowGenericToast === 'function') {
+    dvShowGenericToast(typeof dvT === 'function' ? dvT('set.toast_logout') : 'Anda telah keluar dari akun.');
+  }
+  setTimeout(() => { window.location.href = 'index.html'; }, 500);
+}
