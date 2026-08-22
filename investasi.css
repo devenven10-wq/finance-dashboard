@@ -1,0 +1,214 @@
+/* ============================================================
+   DVpoint — Investasi (module-scoped styles)
+   Mewarisi seluruh token & komponen dasar dari dashboard.css
+   (--bg, --panel, --border, kpi-card, modal, drawer overlay, dst).
+   File ini hanya menambah komponen khusus halaman Investasi:
+   filter chip, grid card aset, drawer detail, dan toast.
+   ============================================================ */
+
+/* ---------- Toolbar & filter chip (pola sama dgn Akun/Anggaran) ---------- */
+.iv-toolbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:12px;}
+.iv-filters{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.iv-filter-chip{
+  font-size:12.5px; color:var(--text-dim);
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--border);
+  border-radius:99px; padding:8px 15px;
+  cursor:pointer; transition:background var(--ease), color var(--ease), border-color var(--ease);
+  user-select:none;
+}
+.iv-filter-chip:hover{color:var(--text); background:rgba(255,255,255,.06);}
+.iv-filter-chip.active{
+  color:#fff; border-color:transparent;
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+}
+
+/* ---------- Grid kartu investasi ---------- */
+.iv-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(270px, 1fr));
+  gap:16px;
+}
+
+.iv-card{
+  position:relative; overflow:hidden;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:20px;
+  cursor:pointer;
+  transition:border-color var(--ease), transform var(--ease), box-shadow var(--ease);
+}
+.iv-card:hover{border-color:rgba(255,255,255,.16); transform:translateY(-2px); box-shadow:0 14px 34px rgba(0,0,0,.28);}
+.iv-card::before{content:""; position:absolute; inset:0; opacity:.14; pointer-events:none;}
+
+.iv-card-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:16px;}
+.iv-card-id{display:flex; align-items:center; gap:11px; min-width:0;}
+.iv-icon{width:40px; height:40px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.iv-icon svg{width:19px; height:19px;}
+.iv-card-nama{font-size:14.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.iv-card-jenis{font-size:11.5px; color:var(--text-dimmer); margin-top:2px;}
+
+.iv-badge{font-size:10.5px; font-weight:600; padding:4px 10px; border-radius:99px; white-space:nowrap; flex-shrink:0;}
+.iv-badge-aktif{background:rgba(45,217,168,.16); color:var(--teal);}
+.iv-badge-dijual{background:rgba(79,125,255,.16); color:var(--blue);}
+.iv-badge-ditutup{background:rgba(239,77,143,.16); color:var(--pink);}
+.iv-badge-arsip{background:rgba(138,134,168,.18); color:var(--text-dim);}
+
+.iv-card-rows{display:flex; flex-direction:column; gap:10px; margin-bottom:14px;}
+.iv-card-row{display:flex; align-items:center; justify-content:space-between; font-size:12.5px;}
+.iv-card-row span{color:var(--text-dimmer);}
+.iv-card-row strong{font-weight:600; color:var(--text);}
+
+.iv-card-perf{
+  display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600;
+  padding:8px 10px; border-radius:10px; margin-bottom:14px;
+  background:rgba(255,255,255,.03);
+}
+.iv-card-perf svg{width:13px; height:13px;}
+.iv-card-perf.up{color:var(--teal);}
+.iv-card-perf.down{color:var(--pink);}
+.iv-card-perf.flat{color:var(--text-dim);}
+
+.iv-card-actions{display:flex; gap:8px;}
+.iv-btn-update{
+  flex:1; display:flex; align-items:center; justify-content:center; gap:7px;
+  border:1px solid var(--border); background:rgba(255,255,255,.03);
+  color:var(--text); border-radius:10px; padding:9px 10px;
+  font-size:12.5px; font-weight:600; cursor:pointer;
+  transition:background var(--ease), border-color var(--ease);
+}
+.iv-btn-update:hover{background:rgba(79,125,255,.14); border-color:rgba(79,125,255,.35); color:var(--blue);}
+.iv-btn-update svg{width:14px; height:14px;}
+
+/* ---------- Empty state dengan ilustrasi ringan ---------- */
+.iv-empty{
+  grid-column:1/-1;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:70px 20px;
+  background:var(--panel); border:1px dashed var(--border); border-radius:var(--radius-lg);
+}
+.iv-empty-illus{
+  width:74px; height:74px; border-radius:20px; margin-bottom:20px;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg, rgba(79,125,255,.16), rgba(159,77,255,.16));
+  border:1px solid var(--border);
+}
+.iv-empty-illus svg{width:34px; height:34px; stroke:var(--blue);}
+.iv-empty h4{font-size:15px; margin-bottom:8px; color:var(--text);}
+.iv-empty p{font-size:13px; color:var(--text-dim); max-width:340px; margin-bottom:22px; line-height:1.55;}
+
+/* ---------- Modal: grid pilihan jenis investasi ---------- */
+.iv-jenis-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
+.iv-jenis-opt{
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  border:1px solid var(--border); border-radius:12px; padding:12px 6px;
+  cursor:pointer; font-size:11px; color:var(--text-dim); text-align:center;
+  transition:border-color var(--ease), background var(--ease), color var(--ease);
+}
+.iv-jenis-opt svg{width:18px; height:18px;}
+.iv-jenis-opt:hover{background:rgba(255,255,255,.04); color:var(--text);}
+.iv-jenis-opt.selected{
+  border-color:rgba(79,125,255,.5); color:#fff;
+  background:linear-gradient(135deg, rgba(79,125,255,.18), rgba(159,77,255,.18));
+}
+
+.iv-modal-error{font-size:12.5px; color:var(--pink); min-height:0; margin-top:-6px; margin-bottom:6px;}
+
+/* ---------- Drawer detail investasi ---------- */
+.iv-drawer-overlay{
+  position:fixed; inset:0; background:rgba(4,3,13,.66); backdrop-filter:blur(3px);
+  z-index:110; opacity:0; pointer-events:none; transition:opacity var(--ease);
+}
+.iv-drawer-overlay.open{opacity:1; pointer-events:auto;}
+.iv-drawer{
+  position:fixed; top:0; right:0; height:100vh; width:100%; max-width:420px;
+  background:#211f36; border-left:1px solid var(--border);
+  z-index:111; padding:24px; overflow-y:auto;
+  transform:translateX(100%); transition:transform var(--ease);
+  box-shadow:-20px 0 50px rgba(0,0,0,.4);
+}
+.iv-drawer.open{transform:translateX(0);}
+.iv-drawer-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:20px;}
+.iv-drawer-id{display:flex; align-items:center; gap:12px; min-width:0;}
+.iv-drawer-icon{width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.iv-drawer-icon svg{width:20px; height:20px;}
+.iv-drawer-head h3{font-size:16px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.iv-drawer-head .sub{font-size:12px; color:var(--text-dimmer); margin-top:2px;}
+.iv-drawer-close{width:30px; height:30px; border-radius:9px; border:1px solid var(--border); background:transparent; color:var(--text-dim); cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.iv-drawer-close:hover{color:var(--text); background:rgba(255,255,255,.05);}
+.iv-drawer-close svg{width:14px; height:14px;}
+
+.iv-drawer-perf-card{
+  background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:14px;
+  padding:16px; margin-bottom:18px;
+}
+.iv-drawer-perf-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+.iv-drawer-perf-top .lbl{font-size:12px; color:var(--text-dim);}
+.iv-drawer-perf-pct{font-size:15px; font-weight:700; display:flex; align-items:center; gap:5px;}
+.iv-drawer-perf-pct svg{width:15px; height:15px;}
+.iv-drawer-perf-pct.up{color:var(--teal);}
+.iv-drawer-perf-pct.down{color:var(--pink);}
+.iv-drawer-perf-pct.flat{color:var(--text-dim);}
+.iv-drawer-numbers{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.iv-drawer-numbers div{display:flex; flex-direction:column; gap:4px;}
+.iv-drawer-numbers span{font-size:11px; color:var(--text-dimmer);}
+.iv-drawer-numbers strong{font-size:14px; font-weight:700;}
+
+.iv-drawer-meta{display:flex; flex-direction:column; gap:12px; margin-bottom:18px; padding:16px; background:rgba(255,255,255,.02); border:1px solid var(--border-soft); border-radius:14px;}
+.iv-drawer-meta div{display:flex; align-items:center; justify-content:space-between; font-size:12.5px;}
+.iv-drawer-meta span{color:var(--text-dimmer);}
+.iv-drawer-meta strong{font-weight:600; color:var(--text); text-align:right;}
+
+.iv-drawer-note{margin-bottom:18px;}
+.iv-drawer-note h4{font-size:12.5px; color:var(--text-dim); margin-bottom:8px; font-weight:600;}
+.iv-drawer-note p{font-size:13px; color:var(--text); line-height:1.6; background:rgba(255,255,255,.02); border:1px solid var(--border-soft); border-radius:10px; padding:12px 14px;}
+
+.iv-drawer-actions{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+.iv-drawer-actions .btn-primary, .iv-drawer-actions .btn-ghost{flex:1; min-width:100px; justify-content:center; padding:10px 12px; font-size:12.5px;}
+.btn-ghost.danger{color:var(--pink); border-color:rgba(239,77,143,.3);}
+.btn-ghost.danger:hover{background:rgba(239,77,143,.1);}
+
+.iv-drawer-history h4{font-size:12.5px; color:var(--text-dim); margin-bottom:12px; font-weight:600;}
+.iv-history-item{display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-top:1px solid var(--border-soft); gap:10px;}
+.iv-history-item:first-child{border-top:none; padding-top:0;}
+.iv-history-left{min-width:0;}
+.iv-history-nilai{font-size:13px; font-weight:600;}
+.iv-history-note{font-size:11.5px; color:var(--text-dimmer); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.iv-history-tgl{font-size:11.5px; color:var(--text-dimmer); flex-shrink:0; white-space:nowrap;}
+.iv-history-empty{font-size:12.5px; color:var(--text-dimmer); padding:16px 0; text-align:center;}
+
+/* ---------- Toast ---------- */
+.iv-toast{
+  position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:#211f36; border:1px solid var(--border); border-radius:12px;
+  padding:13px 20px; font-size:13px; color:var(--text);
+  box-shadow:0 14px 34px rgba(0,0,0,.4);
+  opacity:0; pointer-events:none; transition:opacity var(--ease), transform var(--ease);
+  z-index:200; display:flex; align-items:center; gap:9px;
+}
+.iv-toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+.iv-toast .dot{width:7px; height:7px; border-radius:50%; background:var(--teal); flex-shrink:0;}
+
+/* ---------- Confirm dialog (hapus / arsip) ---------- */
+.iv-confirm-overlay{
+  position:fixed; inset:0; background:rgba(4,3,13,.72); backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center; z-index:120;
+  opacity:0; pointer-events:none; transition:opacity var(--ease);
+}
+.iv-confirm-overlay.open{opacity:1; pointer-events:auto;}
+.iv-confirm-box{
+  width:100%; max-width:360px; background:#211f36; border:1px solid var(--border);
+  border-radius:var(--radius-lg); padding:24px; box-shadow:0 24px 60px rgba(0,0,0,.5);
+  transform:translateY(10px) scale(.98); transition:transform var(--ease);
+}
+.iv-confirm-overlay.open .iv-confirm-box{transform:translateY(0) scale(1);}
+.iv-confirm-box h4{font-size:15px; margin-bottom:8px;}
+.iv-confirm-box p{font-size:13px; color:var(--text-dim); margin-bottom:20px; line-height:1.55;}
+.iv-confirm-actions{display:flex; justify-content:flex-end; gap:10px;}
+
+@media (max-width:860px){
+  .iv-grid{grid-template-columns:1fr;}
+  .iv-jenis-grid{grid-template-columns:repeat(2,1fr);}
+  .iv-drawer{max-width:100%;}
+}

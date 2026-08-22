@@ -1,0 +1,268 @@
+// ============================================================
+// DVpoint — Shared Settings Layer (settings.js)
+// ============================================================
+// Menyimpan & menerapkan preferensi global aplikasi: tema (dark/light),
+// profil pengguna (foto/nama/email/telp), dan preferensi (bahasa, format
+// tanggal, format mata uang, hari awal minggu). Mengikuti pola yang sama
+// dengan storage.js: localStorage sebagai single source of truth, dan
+// dvNotifySettingsChange()/dvOnSettingsChange() untuk sinkronisasi
+// real-time di tab yang sama (custom event) maupun tab lain (storage
+// event bawaan browser) — sehingga tema/profil berubah di semua halaman
+// tanpa perlu reload.
+//
+// File ini di-load di SETIAP halaman (setelah storage.js, sebelum
+// guard.js / script halaman) agar sidebar & tema selalu konsisten.
+// ============================================================
+
+const DVPOINT_THEME_KEY = 'dvpoint_theme';
+const DVPOINT_PROFILE_KEY = 'dvpoint_profile';
+const DVPOINT_PREF_KEY = 'dvpoint_preferences';
+const DVPOINT_SETTINGS_EVENT = 'dvpoint:settingschanged';
+
+const DV_PROFILE_DEFAULT = {
+  nama: 'Dicky Ade',
+  email: 'dicky.ade@email.com',
+  telp: '',
+  tanggalLahir: '',
+  alamat: '',
+  bergabungSejak: null, // ISO date string, di-set sekali otomatis saat profil pertama kali dibuka
+  foto: null // base64 data URL, atau null -> pakai inisial
+};
+
+const DV_PREF_DEFAULT = {
+  bahasa: 'id',
+  formatTanggal: 'DD/MM/YYYY',
+  mataUang: 'IDR',
+  hariAwalMinggu: 'senin'
+};
+
+// ---------- Notifikasi perubahan (sinkronisasi real-time) ----------
+function dvNotifySettingsChange() {
+  window.dispatchEvent(new CustomEvent(DVPOINT_SETTINGS_EVENT));
+}
+
+function dvOnSettingsChange(callback) {
+  window.addEventListener(DVPOINT_SETTINGS_EVENT, callback);
+  window.addEventListener('storage', (e) => {
+    if (e.key === DVPOINT_THEME_KEY || e.key === DVPOINT_PROFILE_KEY || e.key === DVPOINT_PREF_KEY) callback();
+  });
+}
+
+// ============================================================
+// ---------- Tema (Dark / Light) ----------
+// ============================================================
+function dvGetTheme() {
+  try {
+    const t = localStorage.getItem(DVPOINT_THEME_KEY);
+    return t === 'light' ? 'light' : 'dark';
+  } catch (e) {
+    return 'dark';
+  }
+}
+
+// Menerapkan tema ke DOM. Dipanggil sedini mungkin (inline script di
+// <head>) supaya tidak ada flash warna yang salah saat halaman dimuat.
+function dvApplyTheme(theme) {
+  const t = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  dvUpdateThemeToggleIcons(t);
+}
+
+function dvSetTheme(theme) {
+  const t = theme === 'light' ? 'light' : 'dark';
+  try { localStorage.setItem(DVPOINT_THEME_KEY, t); } catch (e) {}
+  dvApplyTheme(t);
+  dvNotifySettingsChange();
+}
+
+function dvToggleTheme() {
+  dvSetTheme(dvGetTheme() === 'light' ? 'dark' : 'light');
+}
+
+// Beberapa halaman (Dashboard, Transfer) sudah punya tombol ikon
+// bulan/matahari di topbar (.icon-btn.dark) yang tadinya statis —
+// dijadikan tombol quick-toggle tema di sini.
+function dvUpdateThemeToggleIcons(theme) {
+  document.querySelectorAll('.icon-btn.dark').forEach((btn) => {
+    btn.setAttribute('title', theme === 'light' ? 'Mode Gelap' : 'Mode Terang');
+    btn.innerHTML = theme === 'light'
+      ? '<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>'
+      : '<svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>';
+  });
+}
+
+function dvBindThemeToggleButtons() {
+  document.querySelectorAll('.icon-btn.dark').forEach((btn) => {
+    if (btn.dataset.dvBound) return;
+    btn.dataset.dvBound = '1';
+    btn.addEventListener('click', dvToggleTheme);
+  });
+}
+
+// ============================================================
+// ---------- Profil Pengguna ----------
+// ============================================================
+function dvGetProfile() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(DVPOINT_PROFILE_KEY) || 'null');
+    return raw && typeof raw === 'object' ? Object.assign({}, DV_PROFILE_DEFAULT, raw) : Object.assign({}, DV_PROFILE_DEFAULT);
+  } catch (e) {
+    return Object.assign({}, DV_PROFILE_DEFAULT);
+  }
+}
+
+function dvSetProfile(updates) {
+  const merged = Object.assign({}, dvGetProfile(), updates);
+  localStorage.setItem(DVPOINT_PROFILE_KEY, JSON.stringify(merged));
+  dvApplyProfileToDOM(merged);
+  dvNotifySettingsChange();
+  return merged;
+}
+
+function dvGetInisial(nama) {
+  if (!nama) return '?';
+  const parts = nama.trim().split(/\s+/);
+  const first = parts[0] ? parts[0][0] : '';
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+  return (first + last).toUpperCase() || '?';
+}
+
+// Menerapkan foto/nama profil ke seluruh elemen `.avatar` + `.user-name`
+// di sidebar (dan header/topbar bila ada) pada halaman yang sedang aktif.
+function dvApplyProfileToDOM(profile) {
+  const p = profile || dvGetProfile();
+  document.querySelectorAll('.avatar').forEach((av) => {
+    if (p.foto) {
+      av.style.background = 'none';
+      av.innerHTML = `<img src="${p.foto}" alt="Foto profil" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+    } else {
+      av.style.background = '';
+      av.textContent = dvGetInisial(p.nama);
+    }
+  });
+  document.querySelectorAll('.user-name').forEach((el) => { el.textContent = p.nama || 'Pengguna'; });
+}
+
+// ============================================================
+// ---------- Preferensi Aplikasi ----------
+// ============================================================
+function dvGetPreferences() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(DVPOINT_PREF_KEY) || 'null');
+    return raw && typeof raw === 'object' ? Object.assign({}, DV_PREF_DEFAULT, raw) : Object.assign({}, DV_PREF_DEFAULT);
+  } catch (e) {
+    return Object.assign({}, DV_PREF_DEFAULT);
+  }
+}
+
+function dvSetPreferences(updates) {
+  const merged = Object.assign({}, dvGetPreferences(), updates);
+  localStorage.setItem(DVPOINT_PREF_KEY, JSON.stringify(merged));
+  dvNotifySettingsChange();
+  return merged;
+}
+
+// ============================================================
+// ---------- Navigasi mobile: hamburger + drawer sidebar ----------
+// ============================================================
+// Sidebar aslinya (dashboard.css) di layar sempit hanya di-hide total
+// tanpa pengganti navigasi apa pun — dibuat otomatis di sini via JS
+// sekali per halaman, supaya semua 15+ halaman langsung dapat tombol
+// hamburger + drawer sidebar tanpa perlu edit markup satu-satu.
+function dvSetupMobileNav() {
+  const sidebar = document.querySelector('.sidebar');
+  if (!sidebar || document.querySelector('.mobile-menu-btn')) return; // sudah ada / tidak ada sidebar di halaman ini
+
+  // Beri tiap nav-item nomor urut (dipakai CSS untuk stagger fade-in saat drawer dibuka)
+  sidebar.querySelectorAll('.nav-item').forEach((item, i) => {
+    item.style.setProperty('--nav-i', i);
+  });
+
+  // Tombol hamburger (fixed, pojok kiri atas) — ikonnya berubah jadi X saat drawer terbuka
+  const btn = document.createElement('button');
+  btn.className = 'mobile-menu-btn';
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'Buka menu navigasi');
+  btn.innerHTML = `
+    <svg class="icon-open" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+    <svg class="icon-close" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>`;
+  document.body.appendChild(btn);
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'sidebar-backdrop';
+  document.body.appendChild(backdrop);
+
+  // Tombol close (X) di dalam drawer, disandingkan dengan logo brand
+  const brand = sidebar.querySelector('.brand');
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'sidebar-mobile-close';
+  closeBtn.type = 'button';
+  closeBtn.setAttribute('aria-label', 'Tutup menu navigasi');
+  closeBtn.innerHTML = '<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>';
+  if (brand) brand.appendChild(closeBtn); else sidebar.prepend(closeBtn);
+
+  function closeSidebar() {
+    sidebar.classList.remove('mobile-open');
+    backdrop.classList.remove('open');
+    btn.classList.remove('active');
+    btn.setAttribute('aria-label', 'Buka menu navigasi');
+  }
+  function openSidebar() {
+    sidebar.classList.add('mobile-open');
+    backdrop.classList.add('open');
+    btn.classList.add('active');
+    btn.setAttribute('aria-label', 'Tutup menu navigasi');
+  }
+
+  btn.addEventListener('click', () => {
+    if (sidebar.classList.contains('mobile-open')) closeSidebar(); else openSidebar();
+  });
+  closeBtn.addEventListener('click', closeSidebar);
+  backdrop.addEventListener('click', closeSidebar);
+
+  // UX standar mobile: tutup drawer otomatis begitu satu menu diklik,
+  // supaya tidak perlu tap dua kali (tap link, lalu tap lagi buat nutup).
+  sidebar.querySelectorAll('.nav-item a').forEach((a) => {
+    a.addEventListener('click', closeSidebar);
+  });
+
+  // Tutup juga dengan tombol Escape di keyboard (aksesibilitas)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebar.classList.contains('mobile-open')) closeSidebar();
+  });
+
+  // Kalau layar dilebarkan balik ke ukuran desktop, pastikan drawer
+  // tidak "nyangkut" dalam kondisi terbuka.
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 860) closeSidebar();
+  });
+}
+
+// ============================================================
+// ---------- Init otomatis di setiap halaman ----------
+// ============================================================
+(function dvSettingsInit() {
+  dvApplyTheme(dvGetTheme());
+
+  function applyAll() {
+    dvApplyProfileToDOM(dvGetProfile());
+    dvBindThemeToggleButtons();
+    dvUpdateThemeToggleIcons(dvGetTheme());
+    dvSetupMobileNav();
+    if (typeof dvApplyLanguage === 'function') dvApplyLanguage();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyAll);
+  } else {
+    applyAll();
+  }
+
+  // Sinkron lintas-tab & lintas-halaman: jika tema/profil/bahasa berubah
+  // di tempat lain, halaman ini ikut memperbarui tanpa perlu refresh.
+  dvOnSettingsChange(() => {
+    dvApplyTheme(dvGetTheme());
+    dvApplyProfileToDOM(dvGetProfile());
+    if (typeof dvApplyLanguage === 'function') dvApplyLanguage();
+  });
+})();

@@ -1,0 +1,451 @@
+/* ============================================================
+   DVpoint — Anggaran / Financial Planning (page-specific styles)
+   Ditulis di atas dashboard.css: memakai variabel & komponen yang sama
+   persis (--blue, --panel, --border, --text-dim, --radius-lg, --ease,
+   .modal-overlay/.modal/.form-group/.btn-ghost bawaan dashboard.css)
+   supaya identitas visualnya sama persis dengan halaman lain.
+
+   Modul ini murni Financial Planning: tidak ada lagi progress bar,
+   persentase, atau warning "melebihi anggaran" — semua dihapus karena
+   anggaran di sini tidak terhubung ke transaksi apa pun.
+   ============================================================ */
+
+:root{
+  --bg-radius-sm: 12px;
+  --bg-shadow: 0 20px 50px rgba(0,0,0,.45);
+}
+
+.bg-summary-grid{ margin-bottom:22px; }
+
+/* ---------- Toolbar: filter status ---------- */
+.bg-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.bg-filters{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.bg-filter-chip{
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--panel-soft);
+  color:var(--text-dim);
+  font-size:13px;
+  font-weight:500;
+  cursor:pointer;
+  transition:background var(--ease), color var(--ease);
+  white-space:nowrap;
+}
+.bg-filter-chip:hover{ background:rgba(255,255,255,.07); color:var(--text); }
+.bg-filter-chip.active{
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+  border-color:transparent;
+  color:#fff;
+  box-shadow:0 6px 16px rgba(79,125,255,.30);
+}
+
+/* ---------- Grid kartu anggaran ---------- */
+.bg-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;
+}
+
+.bg-card{
+  position:relative;
+  overflow:hidden;
+  border-radius:var(--radius-lg);
+  border:1px solid var(--border);
+  background:var(--panel);
+  padding:20px;
+  cursor:pointer;
+  transition:transform var(--ease), border-color var(--ease);
+}
+.bg-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,255,255,.16);
+}
+.bg-card.is-arsip{ opacity:.55; }
+.bg-card.is-arsip:hover{ opacity:.75; }
+
+.bg-card-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom:16px;
+}
+.bg-card-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.bg-card-icon{
+  width:44px;
+  height:44px;
+  border-radius:11px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:color-mix(in srgb, var(--bg-card-color,var(--blue)) 20%, transparent);
+  color:var(--bg-card-color,var(--blue));
+  flex-shrink:0;
+}
+.bg-card-icon svg{ width:22px; height:22px; }
+
+.bg-card-name{
+  font-size:15.5px;
+  font-weight:600;
+  color:var(--text);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.bg-card-kategori{
+  font-size:12px;
+  color:var(--text-dim);
+  margin-top:2px;
+}
+
+.bg-card-menu-btn{
+  width:30px;
+  height:30px;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--text-dimmer);
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  transition:background var(--ease), color var(--ease);
+  flex-shrink:0;
+  position:relative;
+  z-index:1;
+}
+.bg-card-menu-btn:hover{ background:rgba(255,255,255,.07); color:var(--text); }
+
+/* ---------- Detail rows di dalam card ---------- */
+.bg-card-rows{
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+  margin-bottom:16px;
+}
+.bg-card-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.bg-card-row .lbl{ font-size:12px; color:var(--text-dimmer); }
+.bg-card-row .val{ font-size:13.5px; font-weight:600; color:var(--text); text-align:right; }
+.bg-card-row .val.mono{ font-family:'JetBrains Mono',monospace; }
+
+.bg-card-divider{
+  height:1px;
+  background:var(--border-soft);
+  margin:2px 0 14px;
+}
+
+.bg-card-dates{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12.5px;
+  color:var(--text-dim);
+  margin-bottom:16px;
+}
+.bg-card-dates svg{ width:14px; height:14px; flex-shrink:0; color:var(--text-dimmer); }
+
+.bg-card-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.bg-periode-tag{
+  font-size:11px;
+  color:var(--text-dimmer);
+  background:rgba(255,255,255,.05);
+  border-radius:6px;
+  padding:3px 8px;
+}
+
+/* ---------- Status badge ---------- */
+.bg-status-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+}
+.bg-status-badge .dot2{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+.bg-status-badge.status-aktif{ background:rgba(45,217,168,.16); color:var(--teal); }
+.bg-status-badge.status-selesai{ background:rgba(79,125,255,.16); color:var(--blue); }
+.bg-status-badge.status-ditunda{ background:rgba(245,179,66,.16); color:var(--amber); }
+.bg-status-badge.status-dibatalkan{ background:rgba(239,77,143,.16); color:var(--pink); }
+.bg-status-badge.status-arsip{ background:rgba(138,134,168,.16); color:var(--text-dim); }
+
+/* dropdown menu on card */
+.bg-card-menu{
+  position:absolute;
+  top:52px;
+  right:16px;
+  min-width:170px;
+  background:#211f36;
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:var(--bg-shadow);
+  padding:6px;
+  z-index:40;
+  display:none;
+}
+.bg-card-menu.open{ display:block; }
+.bg-card-menu button{
+  width:100%;
+  text-align:left;
+  padding:9px 10px;
+  border-radius:8px;
+  background:transparent;
+  border:none;
+  color:var(--text);
+  font-size:13.5px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-family:inherit;
+}
+.bg-card-menu button:hover{ background:rgba(255,255,255,.07); }
+.bg-card-menu button.danger{ color:var(--pink); }
+.bg-card-menu .bg-menu-sep{ height:1px; background:var(--border-soft); margin:5px 4px; }
+
+/* ---------- Empty state ---------- */
+.bg-empty{
+  grid-column:1/-1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:64px 20px;
+  border:1px dashed var(--border);
+  border-radius:var(--radius-lg);
+  background:var(--panel-soft);
+}
+.bg-empty svg{ color:var(--blue); opacity:0.85; margin-bottom:18px; }
+.bg-empty h4{ font-size:17px; margin:0 0 6px; color:var(--text); }
+.bg-empty p{ font-size:13.5px; color:var(--text-dim); margin:0 0 20px; max-width:340px; }
+
+/* ============================================================
+   MODAL: Tambah / Edit Anggaran
+   ============================================================ */
+.bg-kategori-grid{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.bg-kategori-opt{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--panel-soft);
+  color:var(--text-dim);
+  cursor:pointer;
+  font-size:13px;
+  transition:all .15s ease;
+}
+.bg-kategori-opt svg{ width:15px; height:15px; }
+.bg-kategori-opt:hover{ background:rgba(255,255,255,.07); color:var(--text); }
+.bg-kategori-opt.selected{
+  border-color:var(--blue);
+  color:#fff;
+  background:rgba(79,125,255,.18);
+}
+
+.bg-periode-toggle{
+  display:flex;
+  gap:8px;
+}
+.bg-periode-btn{
+  flex:1;
+  text-align:center;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--panel-soft);
+  color:var(--text-dim);
+  cursor:pointer;
+  font-size:13.5px;
+  font-weight:500;
+  transition:all .15s ease;
+}
+.bg-periode-btn:hover{ background:rgba(255,255,255,.07); color:var(--text); }
+.bg-periode-btn.selected{
+  border-color:transparent;
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+  color:#fff;
+}
+
+#bgModalOverlay .modal{ max-width:560px; max-height:88vh; overflow-y:auto; }
+
+.bg-modal-error{
+  font-size:13px;
+  color:var(--pink);
+  margin-top:-6px;
+  margin-bottom:10px;
+  min-height:0;
+}
+
+/* ============================================================
+   DRAWER: Detail Anggaran
+   ============================================================ */
+.bg-drawer-overlay{
+  position:fixed; inset:0;
+  background:rgba(4,3,13,.72);
+  backdrop-filter:blur(4px);
+  z-index:80;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity var(--ease);
+}
+.bg-drawer-overlay.open{ opacity:1; pointer-events:auto; }
+
+.bg-drawer{
+  position:fixed;
+  top:0; right:0;
+  height:100%;
+  width:420px;
+  max-width:92vw;
+  background:var(--sidebar);
+  border-left:1px solid var(--border);
+  box-shadow:var(--bg-shadow);
+  z-index:81;
+  transform:translateX(100%);
+  transition:transform 260ms cubic-bezier(.4,0,.2,1);
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+}
+.bg-drawer.open{ transform:translateX(0); }
+
+.bg-drawer-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:20px 22px;
+  border-bottom:1px solid var(--border-soft);
+  position:sticky; top:0;
+  background:var(--sidebar);
+  z-index:2;
+}
+.bg-drawer-head h3{ font-size:17px; font-weight:600; margin:0; color:var(--text); }
+.bg-drawer-close{
+  width:32px; height:32px;
+  border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--panel-soft);
+  border:1px solid var(--border);
+  color:var(--text-dim);
+  cursor:pointer;
+}
+.bg-drawer-close:hover{ color:var(--text); background:rgba(255,255,255,.07); }
+
+.bg-drawer-body{ padding:22px; }
+
+.bg-drawer-hero{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:22px;
+}
+.bg-drawer-hero-left{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-width:0;
+}
+.bg-drawer-hero .bg-card-icon{ width:52px; height:52px; }
+.bg-drawer-hero .bg-card-icon svg{ width:26px; height:26px; }
+
+.bg-drawer-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:8px;
+}
+.bg-drawer-stat{
+  border:1px solid var(--border);
+  border-radius:var(--bg-radius-sm);
+  background:var(--panel);
+  padding:12px 14px;
+}
+.bg-drawer-stat.full{ grid-column:1/-1; }
+.bg-drawer-stat .lbl{ font-size:11.5px; color:var(--text-dimmer); margin-bottom:4px; text-transform:uppercase; letter-spacing:.05em; }
+.bg-drawer-stat .val{ font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--text); }
+
+.bg-drawer-section-title{
+  font-size:13px;
+  font-weight:600;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  margin:22px 0 10px;
+}
+
+.bg-drawer-catatan{
+  font-size:13.5px;
+  color:var(--text-dim);
+  line-height:1.55;
+}
+
+.bg-drawer-actions{
+  display:flex;
+  gap:10px;
+  margin-top:24px;
+}
+.bg-drawer-actions button{ flex:1; justify-content:center; }
+
+/* ---------- Toast ---------- */
+.bg-toast{
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#211f36;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:12px 18px;
+  border-radius:12px;
+  font-size:13.5px;
+  box-shadow:var(--bg-shadow);
+  z-index:200;
+  opacity:0;
+  pointer-events:none;
+  transition:all .25s ease;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.bg-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px){
+  .bg-grid{ grid-template-columns:1fr; }
+  .bg-drawer{ width:100%; }
+  .bg-drawer-stats{ grid-template-columns:1fr; }
+}

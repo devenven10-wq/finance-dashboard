@@ -1,0 +1,456 @@
+/* ============================================================
+   DVpoint — Akun & Kartu (page-specific styles)
+   Ditulis di atas dashboard.css: memakai variabel & komponen yang sama
+   persis (--blue, --panel, --border, --text-dim, --radius-lg, --ease,
+   .modal-overlay/.modal/.form-group/.btn-ghost bawaan dashboard.css)
+   supaya identitas visualnya sama persis dengan halaman lain.
+   ============================================================ */
+
+/* Token tambahan yang belum ada di dashboard.css */
+:root{
+  --ak-radius-sm: 12px;
+  --ak-shadow: 0 20px 50px rgba(0,0,0,.45);
+}
+
+/* ---------- Ringkasan cards (pakai .kpi-grid/.kpi-card bawaan) ---------- */
+.ak-summary-grid{ margin-bottom:22px; }
+
+/* ---------- Toolbar: filter ---------- */
+.ak-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.ak-filters{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.ak-filter-chip{
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--panel-soft);
+  color:var(--text-dim);
+  font-size:13px;
+  font-weight:500;
+  cursor:pointer;
+  transition:background var(--ease), color var(--ease);
+  white-space:nowrap;
+}
+.ak-filter-chip:hover{ background:rgba(255,255,255,.07); color:var(--text); }
+.ak-filter-chip.active{
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+  border-color:transparent;
+  color:#fff;
+  box-shadow:0 6px 16px rgba(79,125,255,.30);
+}
+
+/* ---------- Grid kartu akun ---------- */
+.ak-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+  gap:16px;
+}
+
+.ak-card{
+  position:relative;
+  overflow:hidden;
+  border-radius:var(--radius-lg);
+  border:1px solid var(--border);
+  background:var(--panel);
+  padding:20px;
+  cursor:pointer;
+  transition:transform var(--ease), border-color var(--ease);
+}
+.ak-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:.16;
+  pointer-events:none;
+  background:radial-gradient(circle at 100% 0%, var(--ak-card-color,var(--blue)), transparent 60%);
+}
+.ak-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,255,255,.16);
+}
+.ak-card.is-nonaktif{ opacity:0.55; }
+.ak-card.is-nonaktif:hover{ opacity:0.75; }
+
+.ak-card-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom:14px;
+  position:relative;
+}
+.ak-card-icon{
+  width:44px;
+  height:44px;
+  border-radius:11px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:color-mix(in srgb, var(--ak-card-color,var(--blue)) 20%, transparent);
+  color:var(--ak-card-color,var(--blue));
+  flex-shrink:0;
+}
+.ak-card-icon svg{ width:22px; height:22px; }
+
+.ak-card-menu-btn{
+  width:30px;
+  height:30px;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--text-dimmer);
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  transition:background var(--ease), color var(--ease);
+  position:relative;
+  z-index:1;
+}
+.ak-card-menu-btn:hover{ background:rgba(255,255,255,.07); color:var(--text); }
+
+.ak-card-name{
+  font-size:16px;
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:2px;
+}
+.ak-card-jenis{
+  font-size:12.5px;
+  color:var(--text-dim);
+  margin-bottom:10px;
+}
+.ak-card-norek{
+  font-family:'JetBrains Mono', monospace;
+  font-size:12.5px;
+  color:var(--text-dimmer);
+  letter-spacing:0.5px;
+  margin-bottom:16px;
+}
+
+.ak-card-saldo-label{
+  font-size:11.5px;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--text-dimmer);
+  margin-bottom:4px;
+}
+.ak-card-saldo-value{
+  font-family:'JetBrains Mono', monospace;
+  font-size:22px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:14px;
+}
+
+.ak-card-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.ak-status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:500;
+}
+.ak-status-pill.aktif{ background:rgba(45,217,168,.16); color:var(--teal); }
+.ak-status-pill.nonaktif{ background:rgba(138,134,168,.16); color:var(--text-dim); }
+.ak-status-pill .dot2{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+
+/* dropdown menu on card */
+.ak-card-menu{
+  position:absolute;
+  top:52px;
+  right:16px;
+  min-width:170px;
+  background:#211f36;
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:var(--ak-shadow);
+  padding:6px;
+  z-index:40;
+  display:none;
+}
+.ak-card-menu.open{ display:block; }
+.ak-card-menu button{
+  width:100%;
+  text-align:left;
+  padding:9px 10px;
+  border-radius:8px;
+  background:transparent;
+  border:none;
+  color:var(--text);
+  font-size:13.5px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-family:inherit;
+}
+.ak-card-menu button:hover{ background:rgba(255,255,255,.07); }
+.ak-card-menu button.danger{ color:var(--pink); }
+.ak-card-menu button:disabled{ color:var(--text-dimmer); cursor:not-allowed; }
+.ak-card-menu button:disabled:hover{ background:transparent; }
+.ak-card-menu .ak-menu-sep{ height:1px; background:var(--border-soft); margin:5px 4px; }
+
+/* ---------- Empty state ---------- */
+.ak-empty{
+  grid-column:1/-1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:64px 20px;
+  border:1px dashed var(--border);
+  border-radius:var(--radius-lg);
+  background:var(--panel-soft);
+}
+.ak-empty svg{ color:var(--blue); opacity:0.85; margin-bottom:18px; }
+.ak-empty h4{ font-size:17px; margin:0 0 6px; color:var(--text); }
+.ak-empty p{ font-size:13.5px; color:var(--text-dim); margin:0 0 20px; max-width:320px; }
+
+/* ---------- Skeleton loading ---------- */
+.ak-skel{
+  border-radius:var(--radius-lg);
+  border:1px solid var(--border);
+  background:var(--panel);
+  height:206px;
+  position:relative;
+  overflow:hidden;
+}
+.ak-skel::after{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,.06) 50%, transparent 70%);
+  animation:ak-shimmer 1.4s infinite;
+}
+@keyframes ak-shimmer{
+  0%{ transform:translateX(-100%); }
+  100%{ transform:translateX(100%); }
+}
+
+/* ============================================================
+   MODAL: Tambah / Edit Akun — memakai .modal-overlay/.modal/.open
+   bawaan dashboard.css apa adanya. Hanya menambah styling untuk
+   elemen spesifik halaman ini (warna & icon picker).
+   ============================================================ */
+.ak-color-grid{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.ak-color-dot{
+  width:30px; height:30px;
+  border-radius:50%;
+  cursor:pointer;
+  border:2px solid transparent;
+  transition:transform .15s ease, border-color .15s ease;
+  position:relative;
+}
+.ak-color-dot:hover{ transform:scale(1.1); }
+.ak-color-dot.selected{ border-color:#fff; }
+.ak-color-dot.selected::after{
+  content:"✓";
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:13px; font-weight:700;
+}
+
+.ak-icon-grid{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.ak-icon-opt{
+  width:42px; height:42px;
+  border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--border);
+  background:var(--panel-soft);
+  color:var(--text-dim);
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.ak-icon-opt:hover{ background:rgba(255,255,255,.07); color:var(--text); }
+.ak-icon-opt.selected{
+  border-color:var(--blue);
+  color:var(--blue);
+  background:rgba(79,125,255,.14);
+}
+.ak-icon-opt svg{ width:20px; height:20px; }
+
+/* Modal akun ini sedikit lebih lebar dari modal default (440px) karena
+   fieldnya lebih banyak (warna, icon, saldo awal, dst). */
+#akModalOverlay .modal{ max-width:560px; }
+
+.ak-modal-error{
+  font-size:13px;
+  color:var(--pink);
+  margin-top:-6px;
+  margin-bottom:10px;
+  min-height:0;
+}
+
+/* ============================================================
+   DRAWER: Detail Akun
+   ============================================================ */
+.ak-drawer-overlay{
+  position:fixed; inset:0;
+  background:rgba(4,3,13,.72);
+  backdrop-filter:blur(4px);
+  z-index:80;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity var(--ease);
+}
+.ak-drawer-overlay.open{ opacity:1; pointer-events:auto; }
+
+.ak-drawer{
+  position:fixed;
+  top:0; right:0;
+  height:100%;
+  width:420px;
+  max-width:92vw;
+  background:var(--sidebar);
+  border-left:1px solid var(--border);
+  box-shadow:var(--ak-shadow);
+  z-index:81;
+  transform:translateX(100%);
+  transition:transform 260ms cubic-bezier(.4,0,.2,1);
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+}
+.ak-drawer.open{ transform:translateX(0); }
+
+.ak-drawer-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:20px 22px;
+  border-bottom:1px solid var(--border-soft);
+  position:sticky; top:0;
+  background:var(--sidebar);
+  z-index:2;
+}
+.ak-drawer-head h3{ font-size:17px; font-weight:600; margin:0; color:var(--text); }
+.ak-drawer-close{
+  width:32px; height:32px;
+  border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--panel-soft);
+  border:1px solid var(--border);
+  color:var(--text-dim);
+  cursor:pointer;
+}
+.ak-drawer-close:hover{ color:var(--text); background:rgba(255,255,255,.07); }
+
+.ak-drawer-body{ padding:22px; }
+
+.ak-drawer-hero{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:22px;
+}
+.ak-drawer-hero .ak-card-icon{ width:52px; height:52px; }
+.ak-drawer-hero .ak-card-icon svg{ width:26px; height:26px; }
+.ak-drawer-saldo{
+  font-family:'JetBrains Mono',monospace;
+  font-size:28px;
+  font-weight:700;
+  color:var(--text);
+}
+
+.ak-drawer-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:16px;
+}
+.ak-drawer-stat{
+  border:1px solid var(--border);
+  border-radius:var(--ak-radius-sm);
+  background:var(--panel);
+  padding:12px 14px;
+}
+.ak-drawer-stat .lbl{ font-size:11.5px; color:var(--text-dimmer); margin-bottom:4px; text-transform:uppercase; letter-spacing:.05em; }
+.ak-drawer-stat .val{ font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--text); }
+.ak-drawer-stat .val.pos{ color:var(--teal); }
+.ak-drawer-stat .val.neg{ color:var(--pink); }
+
+.ak-drawer-section-title{
+  font-size:13px;
+  font-weight:600;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  margin:22px 0 10px;
+}
+
+.ak-tx-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:11px 0;
+  border-bottom:1px solid var(--border-soft);
+}
+.ak-tx-row:last-child{ border-bottom:none; }
+.ak-tx-left{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.ak-tx-desc{ font-size:13.5px; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ak-tx-date{ font-size:11.5px; color:var(--text-dimmer); }
+.ak-tx-amount{ font-family:'JetBrains Mono',monospace; font-size:13.5px; font-weight:600; white-space:nowrap; }
+.ak-tx-amount.masuk{ color:var(--teal); }
+.ak-tx-amount.keluar{ color:var(--pink); }
+.ak-tx-amount.transfer{ color:var(--purple); }
+
+.ak-drawer-empty{
+  padding:26px 10px;
+  text-align:center;
+  color:var(--text-dimmer);
+  font-size:13px;
+}
+
+/* ---------- Toast ---------- */
+.ak-toast{
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#211f36;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:12px 18px;
+  border-radius:12px;
+  font-size:13.5px;
+  box-shadow:var(--ak-shadow);
+  z-index:200;
+  opacity:0;
+  pointer-events:none;
+  transition:all .25s ease;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.ak-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px){
+  .ak-grid{ grid-template-columns:1fr; }
+  .ak-drawer{ width:100%; }
+}

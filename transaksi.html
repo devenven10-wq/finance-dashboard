@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DVpoint — Semua Transaksi</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="dashboard.css" rel="stylesheet"/>
+<link href="theme.css" rel="stylesheet"/>
+<link href="transaksi.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg fill="none" height="17" viewBox="0 0 56 56" width="17"><path d="M28 3L50 15V41L28 53L6 41V15L28 3Z" stroke="#fff" stroke-width="3.5"></path><path d="M18 29L25 36L38 20" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"></path></svg></div>
+      <span>DVpoint</span>
+    </div>
+
+    <ul class="nav">
+      <li class="nav-item"><a href="dashboard.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg>
+        <span data-i18n="nav.dashboard">Dashboard</span>
+      </a></li>
+    </ul>
+
+    <div class="nav-section-label" data-i18n="nav.section_keuangan">Keuangan</div>
+    <ul class="nav">
+      <li class="nav-item active"><a href="transaksi.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path></svg>
+        <span data-i18n="nav.transaksi">Semua Transaksi</span>
+      </a></li>
+      <li class="nav-item"><a href="pemasukan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6"></path></svg>
+        <span data-i18n="nav.pemasukan">Pemasukan</span>
+      </a></li>
+      <li class="nav-item"><a href="pengeluaran.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20V6M6 12l6-6 6 6"></path></svg>
+        <span data-i18n="nav.pengeluaran">Pengeluaran</span>
+      </a></li>
+      <li class="nav-item"><a href="transfer.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"></path></svg>
+        <span data-i18n="nav.transfer">Transfer</span>
+      </a></li>
+    </ul>
+
+    <div class="nav-section-label" data-i18n="nav.section_lainnya">Lainnya</div>
+    <ul class="nav">
+      <li class="nav-item"><a href="anggaran.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"></path></svg><span data-i18n="nav.anggaran">Anggaran</span></a></li>
+      <li class="nav-item"><a href="tujuan.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 2v2M12 20v2"></path></svg><span data-i18n="nav.tujuan">Tujuan Keuangan</span></a></li>
+      <li class="nav-item"><a href="akun.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="13" rx="2" width="20" x="2" y="6"></rect><path d="M2 10h20"></path></svg><span data-i18n="nav.akun">Akun &amp; Kartu</span></a></li>
+      <li class="nav-item"><a href="investasi.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 17l5-5 3 3 7-7M13 8h5v5"></path></svg><span data-i18n="nav.investasi">Investasi</span></a></li>
+      <li class="nav-item"><a href="laporan.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
+        <span data-i18n="nav.laporan">Laporan</span>
+      </a></li>
+      <li class="nav-item"><a href="pengaturan.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
+        <span data-i18n="nav.pengaturan">Pengaturan</span>
+      </a></li>
+    </ul>
+
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar">DA</div>
+        <div><div class="user-name">Dicky Ade</div><div class="user-plan" data-i18n="nav.premium">⭐ Premium</div></div>
+        <button class="logout-btn" onclick="dvpointLogout()" title="Keluar" data-i18n-title="nav.logout_title">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 data-i18n="tx.page_title">Semua Transaksi</h1>
+        <p data-i18n="tx.page_subtitle">Pusat seluruh riwayat pemasukan, pengeluaran, dan transfer Anda.</p>
+      </div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path></svg></div><span data-i18n="tx.kpi_total">Total Transaksi</span></div>
+        </div>
+        <div class="kpi-value" id="kpiTotalVal">0</div>
+        <div class="kpi-sub" id="kpiTotalSub">Belum ada data</div>
+        <canvas class="kpi-spark" id="sparkTotal"></canvas>
+      </div>
+      <div class="kpi-card kpi-teal">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6"></path></svg></div><span data-i18n="tx.kpi_pemasukan">Total Pemasukan</span></div>
+        </div>
+        <div class="kpi-value" id="kpiMasukVal">Rp0</div>
+        <div class="kpi-sub" id="kpiMasukSub">Belum ada data</div>
+        <canvas class="kpi-spark" id="sparkMasuk"></canvas>
+      </div>
+      <div class="kpi-card kpi-pink">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20V6M6 12l6-6 6 6"></path></svg></div><span data-i18n="tx.kpi_pengeluaran">Total Pengeluaran</span></div>
+        </div>
+        <div class="kpi-value" id="kpiKeluarVal">Rp0</div>
+        <div class="kpi-sub" id="kpiKeluarSub">Belum ada data</div>
+        <canvas class="kpi-spark" id="sparkKeluar"></canvas>
+      </div>
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"></path></svg></div><span data-i18n="tx.kpi_transfer">Total Transfer</span></div>
+        </div>
+        <div class="kpi-value" id="kpiTransferVal">Rp0</div>
+        <div class="kpi-sub" id="kpiTransferSub">Belum ada data</div>
+        <canvas class="kpi-spark" id="sparkTransfer"></canvas>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="tx-toolbar">
+      <div class="tx-search">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4" stroke-linecap="round"></path></svg>
+        <input id="fSearch" placeholder="Cari transaksi, kategori, catatan..." type="text" data-i18n-placeholder="tx.search_placeholder"/>
+      </div>
+      <select class="tx-select" id="fJenis">
+        <option value="" data-i18n="tx.semua_jenis">Semua Jenis</option>
+        <option value="masuk" data-i18n="pm.title">Pemasukan</option>
+        <option value="keluar" data-i18n="pk.title">Pengeluaran</option>
+        <option value="transfer" data-i18n="tx.tipe_transfer">Transfer</option>
+      </select>
+      <select class="tx-select" id="fKategori">
+        <option value="" data-i18n="tx.semua_kategori">Semua Kategori</option>
+      </select>
+      <select class="tx-select" id="fAkun">
+        <option value="" data-i18n="tx.semua_akun">Semua Akun</option>
+      </select>
+      <select class="tx-select" id="fBulan">
+        <option value="" data-i18n="tx.semua_bulan">Semua Bulan</option>
+        <option value="bulan-ini" data-i18n="tx.bulan_ini">Bulan Ini</option>
+        <option value="bulan-lalu" data-i18n="tx.bulan_lalu">Bulan Lalu</option>
+        <option value="3bulan" data-i18n="tx.3bulan_terakhir">3 Bulan Terakhir</option>
+        <option value="6bulan" data-i18n="tx.6bulan_terakhir">6 Bulan Terakhir</option>
+        <option value="1tahun" data-i18n="tx.1tahun_terakhir">1 Tahun Terakhir</option>
+      </select>
+      <div class="pill-dropdown-wrap" id="dateRangeWrap">
+        <div class="tx-select" id="dateRangeBtn" style="display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" style="width:14px;height:14px;flex-shrink:0;"><rect height="16" rx="2" width="18" x="3" y="5"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>
+          <span id="dateRangeLabel" data-i18n="tx.rentang_tanggal">Tanggal</span>
+        </div>
+        <div class="pill-dropdown" id="dateRangeMenu" style="right:auto; left:0;">
+          <div class="pill-custom-range open">
+            <div class="pill-custom-field">
+              <label data-i18n="tx.custom_dari">Dari</label>
+              <input type="date" id="fDariTanggal"/>
+            </div>
+            <div class="pill-custom-field">
+              <label data-i18n="tx.custom_sampai">Sampai</label>
+              <input type="date" id="fSampaiTanggal"/>
+            </div>
+            <button type="button" class="pill-custom-apply" id="dateRangeApply" data-i18n="tx.custom_terapkan">Terapkan</button>
+          </div>
+        </div>
+      </div>
+      <select class="tx-select" id="fSort">
+        <option value="terbaru" data-i18n="tx.terbaru">Terbaru</option>
+        <option value="terlama" data-i18n="tx.terlama">Terlama</option>
+        <option value="tertinggi" data-i18n="tx.nominal_tertinggi">Nominal Tertinggi</option>
+        <option value="terendah" data-i18n="tx.nominal_terendah">Nominal Terendah</option>
+      </select>
+      <button class="tx-reset" id="btnReset">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        <span data-i18n="tx.reset">Reset</span>
+      </button>
+      <button class="btn-primary tx-add-btn" id="btnTambahTx">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+        <span data-i18n="tx.tambah">Tambah Transaksi</span>
+      </button>
+    </div>
+
+    <div class="tx-result-count" id="resultCount"></div>
+
+    <!-- Table -->
+    <div class="panel">
+      <div id="tableEmptyState" class="empty-state" style="display:none;">
+        <div class="empty-illustration">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path><path d="M8 17h3"></path></svg>
+        </div>
+        <h4 data-i18n="tx.empty_title">Belum ada transaksi</h4>
+        <p data-i18n="tx.empty_desc">Mulai catat pemasukan, pengeluaran, atau transfer pertama Anda.</p>
+        <button class="btn-primary" id="btnEmptyAdd">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+          <span data-i18n="tx.tambah">Tambah Transaksi</span>
+        </button>
+      </div>
+      <div id="noResultState" class="empty-state" style="display:none;">
+        <h4 data-i18n="tx.no_result_title">Tidak ada hasil</h4>
+        <p data-i18n="tx.no_result_desc">Coba ubah kata kunci pencarian atau filter yang digunakan.</p>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="txTable" style="display:none;">
+          <thead>
+            <tr>
+              <th></th>
+              <th data-i18n="tx.th_tanggal">Tanggal</th>
+              <th data-i18n="tx.th_jenis">Jenis</th>
+              <th data-i18n="tx.th_kategori">Kategori</th>
+              <th data-i18n="tx.th_deskripsi">Deskripsi</th>
+              <th data-i18n="tx.th_akun">Akun</th>
+              <th data-i18n="tx.th_nominal">Nominal</th>
+              <th data-i18n="tx.th_status">Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="txTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ================= MODAL: Tambah / Edit Transaksi ================= -->
+<div class="modal-overlay" id="txModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="txModalTitle" data-i18n="tx.modal_title_tambah">Tambah Transaksi</h3>
+      <button class="modal-close" id="txModalClose"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
+    </div>
+
+    <div class="segmented" id="txSegmented">
+      <button class="masuk" data-tipe="masuk" type="button">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6"></path></svg>
+        <span data-i18n="pm.title">Pemasukan</span>
+      </button>
+      <button class="keluar" data-tipe="keluar" type="button">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20V6M6 12l6-6 6 6"></path></svg>
+        <span data-i18n="pk.title">Pengeluaran</span>
+      </button>
+      <button class="transfer" data-tipe="transfer" type="button">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"></path></svg>
+        <span data-i18n="tx.tipe_transfer">Transfer</span>
+      </button>
+    </div>
+
+    <form id="txForm">
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="tx.lbl_tanggal">Tanggal</label><input id="txTanggal" required type="date"/></div>
+        <div class="form-group" id="txKategoriWrap"><label data-i18n="tx.lbl_kategori">Kategori</label><select id="txKategori"></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="tx.lbl_nominal">Nominal (Rp)</label><input id="txNominal" inputmode="numeric" placeholder="0" required type="text"/></div>
+        <div class="form-group" id="txAkunWrap"><label id="txAkunLabel" data-i18n="tx.lbl_akun">Akun</label><select id="txAkun"></select></div>
+      </div>
+      <div class="form-group" id="txAkunTujuanWrap" style="display:none;">
+        <label data-i18n="tx.lbl_akun_tujuan">Akun Tujuan</label><select id="txAkunTujuan"></select>
+      </div>
+      <div class="form-group" id="txMetodeWrapAlone">
+        <label data-i18n="tx.lbl_metode">Metode Pembayaran</label><select id="txMetode2"></select>
+      </div>
+      <div class="form-group"><label data-i18n="tx.lbl_catatan">Catatan</label><textarea id="txCatatan" placeholder="Tambahkan catatan (opsional)" data-i18n-placeholder="tx.catatan_placeholder"></textarea></div>
+      <div class="form-error" id="txFormError"></div>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="txModalCancel" type="button" data-i18n="tx.batal">Batal</button>
+        <button class="btn-primary" id="txSubmitBtn" type="submit" data-i18n="tx.simpan">Simpan Transaksi</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= DRAWER: Detail Transaksi ================= -->
+<div class="drawer-overlay" id="txDrawer">
+  <div class="drawer">
+    <div class="drawer-head">
+      <h3 data-i18n="tx.drawer_title">Detail Transaksi</h3>
+      <button class="modal-close" id="drawerClose"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
+    </div>
+    <div id="drawerBanner" class="drawer-type-banner">
+      <div class="tx-icon" id="drawerIcon"></div>
+      <div>
+        <div class="tx-sub" id="drawerTypeLabel">Pemasukan</div>
+        <div class="drawer-amount" id="drawerAmount">Rp0</div>
+      </div>
+    </div>
+    <div class="drawer-fields" id="drawerFields"></div>
+    <div class="drawer-actions">
+      <button class="btn-ghost" id="drawerEditBtn" data-i18n="tx.edit">Edit</button>
+      <button class="btn-primary red" id="drawerDeleteBtn" data-i18n="tx.hapus">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CONFIRM: Hapus Transaksi ================= -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal modal-confirm">
+    <div class="confirm-icon">
+      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"></path></svg>
+    </div>
+    <h3 data-i18n="tx.confirm_hapus_title">Hapus transaksi ini?</h3>
+    <p data-i18n="tx.confirm_desc">Tindakan ini tidak dapat dibatalkan. Data yang sudah dihapus tidak bisa dikembalikan.</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="confirmCancel" data-i18n="tx.batal">Batal</button>
+      <button class="btn-primary red" id="confirmDelete" data-i18n="tx.ya_hapus">Ya, Hapus</button>
+    </div>
+  </div>
+</div>
+
+<div class="dv-generic-toast" id="dvGenericToast">
+  <div class="dv-toast-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg></div>
+  <span class="dv-toast-text" id="dvGenericToastMsg"></span>
+</div>
+
+<script src="storage.js"></script>
+<script src="i18n.js"></script>
+<script src="settings.js"></script>
+<script src="guard.js"></script>
+<script src="transaksi.js"></script>
+</body>
+</html>

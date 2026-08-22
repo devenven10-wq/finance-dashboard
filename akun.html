@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DVpoint — Akun &amp; Kartu</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="dashboard.css" rel="stylesheet"/>
+<link href="theme.css" rel="stylesheet"/>
+<link href="akun.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg fill="none" height="17" viewBox="0 0 56 56" width="17"><path d="M28 3L50 15V41L28 53L6 41V15L28 3Z" stroke="#fff" stroke-width="3.5"></path><path d="M18 29L25 36L38 20" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"></path></svg></div>
+      <span>DVpoint</span>
+    </div>
+
+    <ul class="nav">
+      <li class="nav-item"><a href="dashboard.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg>
+        <span data-i18n="nav.dashboard">Dashboard</span>
+      </a></li>
+    </ul>
+
+    <div class="nav-section-label" data-i18n="nav.section_keuangan">Keuangan</div>
+    <ul class="nav">
+      <li class="nav-item"><a href="transaksi.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path></svg>
+        <span data-i18n="nav.transaksi">Semua Transaksi</span>
+      </a></li>
+      <li class="nav-item"><a href="pemasukan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6"></path></svg>
+        <span data-i18n="nav.pemasukan">Pemasukan</span>
+      </a></li>
+      <li class="nav-item"><a href="pengeluaran.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20V6M6 12l6-6 6 6"></path></svg>
+        <span data-i18n="nav.pengeluaran">Pengeluaran</span>
+      </a></li>
+      <li class="nav-item"><a href="transfer.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"></path></svg>
+        <span data-i18n="nav.transfer">Transfer</span>
+      </a></li>
+    </ul>
+
+    <div class="nav-section-label" data-i18n="nav.section_lainnya">Lainnya</div>
+    <ul class="nav">
+      <li class="nav-item"><a href="anggaran.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"></path></svg>
+        <span data-i18n="nav.anggaran">Anggaran</span>
+      </a></li>
+      <li class="nav-item"><a href="tujuan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 2v2M12 20v2"></path></svg>
+        <span data-i18n="nav.tujuan">Tujuan Keuangan</span>
+      </a></li>
+      <li class="nav-item active"><a href="akun.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="13" rx="2" width="20" x="2" y="6"></rect><path d="M2 10h20"></path></svg>
+        <span data-i18n="nav.akun">Akun &amp; Kartu</span>
+      </a></li>
+      <li class="nav-item"><a href="investasi.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 17l5-5 3 3 7-7M13 8h5v5"></path></svg>
+        <span data-i18n="nav.investasi">Investasi</span>
+      </a></li>
+      <li class="nav-item"><a href="laporan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
+        <span data-i18n="nav.laporan">Laporan</span>
+      </a></li>
+      <li class="nav-item"><a href="pengaturan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
+        <span data-i18n="nav.pengaturan">Pengaturan</span>
+      </a></li>
+    </ul>
+
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar">DA</div>
+        <div><div class="user-name">Dicky Ade</div><div class="user-plan" data-i18n="nav.premium">⭐ Premium</div></div>
+        <button class="logout-btn" onclick="dvpointLogout()" title="Keluar" data-i18n-title="nav.logout_title">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 data-i18n="akun.page_title">Akun &amp; Kartu</h1>
+        <p data-i18n="akun.page_subtitle">Kelola seluruh rekening, e-wallet, kartu, dan uang tunai Anda dalam satu tempat.</p>
+      </div>
+      <button class="btn-primary" id="btnTambahAkun">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+        <span data-i18n="akun.modal_title_tambah">Tambah Akun</span>
+      </button>
+    </div>
+
+    <!-- Ringkasan -->
+    <div class="kpi-grid ak-summary-grid">
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 17l5-5 3 3 7-7M13 8h5v5"></path></svg></div><span data-i18n="akun.kpi_total_asset">Total Asset</span></div>
+        </div>
+        <div class="kpi-value" id="sumTotalAsset">Rp0</div>
+        <div class="kpi-sub" id="sumTotalAssetSub">Belum ada data</div>
+        <canvas class="kpi-spark" id="sparkTotalAsset"></canvas>
+      </div>
+      <div class="kpi-card kpi-teal">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="13" rx="2" width="20" x="2" y="6"></rect><path d="M2 10h20"></path></svg></div><span data-i18n="akun.kpi_total_rekening">Total Rekening</span></div>
+        </div>
+        <div class="kpi-value" id="sumRekening">Rp0</div>
+        <div class="kpi-sub" id="sumRekeningSub">0 akun bank</div>
+      </div>
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 8c0-2.5-2-4-5-4S7 5.5 7 8s2 4 5 4 5 1.5 5 4-2 4-5 4-5-1.5-5-4"></path></svg></div><span data-i18n="akun.kpi_total_ewallet">Total E-Wallet</span></div>
+        </div>
+        <div class="kpi-value" id="sumEwallet">Rp0</div>
+        <div class="kpi-sub" id="sumEwalletSub">0 e-wallet</div>
+      </div>
+      <div class="kpi-card kpi-pink">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="13" rx="2" width="20" x="2" y="6"></rect><path d="M2 10h20"></path></svg></div><span data-i18n="akun.kpi_total_kartu">Total Kartu</span></div>
+        </div>
+        <div class="kpi-value" id="sumKartu">Rp0</div>
+        <div class="kpi-sub" id="sumKartuSub">0 kartu</div>
+      </div>
+    </div>
+
+    <!-- Toolbar filter -->
+    <div class="ak-toolbar">
+      <div class="ak-filters" id="akFilters">
+        <div class="ak-filter-chip active" data-filter="semua" data-i18n="akun.filter_semua">Semua</div>
+        <div class="ak-filter-chip" data-filter="Bank" data-i18n="akun.filter_rekening">Rekening</div>
+        <div class="ak-filter-chip" data-filter="E-Wallet" data-i18n="akun.filter_ewallet">E-Wallet</div>
+        <div class="ak-filter-chip" data-filter="Kartu" data-i18n="akun.filter_kartu">Kartu</div>
+        <div class="ak-filter-chip" data-filter="Cash" data-i18n="akun.filter_cash">Cash</div>
+      </div>
+    </div>
+
+    <!-- Grid akun -->
+    <div class="ak-grid" id="akGrid"></div>
+  </main>
+</div>
+
+<!-- ================= MODAL: Tambah / Edit Akun ================= -->
+<div class="modal-overlay" id="akModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="akModalTitle" data-i18n="akun.modal_title_tambah">Tambah Akun</h3>
+      <button class="modal-close" id="akModalClose"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
+    </div>
+    <form id="formAkun">
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="akun.lbl_nama">Nama Akun</label><input id="akInpNama" placeholder="Contoh: BCA Utama" required type="text" data-i18n-placeholder="akun.nama_placeholder"/></div>
+        <div class="form-group"><label data-i18n="akun.lbl_jenis">Jenis Akun</label>
+          <select id="akInpJenis">
+            <option value="Bank" data-i18n="akun.jenis_bank">Bank</option>
+            <option value="E-Wallet">E-Wallet</option>
+            <option value="Kartu" data-i18n="akun.jenis_kartu_kredit">Kartu Kredit</option>
+            <option value="Cash" data-i18n="akun.jenis_cash">Cash</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="akun.lbl_nama_bank">Nama Bank / E-Wallet</label><input id="akInpBank" list="akBankSuggest" placeholder="Contoh: BCA, DANA, GoPay" type="text"/>
+          <datalist id="akBankSuggest">
+            <option value="Cash"></option><option value="BCA"></option><option value="Mandiri"></option>
+            <option value="BRI"></option><option value="BNI"></option><option value="CIMB Niaga"></option>
+            <option value="SeaBank"></option><option value="Jago"></option><option value="OVO"></option>
+            <option value="DANA"></option><option value="GoPay"></option><option value="ShopeePay"></option>
+            <option value="Kartu Kredit"></option>
+          </datalist>
+        </div>
+        <div class="form-group"><div class="form-label-row"><label data-i18n="akun.lbl_norek">Nomor Rekening</label><span class="opt" data-i18n="akun.opsional">Opsional</span></div><input id="akInpNorek" placeholder="Contoh: 1234567890" type="text" data-i18n-placeholder="akun.norek_placeholder"/></div>
+      </div>
+      <div class="form-group"><label data-i18n="akun.lbl_warna">Warna Card</label>
+        <div class="ak-color-grid" id="akColorGrid"></div>
+      </div>
+      <div class="form-group"><label data-i18n="akun.lbl_icon">Icon</label>
+        <div class="ak-icon-grid" id="akIconGrid"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="akun.lbl_saldo_awal">Saldo Awal</label><input id="akInpSaldo" inputmode="numeric" placeholder="0" type="text"/></div>
+      </div>
+      <div class="form-group"><div class="form-label-row"><label data-i18n="akun.lbl_catatan">Catatan</label><span class="opt" data-i18n="akun.opsional">Opsional</span></div><textarea id="akInpCatatan" placeholder="Contoh: Rekening gaji utama" data-i18n-placeholder="akun.catatan_placeholder"></textarea></div>
+      <div class="ak-modal-error" id="akModalError"></div>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="akModalCancel" type="button" data-i18n="akun.batal">Batal</button>
+        <button class="btn-primary" type="submit" id="akModalSubmit" data-i18n="akun.modal_submit_tambah">Simpan Akun</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= DRAWER: Detail Akun ================= -->
+<div class="ak-drawer-overlay" id="akDrawerOverlay"></div>
+<div class="ak-drawer" id="akDrawer">
+  <div class="ak-drawer-head">
+    <h3 data-i18n="akun.drawer_title">Detail Akun</h3>
+    <button class="ak-drawer-close" id="akDrawerClose"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
+  </div>
+  <div class="ak-drawer-body" id="akDrawerBody"></div>
+</div>
+
+<div class="ak-toast" id="akToast"></div>
+
+<script src="storage.js"></script>
+<script src="i18n.js"></script>
+<script src="settings.js"></script>
+<script src="guard.js"></script>
+<script src="akun.js"></script>
+</body>
+</html>

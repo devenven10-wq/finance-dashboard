@@ -1,0 +1,267 @@
+/* ============================================================
+   DVpoint — Global Theme System (theme.css)
+   ============================================================
+   Dark Mode adalah default (didefinisikan di dashboard.css / halaman
+   masing-masing). File ini HANYA berisi override untuk Light Mode,
+   diaktifkan lewat atribut [data-theme="light"] pada <html>.
+
+   Prinsip Light Theme di sini bukan sekadar invert warna:
+   - Background putih/abu-abu sangat muda, card putih bersih
+   - Border tipis abu-abu (bukan translucent putih seperti di dark mode)
+   - Teks gelap dengan kontras yang nyaman dibaca
+   - Accent ungu/biru tetap dipertahankan sebagai identitas brand
+   - Warna teal/pink sedikit digelapkan khusus di light mode agar teks
+     berwarna (nominal +/-, status) tetap memenuhi kontras yang layak
+     di atas latar putih
+   - Shadow lembut menggantikan glow yang biasa dipakai di dark mode
+   ============================================================ */
+
+html[data-theme="light"]{
+  color-scheme: light;
+}
+
+:root[data-theme="light"]{
+  --bg:#f5f6fb;
+  --panel:#ffffff;
+  --panel-soft:rgba(20,20,40,.03);
+  --sidebar:#ffffff;
+  --border:rgba(20,20,45,.10);
+  --border-soft:rgba(20,20,45,.06);
+  --blue:#3f63e0;
+  --purple:#8b3ff2;
+  --pink:#d6316f;
+  --teal:#0d9e77;
+  --amber:#b5790a;
+  --text:#181528;
+  --text-dim:#63607a;
+  --text-dimmer:#9491ac;
+}
+
+/* ---------- Base ---------- */
+[data-theme="light"] body{
+  background-image:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(139,63,242,.07), transparent 60%),
+    radial-gradient(ellipse 800px 500px at 100% 10%, rgba(63,99,224,.06), transparent 60%);
+}
+[data-theme="light"] ::selection{background:rgba(63,99,224,.18);}
+
+/* ---------- Sidebar ---------- */
+[data-theme="light"] .sidebar{
+  box-shadow:1px 0 0 rgba(20,20,45,.06);
+}
+[data-theme="light"] .nav-item a:hover{background:rgba(63,99,224,.07); color:var(--text);}
+[data-theme="light"] .nav-item.active a{
+  background:linear-gradient(90deg, var(--blue), var(--purple));
+  color:#fff;
+  box-shadow:0 4px 14px rgba(63,99,224,.25);
+}
+[data-theme="light"] .nav-item.active svg{stroke:#fff;}
+[data-theme="light"] .logout-btn:hover{background:rgba(214,49,111,.10); color:var(--pink); border-color:rgba(214,49,111,.22);}
+
+/* ---------- Topbar / search / icon buttons ---------- */
+[data-theme="light"] .search,
+[data-theme="light"] .icon-btn,
+[data-theme="light"] .date-pill,
+[data-theme="light"] .select-pill,
+[data-theme="light"] .see-all,
+[data-theme="light"] .acc-tag{
+  background:#ffffff;
+  box-shadow:0 1px 2px rgba(20,20,45,.04);
+}
+[data-theme="light"] .icon-btn:hover,
+[data-theme="light"] .see-all:hover{background:#f1f1fa;}
+[data-theme="light"] .icon-btn.dark{background:linear-gradient(135deg,var(--blue),var(--purple)); box-shadow:0 4px 14px rgba(63,99,224,.25);}
+[data-theme="light"] .kbd{background:#f6f6fc;}
+
+/* ---------- Cards / panels ---------- */
+[data-theme="light"] .kpi-card,
+[data-theme="light"] .panel,
+[data-theme="light"] .stat-card{
+  box-shadow:0 2px 10px rgba(20,20,45,.05);
+}
+[data-theme="light"] .kpi-card:hover{
+  border-color:rgba(20,20,45,.16);
+  box-shadow:0 10px 24px rgba(20,20,45,.08);
+}
+[data-theme="light"] .kpi-card::before{opacity:.08;}
+
+/* ---------- Tables ---------- */
+[data-theme="light"] tbody tr:hover{background:rgba(20,20,45,.025);}
+
+/* ---------- Buttons & inputs ---------- */
+[data-theme="light"] .btn-ghost{color:var(--text-dim); border-color:var(--border);}
+[data-theme="light"] .btn-ghost:hover{background:rgba(20,20,45,.045); color:var(--text);}
+[data-theme="light"] .btn-primary{box-shadow:0 4px 14px rgba(63,99,224,.22);}
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group select,
+[data-theme="light"] .form-group textarea{
+  background:#fafafe;
+}
+[data-theme="light"] .form-group input:focus,
+[data-theme="light"] .form-group select:focus,
+[data-theme="light"] .form-group textarea:focus{
+  box-shadow:0 0 0 3px rgba(63,99,224,.12);
+}
+
+/* ---------- Modal ---------- */
+[data-theme="light"] .modal-overlay{background:rgba(30,28,48,.35);}
+[data-theme="light"] .modal{
+  background:#ffffff;
+  box-shadow:0 24px 60px rgba(20,20,45,.16);
+}
+[data-theme="light"] .modal-close:hover{background:rgba(20,20,45,.05);}
+
+/* ---------- Empty states / bars / misc translucent fills ---------- */
+[data-theme="light"] .bar-track{background:rgba(20,20,45,.08);}
+
+/* ---------- Generic catch-all for the very common translucent-white
+   fills used throughout the app's per-page CSS (rgba(255,255,255,.02–.09))
+   which cannot be targeted individually here without touching every file.
+   Scoping to common structural classes keeps this safe & non-invasive. ---------- */
+[data-theme="light"] .ak-filter-chip,
+[data-theme="light"] .bg-filter-chip,
+[data-theme="light"] .lap-chip,
+[data-theme="light"] .lap-btn:not(.lap-btn-primary),
+[data-theme="light"] .lap-field input,
+[data-theme="light"] .lap-field select{
+  background:#ffffff;
+}
+[data-theme="light"] .ak-filter-chip.active,
+[data-theme="light"] .bg-filter-chip.active,
+[data-theme="light"] .lap-chip.active{
+  background:linear-gradient(90deg, var(--blue), var(--purple));
+  color:#fff;
+}
+[data-theme="light"] .lap-filter-panel,
+[data-theme="light"] .lap-toast{
+  background:#ffffff;
+  box-shadow:0 8px 24px rgba(20,20,45,.10);
+}
+[data-theme="light"] .lap-insight-card{background:#fafafe;}
+[data-theme="light"] .lap-empty-global{box-shadow:0 2px 10px rgba(20,20,45,.05);}
+
+/* ============================================================
+   Fix: tujuan.css mendefinisikan token warnanya SENDIRI (--tj-text,
+   --tj-glass, --tj-border, dst) yang terpisah dari variabel dasar di
+   atas — sehingga tidak ikut berubah saat Light Mode aktif, dan
+   menyebabkan teks nyaris putih tampil di atas card yang juga jadi
+   putih pucat (tidak terbaca). Mapping ulang di sini menyamakan token
+   tersebut dengan variabel tema aktif, tanpa perlu menyentuh tujuan.css.
+   ============================================================ */
+:root[data-theme="light"]{
+  --tj-glass:#ffffff;
+  --tj-glass-hover:#f4f5fb;
+  --tj-border:var(--border);
+  --tj-border-soft:var(--border-soft);
+  --tj-text:var(--text);
+  --tj-text-dim:var(--text-dim);
+  --tj-text-faint:var(--text-dimmer);
+  --tj-blue:var(--blue);
+  --tj-teal:var(--teal);
+  --tj-pink:var(--pink);
+  --tj-purple:var(--purple);
+  --tj-amber:var(--amber);
+  --ak-shadow:0 16px 40px rgba(20,20,45,.14);
+  --bg-shadow:0 16px 40px rgba(20,20,45,.14);
+}
+
+/* ---------- Tujuan: sisa hardcoded literal yang tidak lewat variabel ---------- */
+[data-theme="light"] .tj-card{
+  background:#ffffff;
+  box-shadow:0 2px 10px rgba(20,20,45,.05);
+}
+[data-theme="light"] .tj-card:hover{
+  box-shadow:0 10px 24px rgba(20,20,45,.09);
+}
+[data-theme="light"] .tj-menu-btn:hover{background:rgba(20,20,45,.06);}
+[data-theme="light"] .tj-btn-progress{background:#fafafe;}
+[data-theme="light"] .tj-btn-progress:hover{background:#f1f1fa; border-color:rgba(20,20,45,.16);}
+[data-theme="light"] .tj-dropdown{background:#ffffff; box-shadow:0 20px 40px -12px rgba(20,20,45,.18);}
+[data-theme="light"] .tj-dropdown button:hover{background:rgba(20,20,45,.055);}
+[data-theme="light"] .icon-opt{background:rgba(20,20,45,.04);}
+[data-theme="light"] .icon-opt:hover{border-color:rgba(20,20,45,.2);}
+[data-theme="light"] .color-swatch.selected{border-color:#181528; box-shadow:0 0 0 2px rgba(20,20,45,.15);}
+/* Drawer & confirm dialog milik Tujuan yang hardcode navy gelap (bukan
+   lewat var(--sidebar) seperti drawer Akun/Anggaran) */
+[data-theme="light"] .drawer,
+[data-theme="light"] .drawer-head{background:#ffffff;}
+[data-theme="light"] .confirm-box{background:#ffffff; box-shadow:0 24px 60px rgba(20,20,45,.16);}
+/* Toast dibiarkan gelap sengaja (kontras tinggi ala snackbar) di kedua
+   tema — hanya paksa teksnya tetap terang supaya tidak jadi gelap-di-atas-gelap */
+[data-theme="light"] .dv-toast{color:#f1eefb;}
+[data-theme="light"] .dv-toast svg{color:var(--tj-teal, #0d9e77);}
+
+/* ---------- Akun & Kartu: dropdown menu + toast hardcode navy gelap ---------- */
+[data-theme="light"] .ak-card-menu{background:#ffffff; box-shadow:0 20px 40px -12px rgba(20,20,45,.18);}
+[data-theme="light"] .ak-toast{color:#f1eefb;}
+
+/* ---------- Dashboard: dropdown filter periode (date-pill "Hari Ini" &
+   select-pill "Bulan Ini") hardcode navy gelap + input tanggal custom range,
+   bug yang sama dengan dropdown Akun/Anggaran/Tujuan di atas. ---------- */
+[data-theme="light"] .pill-dropdown{
+  background:#ffffff;
+  box-shadow:0 20px 40px -12px rgba(20,20,45,.18);
+}
+[data-theme="light"] .pill-dropdown button:hover{ background:rgba(20,20,45,.06); }
+[data-theme="light"] .pill-dropdown button.active{ background:rgba(63,99,224,.10); }
+[data-theme="light"] .pill-custom-field input[type="date"]{
+  background:#fafafe;
+  color-scheme:light;
+}
+
+/* ---------- Anggaran: dropdown menu + toast hardcode navy gelap ---------- */
+[data-theme="light"] .bg-card-menu{background:#ffffff; box-shadow:0 20px 40px -12px rgba(20,20,45,.18);}
+[data-theme="light"] .bg-toast{color:#f1eefb;}
+
+/* ---------- Investasi: drawer, confirm dialog, toast hardcode gelap ---------- */
+[data-theme="light"] .iv-drawer{background:#ffffff; box-shadow:-20px 0 50px rgba(20,20,45,.10);}
+[data-theme="light"] .iv-confirm-box{background:#ffffff; box-shadow:0 24px 60px rgba(20,20,45,.16);}
+[data-theme="light"] .iv-toast{color:#f1eefb;}
+[data-theme="light"] .iv-card:hover{box-shadow:0 14px 34px rgba(20,20,45,.10);}
+[data-theme="light"] .iv-card-perf{background:rgba(20,20,45,.035);}
+[data-theme="light"] .iv-drawer-perf-card{background:#fafafe;}
+[data-theme="light"] .iv-drawer-meta{background:#fafafe;}
+[data-theme="light"] .iv-drawer-note p{background:#fafafe;}
+[data-theme="light"] .iv-btn-update{background:#fafafe;}
+
+/* ---------- Transfer: kotak preview translucent-putih ---------- */
+[data-theme="light"] .transfer-preview{background:#fafafe;}
+
+/* ============================================================
+   Semua Transaksi (transaksi.css / transaksi.js): dropdown menu aksi
+   ("...") hardcode navy gelap + teks ikut var(--text) → gelap-di-atas-
+   gelap saat Light Mode, kelompok bug yang sama dengan menu Akun/
+   Anggaran. Toolbar filter (search & select) juga masih translucent-
+   putih bawaan dark mode — disamakan jadi putih bersih.
+   ============================================================ */
+[data-theme="light"] .action-menu-list{background:#ffffff; box-shadow:0 16px 40px rgba(20,20,45,.14);}
+[data-theme="light"] .action-menu-btn:hover{background:rgba(20,20,45,.06);}
+[data-theme="light"] .action-menu-item:hover{background:rgba(20,20,45,.05);}
+[data-theme="light"] .tx-toolbar{background:var(--panel);}
+[data-theme="light"] .tx-search{background:#fafafe;}
+[data-theme="light"] .tx-select{
+  background-color:#fafafe;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2363607a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+  background-size:13px;
+}
+[data-theme="light"] .segmented{background:rgba(20,20,45,.035);}
+[data-theme="light"] .skeleton{background:linear-gradient(90deg, rgba(20,20,45,.04) 25%, rgba(20,20,45,.08) 37%, rgba(20,20,45,.04) 63%);}
+
+/* ---------- Investasi: filter chip translucent-putih ---------- */
+[data-theme="light"] .iv-filter-chip{background:#ffffff;}
+
+/* ---------- Smooth global transition when switching themes ---------- */
+body, .sidebar, .panel, .kpi-card, .stat-card, .modal, .search, .icon-btn,
+.btn-primary, .btn-ghost, .form-group input, .form-group select, .form-group textarea,
+.nav-item a, table, td, th{
+  transition:background var(--ease), background-color var(--ease), border-color var(--ease), color var(--ease), box-shadow var(--ease);
+}
+
+/* ---------- Print always uses light regardless of active theme ---------- */
+@media print{
+  :root{
+    --bg:#ffffff; --panel:#ffffff; --border:#ddd; --text:#111; --text-dim:#333; --text-dimmer:#555;
+  }
+}

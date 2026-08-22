@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DVpoint — Investasi</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="dashboard.css" rel="stylesheet"/>
+<link href="theme.css" rel="stylesheet"/>
+<link href="investasi.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg fill="none" height="17" viewBox="0 0 56 56" width="17"><path d="M28 3L50 15V41L28 53L6 41V15L28 3Z" stroke="#fff" stroke-width="3.5"></path><path d="M18 29L25 36L38 20" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"></path></svg></div>
+      <span>DVpoint</span>
+    </div>
+
+    <ul class="nav">
+      <li class="nav-item"><a href="dashboard.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg>
+        <span data-i18n="nav.dashboard">Dashboard</span>
+      </a></li>
+    </ul>
+
+    <div class="nav-section-label" data-i18n="nav.section_keuangan">Keuangan</div>
+    <ul class="nav">
+      <li class="nav-item"><a href="transaksi.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path></svg>
+        <span data-i18n="nav.transaksi">Semua Transaksi</span>
+      </a></li>
+      <li class="nav-item"><a href="pemasukan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6"></path></svg>
+        <span data-i18n="nav.pemasukan">Pemasukan</span>
+      </a></li>
+      <li class="nav-item"><a href="pengeluaran.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20V6M6 12l6-6 6 6"></path></svg>
+        <span data-i18n="nav.pengeluaran">Pengeluaran</span>
+      </a></li>
+      <li class="nav-item"><a href="transfer.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"></path></svg>
+        <span data-i18n="nav.transfer">Transfer</span>
+      </a></li>
+    </ul>
+
+    <div class="nav-section-label" data-i18n="nav.section_lainnya">Lainnya</div>
+    <ul class="nav">
+      <li class="nav-item"><a href="anggaran.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"></path></svg>
+        <span data-i18n="nav.anggaran">Anggaran</span>
+      </a></li>
+      <li class="nav-item"><a href="tujuan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 2v2M12 20v2"></path></svg>
+        <span data-i18n="nav.tujuan">Tujuan Keuangan</span>
+      </a></li>
+      <li class="nav-item"><a href="akun.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="13" rx="2" width="20" x="2" y="6"></rect><path d="M2 10h20"></path></svg>
+        <span data-i18n="nav.akun">Akun &amp; Kartu</span>
+      </a></li>
+      <li class="nav-item active"><a href="investasi.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 17l5-5 3 3 7-7M13 8h5v5"></path></svg>
+        <span data-i18n="nav.investasi">Investasi</span>
+      </a></li>
+      <li class="nav-item"><a href="laporan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
+        <span data-i18n="nav.laporan">Laporan</span>
+      </a></li>
+      <li class="nav-item"><a href="pengaturan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
+        <span data-i18n="nav.pengaturan">Pengaturan</span>
+      </a></li>
+    </ul>
+
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar">DA</div>
+        <div><div class="user-name">Dicky Ade</div><div class="user-plan" data-i18n="nav.premium">⭐ Premium</div></div>
+        <button class="logout-btn" onclick="dvpointLogout()" title="Keluar" data-i18n-title="nav.logout_title">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 data-i18n="iv.page_title">Investasi</h1>
+        <p data-i18n="iv.page_subtitle">Kelola seluruh portofolio investasi Anda dalam satu tempat.</p>
+      </div>
+      <button class="btn-primary" id="btnTambahInvestasi">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+        <span data-i18n="iv.modal_title_tambah">Tambah Investasi</span>
+      </button>
+    </div>
+
+    <!-- Ringkasan (murni data modul Investasi — tidak terhubung ke modul lain) -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path></svg></div><span data-i18n="iv.kpi_total">Total Investasi</span></div>
+        </div>
+        <div class="kpi-value" id="sumTotalInvestasi">Rp0</div>
+        <div class="kpi-sub" id="sumTotalInvestasiSub">Belum ada data</div>
+      </div>
+      <div class="kpi-card kpi-teal">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 17l5-5 3 3 7-7M13 8h5v5"></path></svg></div><span data-i18n="iv.kpi_nilai_portofolio">Total Nilai Portofolio</span></div>
+        </div>
+        <div class="kpi-value" id="sumNilaiPortofolio">Rp0</div>
+        <div class="kpi-sub" id="sumNilaiPortofolioSub">Belum ada data</div>
+      </div>
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="13" rx="2" width="20" x="2" y="6"></rect><path d="M2 10h20"></path></svg></div><span data-i18n="iv.kpi_jumlah_aset">Jumlah Aset</span></div>
+        </div>
+        <div class="kpi-value" id="sumJumlahAset">0</div>
+        <div class="kpi-sub" id="sumJumlahAsetSub">Belum ada aset</div>
+      </div>
+      <div class="kpi-card kpi-pink">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg></div><span data-i18n="iv.kpi_investasi_aktif">Investasi Aktif</span></div>
+        </div>
+        <div class="kpi-value" id="sumInvestasiAktif">0</div>
+        <div class="kpi-sub" id="sumInvestasiAktifSub">Belum ada investasi aktif</div>
+      </div>
+    </div>
+
+    <!-- Toolbar filter jenis -->
+    <div class="iv-toolbar">
+      <div class="iv-filters" id="ivFilters">
+        <div class="iv-filter-chip active" data-filter="semua" data-i18n="iv.filter_semua">Semua</div>
+        <div class="iv-filter-chip" data-filter="Saham" data-i18n="iv.filter_saham">Saham</div>
+        <div class="iv-filter-chip" data-filter="Reksa Dana" data-i18n="iv.filter_reksa_dana">Reksa Dana</div>
+        <div class="iv-filter-chip" data-filter="Obligasi" data-i18n="iv.filter_obligasi">Obligasi</div>
+        <div class="iv-filter-chip" data-filter="Crypto" data-i18n="iv.filter_crypto">Crypto</div>
+        <div class="iv-filter-chip" data-filter="Emas" data-i18n="iv.filter_emas">Emas</div>
+        <div class="iv-filter-chip" data-filter="Properti" data-i18n="iv.filter_properti">Properti</div>
+        <div class="iv-filter-chip" data-filter="Deposito" data-i18n="iv.filter_deposito">Deposito</div>
+        <div class="iv-filter-chip" data-filter="arsip" data-i18n="iv.filter_arsip">Diarsipkan</div>
+      </div>
+    </div>
+
+    <!-- Grid investasi -->
+    <div class="iv-grid" id="ivGrid"></div>
+  </main>
+</div>
+
+<!-- ================= MODAL: Tambah / Edit Investasi ================= -->
+<div class="modal-overlay" id="ivModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="ivModalTitle" data-i18n="iv.modal_title_tambah">Tambah Investasi</h3>
+      <button class="modal-close" id="ivModalClose"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
+    </div>
+    <form id="formInvestasi">
+      <div class="form-group"><label data-i18n="iv.lbl_nama">Nama Investasi</label><input id="ivInpNama" placeholder="Contoh: Saham BBCA" required type="text" data-i18n-placeholder="iv.nama_placeholder"/></div>
+      <div class="form-group"><label data-i18n="iv.lbl_jenis">Jenis Investasi</label>
+        <div class="iv-jenis-grid" id="ivJenisGrid"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="iv.lbl_modal_awal">Modal Awal (Rp)</label><input id="ivInpModal" inputmode="numeric" placeholder="0" required type="text"/></div>
+        <div class="form-group"><label data-i18n="iv.lbl_nilai_saat_ini">Nilai Saat Ini (Rp)</label><input id="ivInpNilai" inputmode="numeric" placeholder="Samakan dgn modal awal jika kosong" type="text" data-i18n-placeholder="iv.nilai_placeholder"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="iv.lbl_tanggal">Tanggal Investasi</label><input id="ivInpTanggal" required type="date"/></div>
+        <div class="form-group"><div class="form-label-row"><label data-i18n="iv.lbl_platform">Platform / Broker</label><span class="opt" data-i18n="iv.opsional">Opsional</span></div><input id="ivInpPlatform" placeholder="Contoh: Ajaib, Bibit, Pintu" type="text" data-i18n-placeholder="iv.platform_placeholder"/></div>
+      </div>
+      <div class="form-group"><label data-i18n="iv.lbl_status">Status</label>
+        <select id="ivInpStatus">
+          <option value="Aktif" data-i18n="iv.status_aktif">Aktif</option>
+          <option value="Dijual" data-i18n="iv.status_dijual">Dijual</option>
+          <option value="Ditutup" data-i18n="iv.status_ditutup">Ditutup</option>
+          <option value="Arsip" data-i18n="iv.status_arsip">Arsip</option>
+        </select>
+      </div>
+      <div class="form-group"><div class="form-label-row"><label data-i18n="iv.lbl_catatan">Catatan</label><span class="opt" data-i18n="iv.opsional">Opsional</span></div><textarea id="ivInpCatatan" placeholder="Contoh: Investasi jangka panjang untuk dana pensiun" data-i18n-placeholder="iv.catatan_placeholder"></textarea></div>
+      <div class="iv-modal-error" id="ivModalError"></div>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="ivModalCancel" type="button" data-i18n="iv.batal">Batal</button>
+        <button class="btn-primary" type="submit" id="ivModalSubmit" data-i18n="iv.simpan">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: Update Nilai Investasi ================= -->
+<div class="modal-overlay" id="ivNilaiModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 data-i18n="iv.modal_update_title">Update Nilai Investasi</h3>
+      <button class="modal-close" id="ivNilaiModalClose"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
+    </div>
+    <div class="progress-target-hint" id="ivNilaiHint" style="font-size:12.5px; color:var(--text-dim); margin-bottom:16px;"></div>
+    <form id="formUpdateNilai">
+      <div class="form-group"><label data-i18n="iv.lbl_nilai_terbaru">Nilai Terbaru (Rp)</label><input id="ivInpNilaiBaru" inputmode="numeric" placeholder="0" required type="text"/></div>
+      <div class="form-group"><label data-i18n="iv.lbl_tanggal_update">Tanggal Update</label><input id="ivInpTanggalUpdate" required type="date"/></div>
+      <div class="form-group"><div class="form-label-row"><label data-i18n="iv.lbl_catatan">Catatan</label><span class="opt" data-i18n="iv.opsional">Opsional</span></div><textarea id="ivInpCatatanUpdate" placeholder="Contoh: Naik karena harga pasar sedang tinggi" data-i18n-placeholder="iv.catatan_update_placeholder"></textarea></div>
+      <div class="iv-modal-error" id="ivNilaiModalError"></div>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="ivNilaiModalCancel" type="button" data-i18n="iv.batal">Batal</button>
+        <button class="btn-primary" type="submit" data-i18n="iv.simpan_nilai">Simpan Nilai</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= DRAWER: Detail Investasi ================= -->
+<div class="iv-drawer-overlay" id="ivDrawerOverlay"></div>
+<div class="iv-drawer" id="ivDrawer">
+  <div class="iv-drawer-head">
+    <div class="iv-drawer-id">
+      <div class="iv-drawer-icon" id="ivDrawerIcon"></div>
+      <div style="min-width:0;">
+        <h3 id="ivDrawerNama">—</h3>
+        <div class="sub" id="ivDrawerJenis">—</div>
+      </div>
+    </div>
+    <button class="iv-drawer-close" id="ivDrawerClose"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
+  </div>
+
+  <div class="iv-drawer-perf-card">
+    <div class="iv-drawer-perf-top">
+      <div class="lbl" data-i18n="iv.persentase_perubahan">Persentase Perubahan</div>
+      <div class="iv-drawer-perf-pct" id="ivDrawerPct">0%</div>
+    </div>
+    <div class="iv-drawer-numbers">
+      <div><span data-i18n="iv.drawer_modal_awal">Modal Awal</span><strong id="ivDrawerModal">Rp0</strong></div>
+      <div><span data-i18n="iv.drawer_nilai_saat_ini">Nilai Saat Ini</span><strong id="ivDrawerNilai">Rp0</strong></div>
+      <div><span data-i18n="iv.drawer_selisih">Selisih Nilai</span><strong id="ivDrawerSelisih">Rp0</strong></div>
+      <div><span data-i18n="iv.drawer_status">Status</span><strong id="ivDrawerStatus">—</strong></div>
+    </div>
+  </div>
+
+  <div class="iv-drawer-meta">
+    <div><span data-i18n="iv.drawer_tanggal">Tanggal Investasi</span><strong id="ivDrawerTanggal">—</strong></div>
+    <div><span data-i18n="iv.drawer_platform">Platform / Broker</span><strong id="ivDrawerPlatform">—</strong></div>
+  </div>
+
+  <div class="iv-drawer-note" id="ivDrawerNoteWrap" style="display:none;">
+    <h4 data-i18n="iv.drawer_catatan_title">Catatan</h4>
+    <p id="ivDrawerCatatan"></p>
+  </div>
+
+  <div class="iv-drawer-actions">
+    <button class="btn-primary" id="ivDrawerBtnUpdate">
+      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+      <span data-i18n="iv.update_nilai">Update Nilai</span>
+    </button>
+    <button class="btn-ghost" id="ivDrawerBtnEdit" data-i18n="iv.edit">Edit</button>
+    <button class="btn-ghost" id="ivDrawerBtnArsip" data-i18n="iv.arsipkan">Arsipkan</button>
+    <button class="btn-ghost danger" id="ivDrawerBtnHapus" data-i18n="iv.hapus">Hapus</button>
+  </div>
+
+  <div class="iv-drawer-history">
+    <h4 data-i18n="iv.riwayat_title">Riwayat Update Nilai</h4>
+    <div id="ivDrawerHistoryList"></div>
+  </div>
+</div>
+
+<!-- Confirm dialog (hapus / arsip) -->
+<div class="iv-confirm-overlay" id="ivConfirmOverlay">
+  <div class="iv-confirm-box">
+    <h4 id="ivConfirmTitle" data-i18n="iv.confirm_title">Konfirmasi</h4>
+    <p id="ivConfirmText" data-i18n="iv.confirm_default_text">Apakah Anda yakin?</p>
+    <div class="iv-confirm-actions">
+      <button class="btn-ghost" id="ivConfirmCancel" data-i18n="iv.batal2">Batal</button>
+      <button class="btn-primary" id="ivConfirmOk" data-i18n="iv.ya_lanjutkan">Ya, Lanjutkan</button>
+    </div>
+  </div>
+</div>
+
+<div class="iv-toast" id="ivToast"></div>
+
+<script src="storage.js"></script>
+<script src="i18n.js"></script>
+<script src="settings.js"></script>
+<script src="guard.js"></script>
+<script src="investasi.js"></script>
+</body>
+</html>

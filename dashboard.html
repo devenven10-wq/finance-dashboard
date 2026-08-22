@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DVpoint — Dashboard</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="dashboard.css" rel="stylesheet"/>
+<link href="theme.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg fill="none" height="17" viewBox="0 0 56 56" width="17"><path d="M28 3L50 15V41L28 53L6 41V15L28 3Z" stroke="#fff" stroke-width="3.5"></path><path d="M18 29L25 36L38 20" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"></path></svg>
+      </div>
+      <span>DVpoint</span>
+    </div>
+
+    <ul class="nav">
+      <li class="nav-item active"><a href="dashboard.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg>
+        <span data-i18n="nav.dashboard">Dashboard</span>
+      </a></li>
+    </ul>
+
+    <div class="nav-section-label" data-i18n="nav.section_keuangan">Keuangan</div>
+    <ul class="nav">
+      <li class="nav-item"><a href="transaksi.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path></svg>
+        <span data-i18n="nav.transaksi">Semua Transaksi</span>
+      </a></li>
+      <li class="nav-item"><a href="pemasukan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6"></path></svg>
+        <span data-i18n="nav.pemasukan">Pemasukan</span>
+      </a></li>
+      <li class="nav-item"><a href="pengeluaran.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20V6M6 12l6-6 6 6"></path></svg>
+        <span data-i18n="nav.pengeluaran">Pengeluaran</span>
+      </a></li>
+      <li class="nav-item"><a href="transfer.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"></path></svg>
+        <span data-i18n="nav.transfer">Transfer</span>
+      </a></li>
+    </ul>
+
+    <div class="nav-section-label" data-i18n="nav.section_lainnya">Lainnya</div>
+    <ul class="nav">
+      <li class="nav-item"><a href="anggaran.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"></path></svg>
+        <span data-i18n="nav.anggaran">Anggaran</span>
+      </a></li>
+      <li class="nav-item"><a href="tujuan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 2v2M12 20v2"></path></svg>
+        <span data-i18n="nav.tujuan">Tujuan Keuangan</span>
+      </a></li>
+      <li class="nav-item"><a href="akun.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="13" rx="2" width="20" x="2" y="6"></rect><path d="M2 10h20"></path></svg>
+        <span data-i18n="nav.akun">Akun &amp; Kartu</span>
+      </a></li>
+      <li class="nav-item"><a href="investasi.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 17l5-5 3 3 7-7M13 8h5v5"></path></svg>
+        <span data-i18n="nav.investasi">Investasi</span>
+      </a></li>
+      <li class="nav-item"><a href="laporan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
+        <span data-i18n="nav.laporan">Laporan</span>
+      </a></li>
+      <li class="nav-item"><a href="pengaturan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
+        <span data-i18n="nav.pengaturan">Pengaturan</span>
+      </a></li>
+    </ul>
+
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar">DA</div>
+        <div>
+          <div class="user-name">Dicky Ade</div>
+          <div class="user-plan" data-i18n="nav.premium">⭐ Premium</div>
+        </div>
+        <button class="logout-btn" onclick="dvpointLogout()" title="Keluar" data-i18n-title="nav.logout_title">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 data-i18n="dash.title">Dashboard</h1>
+        <p><span data-i18n="dash.welcome_prefix">Selamat datang kembali,</span> Dicky Ade 👋</p>
+      </div>
+      <div class="pill-dropdown-wrap" id="dateFilterWrap">
+        <div class="date-pill" id="dateFilterBtn">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="18" x="3" y="5"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>
+          <span id="dateFilterLabel" data-i18n="dash.period.today">Hari Ini</span>
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg>
+        </div>
+        <div class="pill-dropdown" id="dateFilterMenu">
+          <button data-period="today" class="active" type="button" data-i18n="dash.period.today">Hari Ini</button>
+          <button data-period="7d" type="button" data-i18n="dash.period.7d">7 Hari Terakhir</button>
+          <button data-period="30d" type="button" data-i18n="dash.period.30d">30 Hari Terakhir</button>
+          <button data-period="month" type="button" data-i18n="dash.period.month">Bulan Ini</button>
+          <button data-period="year" type="button" data-i18n="dash.period.year">Tahun Ini</button>
+          <button data-period="all" type="button" data-i18n="dash.period.all">Semua Waktu</button>
+          <div class="pill-dropdown-sep"></div>
+          <button data-period="custom" type="button" id="customRangeToggle" data-i18n="dash.period.custom">Rentang Kustom…</button>
+          <div class="pill-custom-range" id="customRangeBox">
+            <div class="pill-custom-field">
+              <label for="customRangeFrom" data-i18n="dash.custom_dari">Dari</label>
+              <input type="date" id="customRangeFrom"/>
+            </div>
+            <div class="pill-custom-field">
+              <label for="customRangeTo" data-i18n="dash.custom_sampai">Sampai</label>
+              <input type="date" id="customRangeTo"/>
+            </div>
+            <button type="button" class="pill-custom-apply" id="customRangeApply" data-i18n="dash.custom_terapkan">Terapkan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="13" rx="2" width="18" x="3" y="6"></rect><path d="M3 10h18"></path><circle cx="16" cy="14" r="1.5"></circle></svg></div><span data-i18n="dash.kpi_saldo">Total Saldo</span></div>
+        </div>
+        <div class="kpi-value" id="kpiSaldoVal">Rp0</div>
+        <div class="kpi-sub" id="kpiSaldoSub">Belum ada data</div>
+        <canvas class="kpi-spark" id="sparkSaldo"></canvas>
+      </div>
+      <div class="kpi-card kpi-teal">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6"></path></svg></div><span data-i18n="dash.kpi_masuk">Uang Masuk</span></div>
+        </div>
+        <div class="kpi-value" id="kpiMasukVal">Rp0</div>
+        <div class="kpi-sub" id="kpiMasukSub">Belum ada data</div>
+        <canvas class="kpi-spark" id="sparkMasuk"></canvas>
+      </div>
+      <div class="kpi-card kpi-pink">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20V6M6 12l6-6 6 6"></path></svg></div><span data-i18n="dash.kpi_keluar">Uang Keluar</span></div>
+        </div>
+        <div class="kpi-value" id="kpiKeluarVal">Rp0</div>
+        <div class="kpi-sub" id="kpiKeluarSub">Belum ada data</div>
+        <canvas class="kpi-spark" id="sparkKeluar"></canvas>
+      </div>
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-top">
+          <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 17l5-5 3 3 7-7M13 8h5v5"></path></svg></div><span data-i18n="dash.kpi_profit">Profit / Balance</span></div>
+        </div>
+        <div class="kpi-value" id="kpiProfitVal">Rp0</div>
+        <div class="kpi-sub" id="kpiProfitSub">Belum ada data</div>
+        <canvas class="kpi-spark" id="sparkProfit"></canvas>
+      </div>
+    </div>
+
+    <!-- Cash flow + donut -->
+    <div class="panels-row">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3 data-i18n="dash.cashflow">Cash Flow</h3>
+            <div class="legend">
+              <span><span class="dot" style="background:#2dd9a8"></span><span data-i18n="dash.kpi_masuk">Uang Masuk</span></span>
+              <span><span class="dot" style="background:#ef4d8f"></span><span data-i18n="dash.kpi_keluar">Uang Keluar</span></span>
+              <span><span class="dot" style="background:#4f7dff"></span>Profit</span>
+            </div>
+          </div>
+          <div class="cf-range-chips" id="cfRangeChips">
+            <button class="cf-chip" data-range="7d" type="button" data-i18n="dash.range.7hari">7 Hari</button>
+            <button class="cf-chip" data-range="30d" type="button" data-i18n="dash.range.30hari">30 Hari</button>
+            <button class="cf-chip" data-range="3m" type="button" data-i18n="dash.range.3bulan">3 Bulan</button>
+            <button class="cf-chip active" data-range="6m" type="button" data-i18n="dash.range.6bulan">6 Bulan</button>
+            <button class="cf-chip" data-range="1y" type="button" data-i18n="dash.range.1tahun">1 Tahun</button>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="cashflowChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3 data-i18n="dash.pengeluaran_kategori">Pengeluaran per Kategori</h3>
+          <div class="pill-dropdown-wrap" id="catFilterWrap">
+            <div class="select-pill" id="catFilterBtn"><span id="catFilterLabel" data-i18n="dash.cat_period.month">Bulan Ini</span> <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+            <div class="pill-dropdown" id="catFilterMenu">
+              <button data-period="week" type="button" data-i18n="dash.cat_period.week">Minggu Ini</button>
+              <button data-period="month" class="active" type="button" data-i18n="dash.cat_period.month">Bulan Ini</button>
+              <button data-period="year" type="button" data-i18n="dash.period.year">Tahun Ini</button>
+              <button data-period="all" type="button" data-i18n="dash.period.all">Semua Waktu</button>
+            </div>
+          </div>
+        </div>
+        <div class="donut-wrap">
+          <canvas id="expenseDonut"></canvas>
+          <div class="donut-center"><div class="lbl" data-i18n="dash.total_saldo_label">Total</div><div class="val" id="donutTotalVal">Rp0</div></div>
+        </div>
+        <div class="cat-list" id="catList"><div style="padding:40px 10px;text-align:center;color:#9ca3af;" data-i18n="dash.belum_ada_pengeluaran">Belum ada data pengeluaran.</div></div>
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="bottom-row">
+      <!-- Transactions -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3 data-i18n="dash.transaksi_terakhir">Transaksi Terakhir</h3>
+          <a href="transaksi.html" style="text-decoration:none;"><button class="see-all" data-i18n="common.lihat_semua">Lihat Semua</button></a>
+        </div>
+        <div id="recentTransaksiContainer"><div class="empty-state"><h4 data-i18n="dash.belum_ada_transaksi">Belum ada transaksi</h4><p data-i18n="dash.belum_ada_transaksi_desc">Tambahkan transaksi pertama Anda untuk mulai mencatat keuangan.</p></div></div>
+      </div>
+
+      <!-- Right column: Akun + Tujuan stacked -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div class="panel">
+          <div class="panel-head">
+            <h3 data-i18n="dash.akun_saya">Akun Saya</h3>
+            <div class="total-toggle" data-i18n="dash.total_saldo_label">Total Saldo</div>
+          </div>
+          <div id="akunContainer"><div class="empty-state"><h4 data-i18n="dash.belum_ada_akun">Belum ada akun</h4><p data-i18n="dash.belum_ada_akun_desc">Tambahkan transaksi untuk mulai melacak akun Anda.</p></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3 data-i18n="dash.tujuan_keuangan">Tujuan Keuangan</h3>
+            <a href="tujuan.html" style="text-decoration:none;"><button class="see-all" data-i18n="common.lihat_semua">Lihat Semua</button></a>
+          </div>
+          <div id="tujuanContainer"><div class="empty-state"><h4 data-i18n="dash.belum_ada_tujuan">Belum ada tujuan keuangan</h4><p data-i18n="dash.belum_ada_tujuan_desc">Buat tujuan keuangan pertama Anda.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="storage.js"></script>
+<script src="i18n.js"></script>
+<script src="settings.js"></script>
+<script src="guard.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

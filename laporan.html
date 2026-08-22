@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DVpoint — Laporan</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="dashboard.css" rel="stylesheet"/>
+<link href="theme.css" rel="stylesheet"/>
+<link href="laporan.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg fill="none" height="17" viewBox="0 0 56 56" width="17"><path d="M28 3L50 15V41L28 53L6 41V15L28 3Z" stroke="#fff" stroke-width="3.5"></path><path d="M18 29L25 36L38 20" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"></path></svg></div>
+      <span>DVpoint</span>
+    </div>
+
+    <ul class="nav">
+      <li class="nav-item"><a href="dashboard.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg>
+        <span data-i18n="nav.dashboard">Dashboard</span>
+      </a></li>
+    </ul>
+
+    <div class="nav-section-label" data-i18n="nav.section_keuangan">Keuangan</div>
+    <ul class="nav">
+      <li class="nav-item"><a href="transaksi.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path></svg>
+        <span data-i18n="nav.transaksi">Semua Transaksi</span>
+      </a></li>
+      <li class="nav-item"><a href="pemasukan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6"></path></svg>
+        <span data-i18n="nav.pemasukan">Pemasukan</span>
+      </a></li>
+      <li class="nav-item"><a href="pengeluaran.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20V6M6 12l6-6 6 6"></path></svg>
+        <span data-i18n="nav.pengeluaran">Pengeluaran</span>
+      </a></li>
+      <li class="nav-item"><a href="transfer.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"></path></svg>
+        <span data-i18n="nav.transfer">Transfer</span>
+      </a></li>
+    </ul>
+
+    <div class="nav-section-label" data-i18n="nav.section_lainnya">Lainnya</div>
+    <ul class="nav">
+      <li class="nav-item"><a href="anggaran.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"></path></svg>
+        <span data-i18n="nav.anggaran">Anggaran</span>
+      </a></li>
+      <li class="nav-item"><a href="tujuan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 2v2M12 20v2"></path></svg>
+        <span data-i18n="nav.tujuan">Tujuan Keuangan</span>
+      </a></li>
+      <li class="nav-item"><a href="akun.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="13" rx="2" width="20" x="2" y="6"></rect><path d="M2 10h20"></path></svg>
+        <span data-i18n="nav.akun">Akun &amp; Kartu</span>
+      </a></li>
+      <li class="nav-item"><a href="investasi.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 17l5-5 3 3 7-7M13 8h5v5"></path></svg>
+        <span data-i18n="nav.investasi">Investasi</span>
+      </a></li>
+      <li class="nav-item active"><a href="laporan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
+        <span data-i18n="nav.laporan">Laporan</span>
+      </a></li>
+      <li class="nav-item"><a href="pengaturan.html">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
+        <span data-i18n="nav.pengaturan">Pengaturan</span>
+      </a></li>
+    </ul>
+
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar">DA</div>
+        <div><div class="user-name">Dicky Ade</div><div class="user-plan" data-i18n="nav.premium">⭐ Premium</div></div>
+        <button class="logout-btn" onclick="dvpointLogout()" title="Keluar" data-i18n-title="nav.logout_title">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <div class="page-header lap-page-header">
+      <div>
+        <h1 data-i18n="lap.page_title">Laporan</h1>
+        <p data-i18n="lap.page_subtitle">Analisis seluruh aktivitas keuangan Anda berdasarkan periode yang dipilih.</p>
+      </div>
+      <div class="lap-header-actions">
+        <button class="lap-btn" id="btnExportPdf" title="Export PDF">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><path d="M14 2v6h6"></path></svg>
+          <span data-i18n="lap.export_pdf">Export PDF</span>
+        </button>
+        <button class="lap-btn" id="btnExportExcel" title="Export Excel">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><path d="M14 2v6h6"></path><path d="M9.5 13l2.2 3.2M11.7 13l-2.2 3.2"></path></svg>
+          <span data-i18n="lap.export_excel">Export Excel</span>
+        </button>
+        <button class="lap-btn" id="btnPrint" title="Print">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="8" rx="2" width="14" x="5" y="9"></rect><path d="M17 9V4H7v5"></path><path d="M7 17H5a2 2 0 01-2-2v-3a2 2 0 012-2h14a2 2 0 012 2v3a2 2 0 01-2 2h-2"></path></svg>
+          <span data-i18n="lap.print">Print</span>
+        </button>
+        <button class="lap-btn lap-btn-primary" id="btnToggleFilter" title="Filter">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>
+          <span data-i18n="lap.filter">Filter</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= FILTER PANEL ================= -->
+    <div class="lap-filter-panel" id="filterPanel">
+      <div class="lap-chip-row" id="periodChips">
+        <div class="lap-chip active" data-period="hari-ini" data-i18n="lap.chip_hari_ini">Hari Ini</div>
+        <div class="lap-chip" data-period="minggu-ini" data-i18n="lap.chip_minggu_ini">Minggu Ini</div>
+        <div class="lap-chip" data-period="bulan-ini" data-i18n="lap.chip_bulan_ini">Bulan Ini</div>
+        <div class="lap-chip" data-period="tahun-ini" data-i18n="lap.chip_tahun_ini">Tahun Ini</div>
+        <div class="lap-chip" data-period="custom" data-i18n="lap.chip_custom">Custom Date Range</div>
+      </div>
+
+      <div class="lap-custom-range" id="customRange" style="display:none;">
+        <div class="lap-field">
+          <label data-i18n="lap.lbl_dari_tanggal">Dari Tanggal</label>
+          <input id="fCustomFrom" type="date"/>
+        </div>
+        <div class="lap-field">
+          <label data-i18n="lap.lbl_sampai_tanggal">Sampai Tanggal</label>
+          <input id="fCustomTo" type="date"/>
+        </div>
+      </div>
+
+      <div class="lap-select-row">
+        <div class="lap-field">
+          <label data-i18n="lap.lbl_akun">Akun</label>
+          <select id="fAkun"><option value="" data-i18n="lap.semua_akun">Semua Akun</option></select>
+        </div>
+        <div class="lap-field">
+          <label data-i18n="lap.lbl_kategori">Kategori</label>
+          <select id="fKategori"><option value="" data-i18n="lap.semua_kategori">Semua Kategori</option></select>
+        </div>
+        <div class="lap-field">
+          <label data-i18n="lap.lbl_jenis">Jenis Transaksi</label>
+          <select id="fJenis">
+            <option value="" data-i18n="lap.semua_jenis">Semua Jenis</option>
+            <option value="masuk" data-i18n="pm.title">Pemasukan</option>
+            <option value="keluar" data-i18n="pk.title">Pengeluaran</option>
+            <option value="transfer" data-i18n="tx.tipe_transfer">Transfer</option>
+          </select>
+        </div>
+        <button class="lap-btn lap-btn-ghost-reset" id="btnResetFilter">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+          <span data-i18n="lap.reset">Reset</span>
+        </button>
+      </div>
+
+      <div class="lap-period-label" id="periodLabel"></div>
+    </div>
+
+    <!-- ================= CONTENT (hidden when no data at all) ================= -->
+    <div id="laporanContent">
+
+      <!-- Ringkasan 4 card -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-teal">
+          <div class="kpi-top">
+            <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6"></path></svg></div><span data-i18n="lap.kpi_pemasukan">Total Pemasukan</span></div>
+        </div>
+        <div class="kpi-value" id="sumMasuk">Rp0</div>
+        <div class="kpi-sub" id="sumMasukSub">Belum ada data</div>
+      </div>
+        <div class="kpi-card kpi-pink">
+          <div class="kpi-top">
+            <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20V6M6 12l6-6 6 6"></path></svg></div><span data-i18n="lap.kpi_pengeluaran">Total Pengeluaran</span></div>
+          </div>
+          <div class="kpi-value" id="sumKeluar">Rp0</div>
+          <div class="kpi-sub" id="sumKeluarSub">Belum ada data</div>
+        </div>
+        <div class="kpi-card kpi-blue">
+          <div class="kpi-top">
+            <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"></path></svg></div><span data-i18n="lap.kpi_transfer">Total Transfer</span></div>
+          </div>
+          <div class="kpi-value" id="sumTransfer">Rp0</div>
+          <div class="kpi-sub" id="sumTransferSub">Belum ada data</div>
+        </div>
+        <div class="kpi-card kpi-purple">
+          <div class="kpi-top">
+            <div class="kpi-label"><div class="kpi-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path></svg></div><span data-i18n="lap.kpi_total_transaksi">Total Transaksi</span></div>
+          </div>
+          <div class="kpi-value" id="sumTotal">0</div>
+          <div class="kpi-sub" id="sumTotalSub">Belum ada data</div>
+        </div>
+      </div>
+
+      <!-- Cash Flow + Donut -->
+      <div class="panels-row">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3 data-i18n="lap.cashflow_title">Cash Flow</h3>
+              <div class="legend">
+                <span><span class="dot" style="background:#2dd9a8"></span><span data-i18n="pm.title">Pemasukan</span></span>
+                <span><span class="dot" style="background:#ef4d8f"></span><span data-i18n="pk.title">Pengeluaran</span></span>
+              </div>
+            </div>
+            <div class="select-pill" id="cashflowRangeLabel" data-i18n="lap.sesuai_filter">Sesuai Filter</div>
+          </div>
+          <div class="chart-wrap"><canvas id="cashflowChart"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3 data-i18n="dash.pengeluaran_kategori">Pengeluaran per Kategori</h3>
+            <div class="select-pill" id="donutRangeLabel" data-i18n="lap.sesuai_filter">Sesuai Filter</div>
+          </div>
+          <div class="donut-wrap">
+            <canvas id="expenseDonut"></canvas>
+            <div class="donut-center"><div class="lbl">Total</div><div class="val" id="donutTotalVal">Rp0</div></div>
+          </div>
+          <div class="cat-list" id="catList"><div style="padding:40px 10px;text-align:center;color:#9ca3af;" data-i18n="dash.belum_ada_pengeluaran">Belum ada data pengeluaran.</div></div>
+        </div>
+      </div>
+
+      <!-- Aktivitas Bulanan -->
+      <div class="panel" style="margin-bottom:16px;">
+        <div class="panel-head">
+          <h3 data-i18n="lap.aktivitas_bulanan">Aktivitas Bulanan</h3>
+          <div class="select-pill" id="activityRangeLabel" data-i18n="lap.jumlah_transaksi_bulan">Jumlah Transaksi / Bulan</div>
+        </div>
+        <div class="chart-wrap" style="height:220px;"><canvas id="activityChart"></canvas></div>
+      </div>
+
+      <!-- Ringkasan Kategori + Insight -->
+      <div class="lap-two-col">
+        <div class="panel">
+          <div class="panel-head"><h3 data-i18n="lap.ringkasan_kategori">Ringkasan Kategori</h3></div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th data-i18n="lap.th_kategori">Kategori</th><th data-i18n="lap.th_total_transaksi">Total Transaksi</th><th data-i18n="lap.th_total_nominal">Total Nominal</th></tr></thead>
+              <tbody id="kategoriTableBody"></tbody>
+            </table>
+          </div>
+          <div id="kategoriEmpty" class="empty-state" style="display:none;">
+            <h4 data-i18n="lap.kategori_empty_title">Belum ada data</h4>
+            <p data-i18n="lap.kategori_empty_desc">Tidak ada pengeluaran pada periode/filter ini.</p>
+          </div>
+        </div>
+
+        <div class="panel lap-insight-panel">
+          <div class="panel-head"><h3 data-i18n="lap.insight_keuangan">Insight Keuangan</h3></div>
+          <div class="lap-insight-grid" id="insightGrid"></div>
+        </div>
+      </div>
+
+      <!-- Riwayat Transaksi -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3 data-i18n="lap.riwayat_title">Riwayat Transaksi</h3>
+          <div class="lap-result-count" id="resultCount"></div>
+        </div>
+        <div id="riwayatNoResult" class="empty-state" style="display:none;">
+          <h4 data-i18n="lap.no_result_title">Tidak ada hasil</h4>
+          <p data-i18n="lap.no_result_desc">Tidak ada transaksi yang cocok dengan filter yang dipilih.</p>
+        </div>
+        <div style="overflow-x:auto;">
+          <table id="riwayatTable">
+            <thead><tr><th data-i18n="lap.th_tanggal">Tanggal</th><th data-i18n="lap.th_jenis">Jenis</th><th data-i18n="lap.th_kategori">Kategori</th><th data-i18n="lap.th_deskripsi">Deskripsi</th><th data-i18n="lap.th_akun">Akun</th><th data-i18n="lap.th_nominal">Nominal</th></tr></thead>
+            <tbody id="riwayatTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= EMPTY STATE (tidak ada transaksi sama sekali) ================= -->
+    <div id="laporanEmptyState" class="lap-empty-global" style="display:none;">
+      <div class="lap-empty-illustration">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" viewBox="0 0 24 24">
+          <path d="M3 3v18h18"></path>
+          <path d="M7 15l4-5 3 3 5-7"></path>
+          <circle cx="7" cy="15" r="1.4" fill="currentColor" stroke="none"></circle>
+          <circle cx="11" cy="10" r="1.4" fill="currentColor" stroke="none"></circle>
+          <circle cx="14" cy="13" r="1.4" fill="currentColor" stroke="none"></circle>
+          <circle cx="19" cy="6" r="1.4" fill="currentColor" stroke="none"></circle>
+        </svg>
+      </div>
+      <h4 data-i18n="lap.global_empty_title">Belum ada data transaksi.</h4>
+      <p data-i18n="lap.global_empty_desc">Tambahkan transaksi terlebih dahulu agar laporan dapat ditampilkan.</p>
+      <a href="transaksi.html" style="text-decoration:none;">
+        <button class="btn-primary">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path></svg>
+          <span data-i18n="lap.buka_transaksi">Buka Semua Transaksi</span>
+        </button>
+      </a>
+    </div>
+  </main>
+</div>
+
+<div class="lap-toast" id="lapToast"></div>
+
+<script src="storage.js"></script>
+<script src="i18n.js"></script>
+<script src="settings.js"></script>
+<script src="guard.js"></script>
+<script src="laporan.js"></script>
+</body>
+</html>
