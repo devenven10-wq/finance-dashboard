@@ -178,7 +178,7 @@
   position:fixed; inset:0; background:rgba(4,3,13,.72);
   backdrop-filter:blur(4px);
   display:none; align-items:stretch; justify-content:flex-end;
-  z-index:200;
+  z-index:350;
 }
 .drawer-overlay.open{ display:flex; animation:tjFade .18s ease; }
 @keyframes tjFade{ from{opacity:0;} to{opacity:1;} }
@@ -254,7 +254,7 @@
 /* ---------- Confirm dialog ---------- */
 .confirm-overlay{
   position:fixed; inset:0; background:rgba(4,3,13,.72);
-  display:none; align-items:center; justify-content:center; z-index:250;
+  display:none; align-items:center; justify-content:center; z-index:360;
 }
 .confirm-overlay.open{ display:flex; animation:tjFade .16s ease; }
 .confirm-box{
@@ -275,7 +275,7 @@
   box-shadow:0 16px 32px -12px rgba(0,0,0,.55);
   opacity:0; pointer-events:none;
   transition:opacity 220ms ease, transform 220ms ease;
-  z-index:300; display:flex; align-items:center; gap:9px;
+  z-index:400; display:flex; align-items:center; gap:9px;
 }
 .dv-toast.show{ opacity:1; transform:translate(-50%, 0); }
 .dv-toast svg{ width:16px; height:16px; color:var(--tj-teal); flex-shrink:0; }

@@ -30,6 +30,16 @@ body{
     radial-gradient(ellipse 800px 500px at 100% 10%, rgba(79,125,255,.12), transparent 60%);
 }
 
+/* Sembunyikan halaman sesaat kalau bahasa aktif = Inggris, supaya tidak
+   ada kedipan teks Indonesia (hardcode di HTML) yang sempat kelihatan
+   sebelum JS (dvApplyLanguage di i18n.js, dimuat di akhir <body>) selesai
+   menerjemahkan. Atribut data-lang-loading di-set SINKRON di <script>
+   awal <head> (sebelum apa pun dirender), dan dilepas oleh dvApplyLanguage()
+   begitu terjemahan selesai diterapkan — jadi yang terlihat pengguna
+   cuma halaman yang langsung tampil sudah dalam bahasa Inggris, tanpa
+   transisi/kedipan dari bahasa Indonesia dulu. */
+html[data-lang-loading] body{ opacity:0; }
+
 .mono{font-family:'JetBrains Mono',monospace;}
 a{color:inherit;}
 button{font-family:inherit;}
@@ -266,6 +276,24 @@ html[data-role="member"] #navItemTim{ display:none; }
 /* Panels row */
 .panels-row{display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:16px;}
 .panel{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius-lg); padding:22px; min-width:0;}
+
+/* ============ Tabel di dalam .panel: scroll horizontal eksplisit
+   supaya kolom yang tidak muat di layar sempit tetap bisa dijangkau
+   lewat swipe (bukan terlihat "terpotong" begitu saja). ============ */
+.panel:has(table){ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+
+/* Petunjuk teks "Geser untuk lihat lebih" — cuma tampil di mobile,
+   ditaruh sebagai elemen terpisah SEBELUM area yang discroll (bukan
+   pseudo-element di dalamnya), supaya tidak ikut ter-scroll pergi. */
+.table-scroll-hint{ display:none; }
+@media (max-width:640px){
+  .table-scroll-hint{
+    display:flex; align-items:center; gap:5px;
+    font-size:11.5px; color:var(--text-faint);
+    margin:0 0 10px;
+  }
+  .table-scroll-hint svg{ width:12px; height:12px; }
+}
 .panel-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
 .panel-head h3{font-size:15px; font-weight:600;}
 .legend{display:flex; gap:16px; font-size:12px; color:var(--text-dim); margin-top:6px;}
@@ -373,7 +401,7 @@ tbody tr:hover{background:rgba(255,255,255,.02);}
 /* ============ Shared: Modal ============ */
 .modal-overlay{
   position:fixed; inset:0; background:rgba(4,3,13,.72); backdrop-filter:blur(4px);
-  display:flex; align-items:center; justify-content:center; z-index:100;
+  display:flex; align-items:center; justify-content:center; z-index:350;
   opacity:0; pointer-events:none; transition:opacity var(--ease);
 }
 .modal-overlay.open{opacity:1; pointer-events:auto;}
@@ -407,6 +435,14 @@ tbody tr:hover{background:rgba(255,255,255,.02);}
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus{border-color:var(--blue);}
 .form-group input:disabled, .form-group select:disabled, .form-group textarea:disabled{
   opacity:.5; cursor:not-allowed; background:rgba(255,255,255,.03);
+}
+/* Popup <option> native browser sering abaikan background dari elemen
+   <select>-nya, jatuh ke putih/terang bawaan — bikin teks tema gelap
+   (yang terang) nyaris tak terlihat. Set eksplisit di sini, otomatis
+   ikut tema aktif lewat variabel warna. */
+.form-group select option, select option{
+  background:var(--panel);
+  color:var(--text);
 }
 .form-group textarea{resize:vertical; min-height:64px;}
 .form-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}

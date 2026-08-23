@@ -144,7 +144,7 @@
   color:var(--text); font-size:13px;
   padding:12px 20px; border-radius:12px;
   box-shadow:0 12px 30px rgba(0,0,0,.4);
-  opacity:0; pointer-events:none; z-index:200;
+  opacity:0; pointer-events:none; z-index:400;
   transition:opacity var(--ease), transform var(--ease);
 }
 .lap-toast.show{opacity:1; transform:translate(-50%, 0);}

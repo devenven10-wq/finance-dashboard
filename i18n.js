@@ -50,6 +50,7 @@ const DV_I18N = {
     'common.ya_lanjutkan': 'Ya, Lanjutkan',
     'common.ya_hapus': 'Ya, Hapus',
     'common.berhasil': 'Berhasil',
+    'common.geser_tabel': 'Geser untuk lihat kolom lainnya',
 
     // ---------- Tim (halaman baru, gating Owner/Member) ----------
     'tim.nav': 'Tim',
@@ -89,6 +90,7 @@ const DV_I18N = {
 
     // ---------- Dashboard ----------
     'dash.title': 'Dashboard',
+    'dash.welcome_prefix': 'Selamat datang kembali,',
     'dash.welcome': 'Selamat datang kembali, {nama} 👋',
     'dash.kpi_saldo': 'Total Saldo',
     'dash.kpi_masuk': 'Uang Masuk',
@@ -789,6 +791,7 @@ const DV_I18N = {
     'common.ya_lanjutkan': 'Yes, Continue',
     'common.ya_hapus': 'Yes, Delete',
     'common.berhasil': 'Success',
+    'common.geser_tabel': 'Swipe to see more columns',
 
     // ---------- Team (new page, Owner/Member gating) ----------
     'tim.nav': 'Team',
@@ -827,6 +830,7 @@ const DV_I18N = {
     'tim.err_password_mismatch': 'Password confirmation does not match.',
 
     'dash.title': 'Dashboard',
+    'dash.welcome_prefix': 'Welcome back,',
     'dash.welcome': 'Welcome back, {nama} 👋',
     'dash.kpi_saldo': 'Total Balance',
     'dash.kpi_masuk': 'Income',
@@ -1541,4 +1545,9 @@ function dvApplyLanguage() {
       el.setAttribute('title', DV_I18N[lang][key]);
     }
   });
+
+  // Sudah selesai diterjemahkan — ungkap halaman (lihat CSS
+  // html[data-lang-loading] body{opacity:0} di dashboard.css, dan
+  // <script> sinkron di <head> tiap halaman yang men-set atribut ini).
+  document.documentElement.removeAttribute('data-lang-loading');
 }

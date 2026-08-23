@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"/>
-<script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');var p=JSON.parse(localStorage.getItem('dvpoint_profile')||'null');if(p&&p.role==='member')document.documentElement.setAttribute('data-role','member');}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');var p=JSON.parse(localStorage.getItem('dvpoint_profile')||'null');if(p&&p.role==='member')document.documentElement.setAttribute('data-role','member');var pr=JSON.parse(localStorage.getItem('dvpoint_preferences')||'null');if(pr&&pr.bahasa==='en'){document.documentElement.setAttribute('data-lang-loading','en');setTimeout(function(){document.documentElement.removeAttribute('data-lang-loading');},800);}}catch(e){}})();</script>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>DVpoint — Akun &amp; Kartu</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -17,7 +17,7 @@
   <!-- ================= SIDEBAR ================= -->
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-mark"><img src="logo.png" alt="DVpoint"/></div>
+      <div class="brand-mark"><img src="logo.png" alt="DVpoint" width="60" height="60"/></div>
       <span>DVpoint</span>
     </div>
 

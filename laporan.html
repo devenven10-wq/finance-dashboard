@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"/>
-<script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');var p=JSON.parse(localStorage.getItem('dvpoint_profile')||'null');if(p&&p.role==='member')document.documentElement.setAttribute('data-role','member');}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');var p=JSON.parse(localStorage.getItem('dvpoint_profile')||'null');if(p&&p.role==='member')document.documentElement.setAttribute('data-role','member');var pr=JSON.parse(localStorage.getItem('dvpoint_preferences')||'null');if(pr&&pr.bahasa==='en'){document.documentElement.setAttribute('data-lang-loading','en');setTimeout(function(){document.documentElement.removeAttribute('data-lang-loading');},800);}}catch(e){}})();</script>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>DVpoint — Laporan</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -18,7 +18,7 @@
   <!-- ================= SIDEBAR ================= -->
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-mark"><img src="logo.png" alt="DVpoint"/></div>
+      <div class="brand-mark"><img src="logo.png" alt="DVpoint" width="60" height="60"/></div>
       <span>DVpoint</span>
     </div>
 
@@ -244,6 +244,7 @@
         <div class="panel">
           <div class="panel-head"><h3 data-i18n="lap.ringkasan_kategori">Ringkasan Kategori</h3></div>
           <div style="overflow-x:auto;">
+            <div class="table-scroll-hint"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg><span data-i18n="common.geser_tabel">Geser untuk lihat kolom lainnya</span></div>
             <table>
               <thead><tr><th data-i18n="lap.th_kategori">Kategori</th><th data-i18n="lap.th_total_transaksi">Total Transaksi</th><th data-i18n="lap.th_total_nominal">Total Nominal</th></tr></thead>
               <tbody id="kategoriTableBody"></tbody>
@@ -272,6 +273,7 @@
           <p data-i18n="lap.no_result_desc">Tidak ada transaksi yang cocok dengan filter yang dipilih.</p>
         </div>
         <div style="overflow-x:auto;">
+          <div class="table-scroll-hint"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg><span data-i18n="common.geser_tabel">Geser untuk lihat kolom lainnya</span></div>
           <table id="riwayatTable">
             <thead><tr><th data-i18n="lap.th_tanggal">Tanggal</th><th data-i18n="lap.th_jenis">Jenis</th><th data-i18n="lap.th_kategori">Kategori</th><th data-i18n="lap.th_deskripsi">Deskripsi</th><th data-i18n="lap.th_akun">Akun</th><th data-i18n="lap.th_nominal">Nominal</th></tr></thead>
             <tbody id="riwayatTableBody"></tbody>

@@ -317,7 +317,7 @@
   position:fixed; inset:0;
   background:rgba(4,3,13,.72);
   backdrop-filter:blur(4px);
-  z-index:80;
+  z-index:350;
   opacity:0;
   pointer-events:none;
   transition:opacity var(--ease);
@@ -333,7 +333,7 @@
   background:var(--sidebar);
   border-left:1px solid var(--border);
   box-shadow:var(--bg-shadow);
-  z-index:81;
+  z-index:351;
   transform:translateX(100%);
   transition:transform 260ms cubic-bezier(.4,0,.2,1);
   display:flex;
@@ -433,7 +433,7 @@
   border-radius:12px;
   font-size:13.5px;
   box-shadow:var(--bg-shadow);
-  z-index:200;
+  z-index:400;
   opacity:0;
   pointer-events:none;
   transition:all .25s ease;

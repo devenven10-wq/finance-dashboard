@@ -118,13 +118,13 @@
 /* ---------- Drawer detail investasi ---------- */
 .iv-drawer-overlay{
   position:fixed; inset:0; background:rgba(4,3,13,.66); backdrop-filter:blur(3px);
-  z-index:110; opacity:0; pointer-events:none; transition:opacity var(--ease);
+  z-index:350; opacity:0; pointer-events:none; transition:opacity var(--ease);
 }
 .iv-drawer-overlay.open{opacity:1; pointer-events:auto;}
 .iv-drawer{
   position:fixed; top:0; right:0; height:100vh; width:100%; max-width:420px;
   background:#211f36; border-left:1px solid var(--border);
-  z-index:111; padding:24px; overflow-y:auto;
+  z-index:351; padding:24px; overflow-y:auto;
   transform:translateX(100%); transition:transform var(--ease);
   box-shadow:-20px 0 50px rgba(0,0,0,.4);
 }
@@ -185,7 +185,7 @@
   padding:13px 20px; font-size:13px; color:var(--text);
   box-shadow:0 14px 34px rgba(0,0,0,.4);
   opacity:0; pointer-events:none; transition:opacity var(--ease), transform var(--ease);
-  z-index:200; display:flex; align-items:center; gap:9px;
+  z-index:400; display:flex; align-items:center; gap:9px;
 }
 .iv-toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 .iv-toast .dot{width:7px; height:7px; border-radius:50%; background:var(--teal); flex-shrink:0;}
@@ -193,7 +193,7 @@
 /* ---------- Confirm dialog (hapus / arsip) ---------- */
 .iv-confirm-overlay{
   position:fixed; inset:0; background:rgba(4,3,13,.72); backdrop-filter:blur(4px);
-  display:flex; align-items:center; justify-content:center; z-index:120;
+  display:flex; align-items:center; justify-content:center; z-index:360;
   opacity:0; pointer-events:none; transition:opacity var(--ease);
 }
 .iv-confirm-overlay.open{opacity:1; pointer-events:auto;}
