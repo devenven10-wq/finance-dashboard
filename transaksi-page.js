@@ -79,8 +79,8 @@ function dvInitTransaksiPage(tipe) {
         btn.addEventListener('click', () => {
           const confirmKey = isMasuk ? 'pm.confirm_hapus' : 'pk.confirm_hapus';
           const id = btn.getAttribute('data-id');
-          dvShowConfirm(dvT(confirmKey), () => {
-            dvDeleteTransaksi(id);
+          dvShowConfirm(dvT(confirmKey), async () => {
+            await dvDeleteTransaksi(id);
             dvShowGenericToast(dvT(isMasuk ? 'pm.toast_dihapus' : 'pk.toast_dihapus'));
           }, { danger: true });
         });
@@ -110,22 +110,28 @@ function dvInitTransaksiPage(tipe) {
     if (!nominal || nominal <= 0) { els.inpNominal.focus(); return; }
 
     const confirmKey = isMasuk ? 'pm.confirm_simpan' : 'pk.confirm_simpan';
-    dvShowConfirm(dvT(confirmKey), () => {
-      dvAddTransaksi({
-        tanggal: els.inpTanggal.value || dvTodayISO(),
-        kategori: els.inpKategori.value,
-        deskripsi: els.inpCatatan.value ? els.inpCatatan.value : els.inpKategori.value,
-        catatan: els.inpCatatan.value,
-        akun: els.inpAkun.value,
-        jumlah: nominal,
-        tipe
-      });
+    dvShowConfirm(dvT(confirmKey), async () => {
+      try {
+        await dvAddTransaksi({
+          tanggal: els.inpTanggal.value || dvTodayISO(),
+          kategori: els.inpKategori.value,
+          deskripsi: els.inpCatatan.value ? els.inpCatatan.value : els.inpKategori.value,
+          catatan: els.inpCatatan.value,
+          akun: els.inpAkun.value,
+          jumlah: nominal,
+          tipe
+        });
 
-      closeModal();
-      dvShowGenericToast(dvT(isMasuk ? 'pm.toast_tersimpan' : 'pk.toast_tersimpan'));
+        closeModal();
+        dvShowGenericToast(dvT(isMasuk ? 'pm.toast_tersimpan' : 'pk.toast_tersimpan'));
+      } catch (err) {
+        dvShowGenericToast(err.message || 'Gagal menyimpan.', true);
+      }
     });
   });
 
-  render();
-  dvOnChange(render);
+  dvBootstrapPage(() => {
+    render();
+    dvOnChange(render);
+  });
 }

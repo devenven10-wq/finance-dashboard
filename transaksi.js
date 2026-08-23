@@ -407,8 +407,8 @@
   function closeConfirm() { els.confirmModal.classList.remove('open'); state.deleteId = null; }
   els.confirmCancel?.addEventListener('click', closeConfirm);
   els.confirmModal?.addEventListener('click', (e) => { if (e.target === els.confirmModal) closeConfirm(); });
-  els.confirmDelete?.addEventListener('click', () => {
-    if (state.deleteId) dvDeleteTransaksi(state.deleteId);
+  els.confirmDelete?.addEventListener('click', async () => {
+    if (state.deleteId) await dvDeleteTransaksi(state.deleteId);
     closeConfirm();
     dvShowGenericToast(dvT('tx.toast_dihapus'));
   });
@@ -502,37 +502,41 @@
       if (asal === tujuan) { els.txFormError.textContent = dvT('tx.err_akun_sama'); return; }
     }
 
-    dvShowConfirm(dvT(state.editingId ? 'tx.confirm_simpan_edit' : 'tx.confirm_simpan_tambah'), () => {
-      if (tipe === 'transfer') {
-        if (state.editingId) {
-          dvUpdateTransaksi(state.editingId, {
-            tanggal: els.txTanggal.value || dvTodayISO(),
-            akunAsal: asal, akunTujuan: tujuan, akun: asal,
-            jumlah: nominal,
-            catatan: els.txCatatan.value,
-            deskripsi: els.txCatatan.value || `Transfer ${akunNama(asal)} → ${akunNama(tujuan)}`
-          });
+    dvShowConfirm(dvT(state.editingId ? 'tx.confirm_simpan_edit' : 'tx.confirm_simpan_tambah'), async () => {
+      try {
+        if (tipe === 'transfer') {
+          if (state.editingId) {
+            await dvUpdateTransaksi(state.editingId, {
+              tanggal: els.txTanggal.value || dvTodayISO(),
+              akunAsal: asal, akunTujuan: tujuan, akun: asal,
+              jumlah: nominal,
+              catatan: els.txCatatan.value,
+              deskripsi: els.txCatatan.value || `Transfer ${akunNama(asal)} → ${akunNama(tujuan)}`
+            });
+          } else {
+            await dvAddTransfer({ tanggal: els.txTanggal.value || dvTodayISO(), akunAsal: asal, akunTujuan: tujuan, jumlah: nominal, catatan: els.txCatatan.value });
+          }
         } else {
-          dvAddTransfer({ tanggal: els.txTanggal.value || dvTodayISO(), akunAsal: asal, akunTujuan: tujuan, jumlah: nominal, catatan: els.txCatatan.value });
+          const payload = {
+            tanggal: els.txTanggal.value || dvTodayISO(),
+            kategori: els.txKategori.value,
+            deskripsi: els.txCatatan.value || els.txKategori.value,
+            catatan: els.txCatatan.value,
+            akun: els.txAkun.value,
+            metode: els.txMetode2.value,
+            jumlah: nominal,
+            tipe
+          };
+          if (state.editingId) await dvUpdateTransaksi(state.editingId, payload);
+          else await dvAddTransaksi(payload);
         }
-      } else {
-        const payload = {
-          tanggal: els.txTanggal.value || dvTodayISO(),
-          kategori: els.txKategori.value,
-          deskripsi: els.txCatatan.value || els.txKategori.value,
-          catatan: els.txCatatan.value,
-          akun: els.txAkun.value,
-          metode: els.txMetode2.value,
-          jumlah: nominal,
-          tipe
-        };
-        if (state.editingId) dvUpdateTransaksi(state.editingId, payload);
-        else dvAddTransaksi(payload);
-      }
 
-      const wasEditing = !!state.editingId;
-      closeTxModal();
-      dvShowGenericToast(dvT(wasEditing ? 'tx.toast_diperbarui' : 'tx.toast_tersimpan'));
+        const wasEditing = !!state.editingId;
+        closeTxModal();
+        dvShowGenericToast(dvT(wasEditing ? 'tx.toast_diperbarui' : 'tx.toast_tersimpan'));
+      } catch (err) {
+        els.txFormError.textContent = err.message || 'Gagal menyimpan transaksi.';
+      }
     });
   });
 
@@ -598,6 +602,8 @@
   // ---------- Init ----------
   initStaticUI();
   showSkeleton();
-  setTimeout(() => { renderTable(); }, 350);
-  dvOnChange(renderTable);
+  dvBootstrapPage(() => {
+    renderTable();
+    dvOnChange(renderTable);
+  });
 })();

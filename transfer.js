@@ -98,16 +98,20 @@ function dvInitTransferPage() {
     els.stepPreview.style.display = 'block';
   }
 
-  function confirmTransfer() {
-    dvAddTransfer({
-      tanggal: els.fDate.value || dvTodayISO(),
-      akunAsal: els.fFrom.value,
-      akunTujuan: els.fTo.value,
-      jumlah: parseAmount(els.fAmount.value),
-      catatan: els.fNote.value
-    });
-    closeModal();
-    dvShowGenericToast(dvT('trf.toast_tersimpan'));
+  async function confirmTransfer() {
+    try {
+      await dvAddTransfer({
+        tanggal: els.fDate.value || dvTodayISO(),
+        akunAsal: els.fFrom.value,
+        akunTujuan: els.fTo.value,
+        jumlah: parseAmount(els.fAmount.value),
+        catatan: els.fNote.value
+      });
+      closeModal();
+      dvShowGenericToast(dvT('trf.toast_tersimpan'));
+    } catch (err) {
+      dvShowGenericToast(err.message || 'Gagal menyimpan transfer.', true);
+    }
   }
 
   els.btnBaru?.addEventListener('click', openModal);
@@ -203,16 +207,18 @@ function dvInitTransferPage() {
     els.tableWrap.querySelectorAll('.row-action').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-id');
-        dvShowConfirm(dvT('trf.confirm_hapus'), () => {
-          dvDeleteTransaksi(id);
+        dvShowConfirm(dvT('trf.confirm_hapus'), async () => {
+          await dvDeleteTransaksi(id);
           dvShowGenericToast(dvT('trf.toast_dihapus'));
         }, { danger: true });
       });
     });
   }
 
-  render();
-  dvOnChange(render);
+  dvBootstrapPage(() => {
+    render();
+    dvOnChange(render);
+  });
 }
 
 dvInitTransferPage();

@@ -278,17 +278,21 @@ document.getElementById('formAkun').addEventListener('submit', (e) => {
 
   if (!nama) { errEl.textContent = dvT('akun.err_nama_wajib'); return; }
 
-  dvShowConfirm(dvT(akState.editingId ? 'akun.confirm_simpan_edit' : 'akun.confirm_simpan_tambah'), () => {
+  dvShowConfirm(dvT(akState.editingId ? 'akun.confirm_simpan_edit' : 'akun.confirm_simpan_tambah'), async () => {
     const payload = { nama, jenis, bank: bank || nama, noRekening, warna: akState.selectedColor, icon: akState.selectedIcon, saldoAwal, catatan };
 
-    if (akState.editingId) {
-      dvUpdateAkunAccount(akState.editingId, payload);
-      akToast(dvT('akun.toast_diperbarui'));
-    } else {
-      dvAddAkunAccount(payload);
-      akToast(dvT('akun.toast_ditambahkan'));
+    try {
+      if (akState.editingId) {
+        await dvUpdateAkunAccount(akState.editingId, payload);
+        akToast(dvT('akun.toast_diperbarui'));
+      } else {
+        await dvAddAkunAccount(payload);
+        akToast(dvT('akun.toast_ditambahkan'));
+      }
+      akCloseModal();
+    } catch (err) {
+      errEl.textContent = err.message || 'Gagal menyimpan akun.';
     }
-    akCloseModal();
   });
 });
 
@@ -299,8 +303,9 @@ function akToggleStatus(e, id) {
   const akun = dvGetAkunAll().find(a => a.id === id);
   if (!akun) return;
   const next = akun.status === 'nonaktif' ? 'aktif' : 'nonaktif';
-  dvSetAkunStatus(id, next);
-  akToast(next === 'nonaktif' ? dvT('akun.toast_dinonaktifkan', {nama: akun.nama}) : dvT('akun.toast_diaktifkan', {nama: akun.nama}));
+  dvSetAkunStatus(id, next).then(() => {
+    akToast(next === 'nonaktif' ? dvT('akun.toast_dinonaktifkan', {nama: akun.nama}) : dvT('akun.toast_diaktifkan', {nama: akun.nama}));
+  });
 }
 
 function akDeleteAkun(e, id) {
@@ -312,8 +317,8 @@ function akDeleteAkun(e, id) {
     akToast(dvT('akun.toast_hanya_nonaktif'));
     return;
   }
-  dvShowConfirm(dvT('akun.confirm_hapus', {nama: akun.nama}), () => {
-    const res = dvDeleteAkunAccount(id);
+  dvShowConfirm(dvT('akun.confirm_hapus', {nama: akun.nama}), async () => {
+    const res = await dvDeleteAkunAccount(id);
     if (res.success) akToast(dvT('akun.toast_dihapus'));
   }, { danger: true });
 }
@@ -388,5 +393,7 @@ function akRenderAll() {
   akRenderGrid();
 }
 
-akRenderAll();
-dvOnChange(akRenderAll);
+dvBootstrapPage(() => {
+  akRenderAll();
+  dvOnChange(akRenderAll);
+});
