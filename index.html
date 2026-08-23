@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>DVpoint — Sign In</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase-client.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
 :root {
@@ -955,13 +957,8 @@ body::before{
   <script>
 
     const STORAGE_KEYS = {
-      accounts: 'dvpoint_accounts',
-      session: 'dvpoint_session',
       remember: 'dvpoint_remembered_email'
     };
-    const TEST_ACCOUNTS = [
-      { email: 'demo@dvpoint.com', password: 'demo123', role: 'user' }
-    ];
 
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
@@ -990,14 +987,7 @@ body::before{
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    function getAllAccounts() {
-      let stored = [];
-      try { stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.accounts) || '[]'); }
-      catch (e) { stored = []; }
-      return [...TEST_ACCOUNTS, ...stored];
-    }
-
-    // ─── LOGIN HANDLER (menggantikan fetch ke API, pakai akun lokal) ───
+    // ─── LOGIN HANDLER (Supabase Auth beneran) ───
     async function handleLogin() {
       const email = emailInput.value.trim().toLowerCase();
       const password = passwordInput.value.trim();
@@ -1008,24 +998,19 @@ body::before{
       loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>&nbsp; Memuat...';
       loginBtn.disabled = true;
 
-      // Simulasi delay request supaya alur & loading state terasa sama
-      // seperti login berbasis API (mudah diganti fetch() nyata nanti).
-      await new Promise(resolve => setTimeout(resolve, 600));
-
       try {
-        const accounts = getAllAccounts();
-        const match = accounts.find(acc => acc.email.toLowerCase() === email && acc.password === password);
+        const { data, error } = await dvSupabase.auth.signInWithPassword({ email, password });
 
-        if (!match) {
-          throw new Error('Email atau password salah.');
+        if (error) {
+          // Pesan error Supabase Auth diterjemahkan jadi lebih ramah
+          if (error.message.includes('Invalid login credentials')) {
+            throw new Error('Email atau password salah.');
+          }
+          if (error.message.includes('Email not confirmed')) {
+            throw new Error('Email belum diverifikasi. Cek inbox kamu.');
+          }
+          throw new Error(error.message);
         }
-
-        if (match.status === 'suspended') {
-          throw new Error('Akun Anda telah di-suspend. Silakan hubungi administrator.');
-        }
-
-        // Simpan sesi (dipakai oleh dashboard.js sebagai guard)
-        localStorage.setItem(STORAGE_KEYS.session, JSON.stringify({ email, loggedInAt: Date.now() }));
 
         if (rememberCheck.checked) {
           localStorage.setItem(STORAGE_KEYS.remember, email);

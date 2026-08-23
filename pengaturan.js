@@ -28,7 +28,6 @@
     heroPhone: document.getElementById('heroPhone'),
     heroPhoneRow: document.getElementById('heroPhoneRow'),
     heroJoined: document.getElementById('heroJoined'),
-    prefRole: document.getElementById('prefRole'),
     profilError: document.getElementById('profilError'),
     btnSimpanProfil: document.getElementById('btnSimpanProfil'),
 
@@ -139,19 +138,10 @@
     el.inpTanggalLahir.max = new Date().toISOString().slice(0, 10); // tidak boleh pilih tanggal masa depan
     el.inpTanggalLahir.value = p.tanggalLahir || '';
     el.inpAlamat.value = p.alamat || '';
-    if (el.prefRole) el.prefRole.value = p.role || 'owner';
     pendingFotoDataUrl = undefined;
     renderAvatarPreview(p.foto, p.nama);
     renderHeroDisplay(p);
   }
-
-  el.prefRole?.addEventListener('change', () => {
-    dvSetProfile({ role: el.prefRole.value });
-    // dvSetProfile() otomatis memanggil dvNotifySettingsChange(), yang sudah
-    // di-listen settings.js untuk refresh visibilitas menu Tim di semua halaman —
-    // jadi tidak perlu panggil manual di sini.
-    showToast(el.prefRole.value === 'owner' ? dvT('tim.role_owner') : dvT('tim.role_member'));
-  });
 
   el.btnAvatarCamera.addEventListener('click', () => el.inpFoto.click());
 
@@ -321,8 +311,11 @@
     showToast(dvT('set.toast_password_updated'));
   });
 
-  function doLogout() {
+  async function doLogout() {
     closeModal(el.logoutModal);
+    if (typeof dvSupabase !== 'undefined') {
+      await dvSupabase.auth.signOut();
+    }
     showToast(dvT('set.toast_logout'));
     // Beri jeda sebentar supaya toast sempat terlihat sebelum halaman berpindah.
     setTimeout(() => { window.location.href = 'index.html'; }, 700);

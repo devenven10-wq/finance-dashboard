@@ -77,13 +77,6 @@ button{font-family:inherit;}
 .brand-mark img{ width:100%; height:100%; object-fit:contain; }
 .brand span{font-size:17px; font-weight:700; letter-spacing:.01em;}
 
-/* Menu "Tim" cuma tampil untuk Owner. Dicek SINKRON di <script> awal
-   <head> tiap halaman (sebelum render) lewat atribut data-role di <html>,
-   supaya tidak ada "kedipan"/pergeseran sidebar (FOUC) saat pindah halaman —
-   dulu ini di-toggle lewat JS belakangan (style="display:none" awal),
-   yang menyebabkan glitch nav bergeser tiap kali page reload. */
-html[data-role="member"] #navItemTim{ display:none; }
-
 .nav-section-label{
   font-size:10.5px;
   font-weight:600;
@@ -401,8 +394,9 @@ tbody tr:hover{background:rgba(255,255,255,.02);}
 /* ============ Shared: Modal ============ */
 .modal-overlay{
   position:fixed; inset:0; background:rgba(4,3,13,.72); backdrop-filter:blur(4px);
-  display:flex; align-items:center; justify-content:center; z-index:350;
+  display:flex; align-items:safe center; justify-content:center; z-index:350;
   opacity:0; pointer-events:none; transition:opacity var(--ease);
+  overflow-y:auto; padding:24px 16px;
 }
 .modal-overlay.open{opacity:1; pointer-events:auto;}
 .modal{
@@ -543,6 +537,13 @@ tbody tr:hover{background:rgba(255,255,255,.02);}
 @media (max-width:640px){
   .dv-generic-toast{ left:16px; right:16px; max-width:none; transform:translateY(-120%); }
   .dv-generic-toast.show{ transform:translateY(0); }
+
+  /* Panel "Cash Flow": di layar sempit, chip filter (7 Hari/30 Hari/dst)
+     terlalu banyak buat sejajar di samping judul — jadi numpuk kecil di
+     kanan. Tumpuk vertikal saja: judul+legend di atas, chip full-width
+     di bawah supaya bisa wrap dengan wajar. */
+  .panel-head-cashflow{ flex-direction:column; align-items:flex-start; gap:12px; }
+  .panel-head-cashflow .cf-range-chips{ width:100%; }
 }
 
 /* ============ Modal konfirmasi generik (pengganti confirm() bawaan

@@ -26,9 +26,7 @@ const DV_PROFILE_DEFAULT = {
   tanggalLahir: '',
   alamat: '',
   bergabungSejak: null, // ISO date string, di-set sekali otomatis saat profil pertama kali dibuka
-  foto: null, // base64 data URL, atau null -> pakai inisial
-  role: 'owner' // 'owner' | 'member' — menentukan akses menu Tim. Default owner
-                // karena siapa pun yang pertama kali setup di device ini dianggap pemilik.
+  foto: null // base64 data URL, atau null -> pakai inisial
 };
 
 const DV_PREF_DEFAULT = {
@@ -251,20 +249,6 @@ function dvSetupMobileNav() {
     dvUpdateThemeToggleIcons(dvGetTheme());
     dvSetupMobileNav();
     if (typeof dvApplyLanguage === 'function') dvApplyLanguage();
-    dvApplyTimNavVisibility();
-  }
-
-  // Menu "Tim" di sidebar cuma tampil kalau profil device ini role-nya
-  // Owner (lihat storage.js: dvIsOwner). Visibilitas awal sudah ditentukan
-  // SINKRON lewat <script> di <head> tiap halaman (atribut data-role di
-  // <html>, dicek CSS lewat html[data-role="member"] #navItemTim{display:none})
-  // supaya tidak ada glitch/pergeseran sidebar saat halaman baru dimuat.
-  // Fungsi ini cuma menjaga atribut itu tetap sinkron kalau role berubah
-  // SAAT halaman sedang terbuka (tanpa reload) — misal lewat toggle role
-  // testing di Pengaturan.
-  function dvApplyTimNavVisibility() {
-    const isOwner = typeof dvIsOwner === 'function' ? dvIsOwner() : true;
-    document.documentElement.setAttribute('data-role', isOwner ? 'owner' : 'member');
   }
 
   if (document.readyState === 'loading') {
@@ -279,14 +263,16 @@ function dvSetupMobileNav() {
     dvApplyTheme(dvGetTheme());
     dvApplyProfileToDOM(dvGetProfile());
     if (typeof dvApplyLanguage === 'function') dvApplyLanguage();
-    dvApplyTimNavVisibility();
   });
 })();
 // ============================================================
 // ---------- Logout global (dipakai tombol logout di sidebar
 // setiap halaman lewat onclick="dvpointLogout()") ----------
 // ============================================================
-function dvpointLogout() {
+async function dvpointLogout() {
+  if (typeof dvSupabase !== 'undefined') {
+    await dvSupabase.auth.signOut();
+  }
   if (typeof dvShowGenericToast === 'function') {
     dvShowGenericToast(typeof dvT === 'function' ? dvT('set.toast_logout') : 'Anda telah keluar dari akun.');
   }
