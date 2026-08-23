@@ -1,19 +1,35 @@
 // ============================================================
 // DVpoint — Shared Data Layer (storage.js)
 // ============================================================
-// Semua transaksi, akun, dan tujuan keuangan disimpan di localStorage.
-// Setiap halaman (Dashboard, Pemasukan, Pengeluaran, Semua Transaksi, dst)
-// membaca/menulis dari sini, sehingga selalu satu sumber kebenaran (single
-// source of truth). Setiap kali data berubah, dvNotifyChange() dipanggil
-// supaya halaman yang sedang terbuka bisa langsung re-render tanpa refresh,
-// dan tab/halaman lain ikut sinkron lewat event `storage` bawaan browser.
+// ⚠️ PERUBAHAN BESAR: sekarang tersambung ke Supabase (database
+// sungguhan), BUKAN lagi localStorage. Pola yang dipakai:
+//
+// 1. Begitu halaman dimuat, dvInitData() (async) narik SEMUA data
+//    milik user yang sedang login dari Supabase, lalu disimpan di
+//    array in-memory (DV_AKUN, DV_TRANSAKSI) — sama seperti pola
+//    DV_AKUN yang sudah ada sebelumnya, cuma sumbernya sekarang
+//    Supabase, bukan localStorage.
+// 2. Fungsi BACA data (dvGetAkunAll, dvGetTransaksi, dst) tetap
+//    SINKRON seperti sebelumnya — cukup baca dari cache in-memory
+//    itu. Jadi kode di halaman lain (dashboard.js, akun.js, dst)
+//    yang cuma BACA data tidak perlu diubah sama sekali.
+// 3. Fungsi TULIS data (dvAddTransaksi, dvUpdateAkunAccount, dst)
+//    sekarang ASYNC (harus dipanggil pakai `await`) karena perlu
+//    kirim ke server Supabase lewat internet, tidak bisa instan.
+//
+// Setiap tabel di Supabase sudah dilindungi Row Level Security —
+// query otomatis cuma kembalikan data milik user yang sedang login,
+// tidak perlu filter user_id manual di sisi sini (tapi tetap kita
+// sertakan saat INSERT, karena RLS mewajibkan itu).
 // ============================================================
 
-const DVPOINT_TX_KEY = 'dvpoint_transaksi';
-const DVPOINT_GOALS_KEY = 'dvpoint_tujuan';
-const DVPOINT_AKUN_KEY = 'dvpoint_akun';
-const DVPOINT_BUDGET_KEY = 'dvpoint_anggaran';
 const DVPOINT_EVENT = 'dvpoint:datachanged';
+
+// ⚠️ SEMENTARA: dua key ini masih dipakai bagian Tujuan Keuangan &
+// Anggaran, yang belum dimigrasi ke Supabase (masih tahap berikutnya).
+// Akan dihapus begitu kedua bagian itu juga sudah dipindah.
+const DVPOINT_GOALS_KEY = 'dvpoint_tujuan';
+const DVPOINT_BUDGET_KEY = 'dvpoint_anggaran';
 
 // Daftar kategori & metode yang konsisten dipakai di seluruh app
 const DV_KATEGORI = {
@@ -23,51 +39,92 @@ const DV_KATEGORI = {
 const DV_METODE = ['Cash', 'Transfer Bank', 'E-Wallet', 'Kartu Debit', 'Kartu Kredit'];
 const DV_STATUS = ['Berhasil', 'Pending', 'Gagal'];
 
-// Akun tempat transaksi tercatat (dipakai di dropdown "Akun", panel "Akun Saya",
-// dan halaman "Akun & Kartu"). Sebelumnya statis, sekarang disimpan di
-// localStorage supaya bisa ditambah/diedit/dihapus dari halaman Akun & Kartu.
-// DV_AKUN tetap berupa array yang sama (mutate-in-place) agar semua kode lama
-// yang memakai `DV_AKUN.find(...)` / `DV_AKUN.map(...)` tetap jalan tanpa ubah.
-const DV_AKUN_DEFAULTS = [
-  { id: 'cash', nama: 'Cash', jenis: 'Cash', bank: 'Cash', noRekening: '', warna: '#f5b342', icon: 'wallet', saldoAwal: 0, catatan: '', status: 'aktif' },
-  { id: 'bca', nama: 'BCA', jenis: 'Bank', bank: 'BCA', noRekening: '', warna: '#4f7dff', icon: 'bank', saldoAwal: 0, catatan: '', status: 'aktif' },
-  { id: 'dana', nama: 'DANA', jenis: 'E-Wallet', bank: 'DANA', noRekening: '', warna: '#2dd9a8', icon: 'wallet', saldoAwal: 0, catatan: '', status: 'aktif' },
-  { id: 'ovo', nama: 'OVO', jenis: 'E-Wallet', bank: 'OVO', noRekening: '', warna: '#9f4dff', icon: 'wallet', saldoAwal: 0, catatan: '', status: 'aktif' }
-];
-
+// Cache in-memory — diisi oleh dvInitData() saat halaman dimuat.
+// Array yang SAMA (mutate-in-place) supaya kode lama yang langsung
+// pakai `DV_AKUN.find(...)` / `.map(...)` tetap jalan tanpa ubah.
 const DV_AKUN = [];
+const DV_TRANSAKSI = [];
 
-function dvReadAkunRaw() {
-  try {
-    const list = JSON.parse(localStorage.getItem(DVPOINT_AKUN_KEY) || 'null');
-    return Array.isArray(list) ? list : null;
-  } catch (e) {
-    return null;
-  }
+let dvDataReady = false;
+let dvDataReadyPromise = null;
+
+// Ambil ID user yang sedang login. guard.js sudah men-set
+// window.dvCurrentUser di awal load halaman; ini fallback kalau
+// dipanggil sebelum guard.js sempat jalan.
+async function dvGetUserId() {
+  if (window.dvCurrentUser) return window.dvCurrentUser.id;
+  const { data } = await dvSupabase.auth.getUser();
+  window.dvCurrentUser = data?.user || null;
+  return data?.user?.id || null;
 }
 
-function dvWriteAkunRaw(list) {
-  localStorage.setItem(DVPOINT_AKUN_KEY, JSON.stringify(list));
+// ---------- Konversi baris Supabase (snake_case) <-> format app (camelCase) ----------
+function dvAccountRowToApp(row) {
+  return {
+    id: row.id,
+    nama: row.nama,
+    jenis: row.jenis,
+    bank: row.bank,
+    noRekening: row.no_rekening || '',
+    warna: row.warna,
+    icon: row.icon,
+    saldoAwal: Number(row.saldo_awal) || 0,
+    catatan: row.catatan || '',
+    status: row.status,
+    createdAt: row.created_at
+  };
 }
 
-// Sinkronkan isi array DV_AKUN (in-memory) dengan yang tersimpan di localStorage.
-// Dipanggil saat load pertama kali dan setiap kali data akun berubah.
-function dvRefreshAkunMemory() {
-  let list = dvReadAkunRaw();
-  if (!list) {
-    list = DV_AKUN_DEFAULTS.map(a => ({ ...a, createdAt: new Date().toISOString() }));
-    dvWriteAkunRaw(list);
-  }
-  DV_AKUN.length = 0;
-  list.forEach(a => DV_AKUN.push(a));
-  return DV_AKUN;
+function dvTrxRowToApp(row) {
+  return {
+    id: row.id,
+    tanggal: row.tanggal,
+    deskripsi: row.deskripsi || '',
+    kategori: row.kategori,
+    metode: row.metode,
+    akun: row.akun_id,
+    akunAsal: row.akun_asal_id,
+    akunTujuan: row.akun_tujuan_id,
+    tipe: row.tipe,
+    jumlah: Number(row.jumlah) || 0,
+    catatan: row.catatan || '',
+    status: row.status
+  };
 }
 
-dvRefreshAkunMemory();
+// ---------- Bootstrap: narik semua data user dari Supabase ----------
+// Dipanggil sekali di awal tiap halaman (lihat dvBootstrapPage di bawah).
+// Kalau dipanggil berkali-kali, cukup nunggu promise yang sama (tidak
+// fetch ulang berkali-kali).
+function dvInitData() {
+  if (dvDataReadyPromise) return dvDataReadyPromise;
+
+  dvDataReadyPromise = (async () => {
+    const userId = await dvGetUserId();
+    if (!userId) return; // guard.js semestinya sudah redirect kalau belum login
+
+    const [akunRes, trxRes] = await Promise.all([
+      dvSupabase.from('accounts').select('*').order('created_at', { ascending: false }),
+      dvSupabase.from('transactions').select('*').order('tanggal', { ascending: false }).order('created_at', { ascending: false })
+    ]);
+
+    if (akunRes.error) console.error('[DVpoint] Gagal ambil data akun:', akunRes.error.message);
+    if (trxRes.error) console.error('[DVpoint] Gagal ambil data transaksi:', trxRes.error.message);
+
+    DV_AKUN.length = 0;
+    (akunRes.data || []).forEach(row => DV_AKUN.push(dvAccountRowToApp(row)));
+
+    DV_TRANSAKSI.length = 0;
+    (trxRes.data || []).forEach(row => DV_TRANSAKSI.push(dvTrxRowToApp(row)));
+
+    dvDataReady = true;
+  })();
+
+  return dvDataReadyPromise;
+}
 
 // ---------- CRUD Akun & Kartu ----------
 function dvGetAkunAll() {
-  dvRefreshAkunMemory();
   return DV_AKUN.slice();
 }
 
@@ -75,41 +132,49 @@ function dvAkunHasTransaksi(id) {
   return dvGetTransaksi().some(t => t.akun === id || t.akunAsal === id || t.akunTujuan === id);
 }
 
-function dvAddAkunAccount(data) {
-  const list = dvReadAkunRaw() || [];
-  const finalAkun = {
-    id: 'akun_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+async function dvAddAkunAccount(data) {
+  const userId = await dvGetUserId();
+  const payload = {
+    user_id: userId,
     nama: data.nama,
     jenis: data.jenis || 'Bank',
     bank: data.bank || data.nama,
-    noRekening: data.noRekening || '',
+    no_rekening: data.noRekening || '',
     warna: data.warna || '#4f7dff',
     icon: data.icon || 'bank',
-    saldoAwal: Number(data.saldoAwal) || 0,
+    saldo_awal: Number(data.saldoAwal) || 0,
     catatan: data.catatan || '',
-    status: 'aktif',
-    createdAt: new Date().toISOString()
+    status: 'aktif'
   };
-  list.unshift(finalAkun);
-  dvWriteAkunRaw(list);
-  dvRefreshAkunMemory();
+  const { data: row, error } = await dvSupabase.from('accounts').insert(payload).select().single();
+  if (error) { console.error('[DVpoint] Gagal tambah akun:', error.message); throw error; }
+
+  const finalAkun = dvAccountRowToApp(row);
+  DV_AKUN.unshift(finalAkun);
   dvNotifyChange();
   return finalAkun;
 }
 
-function dvUpdateAkunAccount(id, updates) {
-  const list = dvReadAkunRaw() || [];
-  const idx = list.findIndex(a => a.id === id);
-  if (idx === -1) return null;
-  list[idx] = {
-    ...list[idx],
-    ...updates,
-    saldoAwal: Number(updates.saldoAwal != null ? updates.saldoAwal : list[idx].saldoAwal) || 0
-  };
-  dvWriteAkunRaw(list);
-  dvRefreshAkunMemory();
+async function dvUpdateAkunAccount(id, updates) {
+  const payload = {};
+  if (updates.nama !== undefined) payload.nama = updates.nama;
+  if (updates.jenis !== undefined) payload.jenis = updates.jenis;
+  if (updates.bank !== undefined) payload.bank = updates.bank;
+  if (updates.noRekening !== undefined) payload.no_rekening = updates.noRekening;
+  if (updates.warna !== undefined) payload.warna = updates.warna;
+  if (updates.icon !== undefined) payload.icon = updates.icon;
+  if (updates.saldoAwal !== undefined) payload.saldo_awal = Number(updates.saldoAwal) || 0;
+  if (updates.catatan !== undefined) payload.catatan = updates.catatan;
+  if (updates.status !== undefined) payload.status = updates.status;
+
+  const { data: row, error } = await dvSupabase.from('accounts').update(payload).eq('id', id).select().single();
+  if (error) { console.error('[DVpoint] Gagal ubah akun:', error.message); throw error; }
+
+  const updated = dvAccountRowToApp(row);
+  const idx = DV_AKUN.findIndex(a => a.id === id);
+  if (idx !== -1) DV_AKUN[idx] = updated;
   dvNotifyChange();
-  return list[idx];
+  return updated;
 }
 
 function dvSetAkunStatus(id, status) {
@@ -117,13 +182,15 @@ function dvSetAkunStatus(id, status) {
 }
 
 // Menghapus akun hanya diperbolehkan jika belum pernah dipakai di transaksi manapun.
-function dvDeleteAkunAccount(id) {
+async function dvDeleteAkunAccount(id) {
   if (dvAkunHasTransaksi(id)) {
     return { success: false, reason: 'has_transactions' };
   }
-  const list = (dvReadAkunRaw() || []).filter(a => a.id !== id);
-  dvWriteAkunRaw(list);
-  dvRefreshAkunMemory();
+  const { error } = await dvSupabase.from('accounts').delete().eq('id', id);
+  if (error) { console.error('[DVpoint] Gagal hapus akun:', error.message); return { success: false, reason: 'error' }; }
+
+  const idx = DV_AKUN.findIndex(a => a.id === id);
+  if (idx !== -1) DV_AKUN.splice(idx, 1);
   dvNotifyChange();
   return { success: true };
 }
@@ -200,97 +267,108 @@ function dvNotifyChange() {
   window.dispatchEvent(new CustomEvent(DVPOINT_EVENT));
 }
 
-// Panggil callback setiap kali data berubah — baik di tab ini (custom event)
-// maupun di tab lain (storage event bawaan browser).
+// Panggil callback setiap kali data berubah — di tab ini (custom event).
+// (Sinkron lintas-tab lewat 'storage' event bawaan browser tidak relevan
+// lagi sekarang karena datanya di Supabase, bukan localStorage.)
 function dvOnChange(callback) {
   window.addEventListener(DVPOINT_EVENT, callback);
-  window.addEventListener('storage', (e) => {
-    if (e.key === DVPOINT_TX_KEY || e.key === DVPOINT_GOALS_KEY || e.key === DVPOINT_AKUN_KEY || e.key === DVPOINT_BUDGET_KEY) callback();
-  });
 }
 
 // ---------- Transaksi ----------
 function dvGetTransaksi() {
-  try {
-    const list = JSON.parse(localStorage.getItem(DVPOINT_TX_KEY) || '[]');
-    return Array.isArray(list) ? list : [];
-  } catch (e) {
-    return [];
-  }
+  return DV_TRANSAKSI.slice();
 }
 
-function dvSaveTransaksi(list) {
-  localStorage.setItem(DVPOINT_TX_KEY, JSON.stringify(list));
-  dvNotifyChange();
-}
-
-function dvAddTransaksi(trx) {
-  const list = dvGetTransaksi();
-  const finalTrx = {
-    id: 'tx_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+async function dvAddTransaksi(trx) {
+  const userId = await dvGetUserId();
+  const payload = {
+    user_id: userId,
     tanggal: trx.tanggal,
     deskripsi: trx.deskripsi || trx.kategori,
     kategori: trx.kategori,
     metode: trx.metode || 'Cash',
-    akun: trx.akun || 'cash',
+    akun_id: trx.akun || null,
     tipe: trx.tipe, // 'masuk' | 'keluar'
     jumlah: Number(trx.jumlah) || 0,
     catatan: trx.catatan || '',
     status: trx.status || 'Berhasil'
   };
-  list.unshift(finalTrx);
-  dvSaveTransaksi(list);
+  const { data: row, error } = await dvSupabase.from('transactions').insert(payload).select().single();
+  if (error) { console.error('[DVpoint] Gagal tambah transaksi:', error.message); throw error; }
+
+  const finalTrx = dvTrxRowToApp(row);
+  DV_TRANSAKSI.unshift(finalTrx);
+  dvNotifyChange();
   return finalTrx;
 }
 
-function dvDeleteTransaksi(id) {
-  const list = dvGetTransaksi().filter(t => t.id !== id);
-  dvSaveTransaksi(list);
+async function dvDeleteTransaksi(id) {
+  const { error } = await dvSupabase.from('transactions').delete().eq('id', id);
+  if (error) { console.error('[DVpoint] Gagal hapus transaksi:', error.message); throw error; }
+
+  const idx = DV_TRANSAKSI.findIndex(t => t.id === id);
+  if (idx !== -1) DV_TRANSAKSI.splice(idx, 1);
+  dvNotifyChange();
 }
 
-function dvUpdateTransaksi(id, updates) {
-  const list = dvGetTransaksi();
-  const idx = list.findIndex(t => t.id === id);
-  if (idx === -1) return null;
-  list[idx] = { ...list[idx], ...updates, jumlah: Number(updates.jumlah != null ? updates.jumlah : list[idx].jumlah) || 0 };
-  dvSaveTransaksi(list);
-  return list[idx];
+async function dvUpdateTransaksi(id, updates) {
+  const payload = {};
+  if (updates.tanggal !== undefined) payload.tanggal = updates.tanggal;
+  if (updates.deskripsi !== undefined) payload.deskripsi = updates.deskripsi;
+  if (updates.kategori !== undefined) payload.kategori = updates.kategori;
+  if (updates.metode !== undefined) payload.metode = updates.metode;
+  if (updates.akun !== undefined) payload.akun_id = updates.akun;
+  if (updates.akunAsal !== undefined) payload.akun_asal_id = updates.akunAsal;
+  if (updates.akunTujuan !== undefined) payload.akun_tujuan_id = updates.akunTujuan;
+  if (updates.tipe !== undefined) payload.tipe = updates.tipe;
+  if (updates.jumlah !== undefined) payload.jumlah = Number(updates.jumlah) || 0;
+  if (updates.catatan !== undefined) payload.catatan = updates.catatan;
+  if (updates.status !== undefined) payload.status = updates.status;
+
+  const { data: row, error } = await dvSupabase.from('transactions').update(payload).eq('id', id).select().single();
+  if (error) { console.error('[DVpoint] Gagal ubah transaksi:', error.message); throw error; }
+
+  const updated = dvTrxRowToApp(row);
+  const idx = DV_TRANSAKSI.findIndex(t => t.id === id);
+  if (idx !== -1) DV_TRANSAKSI[idx] = updated;
+  dvNotifyChange();
+  return updated;
 }
 
-function dvDuplicateTransaksi(id) {
-  const list = dvGetTransaksi();
-  const src = list.find(t => t.id === id);
+async function dvDuplicateTransaksi(id) {
+  const src = DV_TRANSAKSI.find(t => t.id === id);
   if (!src) return null;
-  const copy = { ...src, id: 'tx_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8), tanggal: dvTodayISO() };
-  list.unshift(copy);
-  dvSaveTransaksi(list);
-  return copy;
+  return dvAddTransaksi({ ...src, tanggal: dvTodayISO() });
 }
 
 // ---------- Transfer antar akun ----------
-// Transfer disimpan sebagai satu entri transaksi dengan tipe:'transfer' dan
+// Transfer disimpan sebagai satu baris transaksi dengan tipe:'transfer' dan
 // dua akun (akunAsal, akunTujuan). Tidak memengaruhi total pemasukan/pengeluaran,
-// tapi memindahkan saldo antar akun (lihat dvGetAkunList).
-function dvAddTransfer(trf) {
-  const list = dvGetTransaksi();
+// tapi memindahkan saldo antar akun (lihat dvHitungSaldoAkun).
+async function dvAddTransfer(trf) {
+  const userId = await dvGetUserId();
   const asal = DV_AKUN.find(a => a.id === trf.akunAsal);
   const tujuan = DV_AKUN.find(a => a.id === trf.akunTujuan);
-  const finalTrf = {
-    id: 'tx_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+  const payload = {
+    user_id: userId,
     tanggal: trf.tanggal || dvTodayISO(),
     deskripsi: trf.catatan || `Transfer ${asal ? asal.nama : trf.akunAsal} → ${tujuan ? tujuan.nama : trf.akunTujuan}`,
     kategori: 'Transfer',
     metode: 'Transfer Antar Akun',
-    akun: trf.akunAsal,
-    akunAsal: trf.akunAsal,
-    akunTujuan: trf.akunTujuan,
+    akun_id: trf.akunAsal,
+    akun_asal_id: trf.akunAsal,
+    akun_tujuan_id: trf.akunTujuan,
     tipe: 'transfer',
     jumlah: Number(trf.jumlah) || 0,
     catatan: trf.catatan || '',
     status: trf.status || 'Berhasil'
   };
-  list.unshift(finalTrf);
-  dvSaveTransaksi(list);
+  const { data: row, error } = await dvSupabase.from('transactions').insert(payload).select().single();
+  if (error) { console.error('[DVpoint] Gagal transfer:', error.message); throw error; }
+
+  const finalTrf = dvTrxRowToApp(row);
+  DV_TRANSAKSI.unshift(finalTrf);
+  dvNotifyChange();
   return finalTrf;
 }
 
@@ -927,4 +1005,25 @@ function dvShowConfirm(message, onConfirm, opts) {
   document.addEventListener('keydown', onKey);
 
   requestAnimationFrame(() => overlay.classList.add('open'));
+}
+
+// ============================================================
+// ---------- Bootstrap tiap halaman ----------
+// Dipanggil oleh setiap file JS halaman (dashboard.js, akun.js, dst)
+// SEBELUM render pertama, supaya data dari Supabase (dvInitData)
+// sudah siap. Contoh pakai:
+//
+//   dvBootstrapPage(() => {
+//     render();
+//     dvOnChange(render);
+//   });
+//
+// ============================================================
+async function dvBootstrapPage(callback) {
+  try {
+    await dvInitData();
+  } catch (e) {
+    console.error('[DVpoint] Gagal memuat data awal:', e);
+  }
+  callback();
 }

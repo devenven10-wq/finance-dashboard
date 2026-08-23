@@ -572,5 +572,7 @@
   dvOnChange(render);
 
   // ---------- Init ----------
-  render();
+  // dvBootstrapPage() nunggu dulu data akun+transaksi selesai ditarik
+  // dari Supabase (proses jaringan, tidak instan), baru render() jalan.
+  dvBootstrapPage(render);
 })();
