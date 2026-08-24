@@ -25,12 +25,6 @@
 
 const DVPOINT_EVENT = 'dvpoint:datachanged';
 
-// ⚠️ SEMENTARA: dua key ini masih dipakai bagian Tujuan Keuangan &
-// Anggaran, yang belum dimigrasi ke Supabase (masih tahap berikutnya).
-// Akan dihapus begitu kedua bagian itu juga sudah dipindah.
-const DVPOINT_GOALS_KEY = 'dvpoint_tujuan';
-const DVPOINT_BUDGET_KEY = 'dvpoint_anggaran';
-
 // Daftar kategori & metode yang konsisten dipakai di seluruh app
 const DV_KATEGORI = {
   masuk: ['Gaji', 'Bonus', 'Investasi', 'Hadiah', 'Freelance', 'Lainnya'],
@@ -44,6 +38,9 @@ const DV_STATUS = ['Berhasil', 'Pending', 'Gagal'];
 // pakai `DV_AKUN.find(...)` / `.map(...)` tetap jalan tanpa ubah.
 const DV_AKUN = [];
 const DV_TRANSAKSI = [];
+const DV_TUJUAN = [];
+const DV_ANGGARAN = [];
+const DV_INVESTASI = [];
 
 let dvDataReady = false;
 let dvDataReadyPromise = null;
@@ -92,6 +89,62 @@ function dvTrxRowToApp(row) {
   };
 }
 
+function dvGoalRowToApp(row) {
+  return {
+    id: row.id,
+    nama: row.nama,
+    kategori: row.kategori,
+    target: Number(row.target) || 0,
+    terkumpul: Number(row.terkumpul) || 0,
+    targetTanggal: row.target_tanggal || '',
+    prioritas: row.prioritas,
+    warna: row.warna,
+    icon: row.icon,
+    catatan: row.catatan || '',
+    status: row.status,
+    arsip: !!row.arsip,
+    createdAt: row.created_at,
+    riwayat: (row.goal_progress || [])
+      .map(r => ({ id: r.id, nominal: Number(r.nominal) || 0, tanggal: r.tanggal, catatan: r.catatan || '' }))
+      .sort((a, b) => (a.tanggal < b.tanggal ? 1 : -1))
+  };
+}
+
+function dvBudgetRowToApp(row) {
+  return {
+    id: row.id,
+    nama: row.nama,
+    kategori: row.kategori,
+    nominal: Number(row.nominal) || 0,
+    periode: row.periode,
+    tanggalMulai: row.tanggal_mulai || '',
+    tanggalSelesai: row.tanggal_selesai || '',
+    status: row.status,
+    catatan: row.catatan || '',
+    arsip: !!row.arsip,
+    createdAt: row.created_at
+  };
+}
+
+function dvInvestRowToApp(row) {
+  return {
+    id: row.id,
+    nama: row.nama,
+    jenis: row.jenis,
+    modalAwal: Number(row.modal_awal) || 0,
+    nilaiSaatIni: Number(row.nilai_saat_ini) || 0,
+    tanggalInvestasi: row.tanggal_investasi,
+    platform: row.platform || '',
+    status: row.status,
+    catatan: row.catatan || '',
+    arsip: !!row.arsip,
+    createdAt: row.created_at,
+    riwayat: (row.investment_history || [])
+      .map(r => ({ id: r.id, nilai: Number(r.nilai) || 0, tanggal: r.tanggal, catatan: r.catatan || '' }))
+      .sort((a, b) => (a.tanggal < b.tanggal ? 1 : -1))
+  };
+}
+
 // ---------- Bootstrap: narik semua data user dari Supabase ----------
 // Dipanggil sekali di awal tiap halaman (lihat dvBootstrapPage di bawah).
 // Kalau dipanggil berkali-kali, cukup nunggu promise yang sama (tidak
@@ -103,19 +156,34 @@ function dvInitData() {
     const userId = await dvGetUserId();
     if (!userId) return; // guard.js semestinya sudah redirect kalau belum login
 
-    const [akunRes, trxRes] = await Promise.all([
+    const [akunRes, trxRes, goalRes, budgetRes, investRes] = await Promise.all([
       dvSupabase.from('accounts').select('*').order('created_at', { ascending: false }),
-      dvSupabase.from('transactions').select('*').order('tanggal', { ascending: false }).order('created_at', { ascending: false })
+      dvSupabase.from('transactions').select('*').order('tanggal', { ascending: false }).order('created_at', { ascending: false }),
+      dvSupabase.from('goals').select('*, goal_progress(*)').order('created_at', { ascending: false }),
+      dvSupabase.from('budgets').select('*').order('created_at', { ascending: false }),
+      dvSupabase.from('investments').select('*, investment_history(*)').order('created_at', { ascending: false })
     ]);
 
     if (akunRes.error) console.error('[DVpoint] Gagal ambil data akun:', akunRes.error.message);
     if (trxRes.error) console.error('[DVpoint] Gagal ambil data transaksi:', trxRes.error.message);
+    if (goalRes.error) console.error('[DVpoint] Gagal ambil data tujuan:', goalRes.error.message);
+    if (budgetRes.error) console.error('[DVpoint] Gagal ambil data anggaran:', budgetRes.error.message);
+    if (investRes.error) console.error('[DVpoint] Gagal ambil data investasi:', investRes.error.message);
 
     DV_AKUN.length = 0;
     (akunRes.data || []).forEach(row => DV_AKUN.push(dvAccountRowToApp(row)));
 
     DV_TRANSAKSI.length = 0;
     (trxRes.data || []).forEach(row => DV_TRANSAKSI.push(dvTrxRowToApp(row)));
+
+    DV_TUJUAN.length = 0;
+    (goalRes.data || []).forEach(row => DV_TUJUAN.push(dvGoalRowToApp(row)));
+
+    DV_ANGGARAN.length = 0;
+    (budgetRes.data || []).forEach(row => DV_ANGGARAN.push(dvBudgetRowToApp(row)));
+
+    DV_INVESTASI.length = 0;
+    (investRes.data || []).forEach(row => DV_INVESTASI.push(dvInvestRowToApp(row)));
 
     dvDataReady = true;
   })();
@@ -597,62 +665,65 @@ const DV_TUJUAN_KATEGORI = ['Elektronik', 'Kendaraan', 'Rumah', 'Liburan', 'Dana
 const DV_TUJUAN_PRIORITAS = ['Tinggi', 'Sedang', 'Rendah'];
 
 function dvGetTujuan() {
-  try {
-    const list = JSON.parse(localStorage.getItem(DVPOINT_GOALS_KEY) || '[]');
-    return Array.isArray(list) ? list : [];
-  } catch (e) {
-    return [];
-  }
+  return DV_TUJUAN.slice();
 }
 
-function dvSaveTujuan(list) {
-  localStorage.setItem(DVPOINT_GOALS_KEY, JSON.stringify(list));
-  dvNotifyChange();
-}
-
-function dvAddTujuan(goal) {
-  const list = dvGetTujuan();
+async function dvAddTujuan(goal) {
+  const userId = await dvGetUserId();
   const danaAwal = Number(goal.terkumpul || goal.danaAwal) || 0;
   const target = Number(goal.target) || 0;
-  const finalGoal = {
-    id: 'goal_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+  const payload = {
+    user_id: userId,
     nama: goal.nama,
     kategori: DV_TUJUAN_KATEGORI.includes(goal.kategori) ? goal.kategori : 'Lainnya',
-    target: target,
+    target,
     terkumpul: danaAwal,
-    targetTanggal: goal.targetTanggal || '',
+    target_tanggal: goal.targetTanggal || null,
     prioritas: DV_TUJUAN_PRIORITAS.includes(goal.prioritas) ? goal.prioritas : 'Sedang',
     warna: goal.warna || '#4f7dff',
     icon: goal.icon || 'target',
     catatan: goal.catatan || '',
     status: dvHitungStatusTujuan(danaAwal, target, 'Aktif'),
-    arsip: false,
-    createdAt: new Date().toISOString(),
-    riwayat: danaAwal > 0 ? [{
-      id: 'prog_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
-      nominal: danaAwal,
-      tanggal: dvTodayISO(),
-      catatan: 'Dana awal'
-    }] : []
+    arsip: false
   };
-  list.unshift(finalGoal);
-  dvSaveTujuan(list);
+  const { data: row, error } = await dvSupabase.from('goals').insert(payload).select().single();
+  if (error) { console.error('[DVpoint] Gagal tambah tujuan:', error.message); throw error; }
+
+  // Kalau ada dana awal, catat juga sebagai baris pertama riwayat progress.
+  if (danaAwal > 0) {
+    await dvSupabase.from('goal_progress').insert({
+      goal_id: row.id, user_id: userId, nominal: danaAwal, tanggal: dvTodayISO(), catatan: 'Dana awal'
+    });
+  }
+
+  const finalGoal = dvGoalRowToApp({ ...row, goal_progress: danaAwal > 0 ? [{ nominal: danaAwal, tanggal: dvTodayISO(), catatan: 'Dana awal' }] : [] });
+  DV_TUJUAN.unshift(finalGoal);
+  dvNotifyChange();
   return finalGoal;
 }
 
-function dvUpdateTujuan(id, updates) {
-  const list = dvGetTujuan();
-  const idx = list.findIndex(g => g.id === id);
-  if (idx === -1) return null;
-  const merged = { ...list[idx], ...updates };
-  if (updates.target != null) merged.target = Number(updates.target) || 0;
-  if (updates.terkumpul != null) merged.terkumpul = Number(updates.terkumpul) || 0;
-  if (updates.kategori && !DV_TUJUAN_KATEGORI.includes(updates.kategori)) merged.kategori = list[idx].kategori;
-  if (updates.prioritas && !DV_TUJUAN_PRIORITAS.includes(updates.prioritas)) merged.prioritas = list[idx].prioritas;
-  if (updates.status && !DV_TUJUAN_STATUS.includes(updates.status)) merged.status = list[idx].status;
-  list[idx] = merged;
-  dvSaveTujuan(list);
-  return list[idx];
+async function dvUpdateTujuan(id, updates) {
+  const payload = {};
+  if (updates.nama !== undefined) payload.nama = updates.nama;
+  if (updates.kategori !== undefined && DV_TUJUAN_KATEGORI.includes(updates.kategori)) payload.kategori = updates.kategori;
+  if (updates.target !== undefined) payload.target = Number(updates.target) || 0;
+  if (updates.terkumpul !== undefined) payload.terkumpul = Number(updates.terkumpul) || 0;
+  if (updates.targetTanggal !== undefined) payload.target_tanggal = updates.targetTanggal || null;
+  if (updates.prioritas !== undefined && DV_TUJUAN_PRIORITAS.includes(updates.prioritas)) payload.prioritas = updates.prioritas;
+  if (updates.warna !== undefined) payload.warna = updates.warna;
+  if (updates.icon !== undefined) payload.icon = updates.icon;
+  if (updates.catatan !== undefined) payload.catatan = updates.catatan;
+  if (updates.status !== undefined && DV_TUJUAN_STATUS.includes(updates.status)) payload.status = updates.status;
+  if (updates.arsip !== undefined) payload.arsip = !!updates.arsip;
+
+  const { data: row, error } = await dvSupabase.from('goals').update(payload).eq('id', id).select('*, goal_progress(*)').single();
+  if (error) { console.error('[DVpoint] Gagal ubah tujuan:', error.message); throw error; }
+
+  const updated = dvGoalRowToApp(row);
+  const idx = DV_TUJUAN.findIndex(g => g.id === id);
+  if (idx !== -1) DV_TUJUAN[idx] = updated;
+  dvNotifyChange();
+  return updated;
 }
 
 // Arsipkan / kembalikan dari arsip — hanya menyembunyikan dari daftar utama,
@@ -661,9 +732,12 @@ function dvSetTujuanArsip(id, arsip) {
   return dvUpdateTujuan(id, { arsip: !!arsip });
 }
 
-function dvDeleteTujuan(id) {
-  const list = dvGetTujuan().filter(g => g.id !== id);
-  dvSaveTujuan(list);
+async function dvDeleteTujuan(id) {
+  const { error } = await dvSupabase.from('goals').delete().eq('id', id);
+  if (error) { console.error('[DVpoint] Gagal hapus tujuan:', error.message); throw error; }
+  const idx = DV_TUJUAN.findIndex(g => g.id === id);
+  if (idx !== -1) DV_TUJUAN.splice(idx, 1);
+  dvNotifyChange();
 }
 
 // Tentukan status otomatis berdasarkan progress, tapi tidak pernah menimpa
@@ -677,25 +751,21 @@ function dvHitungStatusTujuan(terkumpul, target, statusSaatIni) {
 
 // Tambah Progress: menambah dana terkumpul + mencatat riwayat + auto-update status.
 // Efeknya murni lokal pada satu tujuan — tidak menyentuh transaksi/akun/dashboard.
-function dvAddTujuanProgress(id, entry) {
-  const list = dvGetTujuan();
-  const idx = list.findIndex(g => g.id === id);
-  if (idx === -1) return null;
-  const goal = list[idx];
+async function dvAddTujuanProgress(id, entry) {
+  const userId = await dvGetUserId();
+  const goal = DV_TUJUAN.find(g => g.id === id);
+  if (!goal) return null;
   const nominal = Number(entry.nominal) || 0;
-  const progressEntry = {
-    id: 'prog_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
-    nominal,
-    tanggal: entry.tanggal || dvTodayISO(),
-    catatan: entry.catatan || ''
-  };
-  goal.riwayat = Array.isArray(goal.riwayat) ? goal.riwayat : [];
-  goal.riwayat.unshift(progressEntry);
-  goal.terkumpul = (Number(goal.terkumpul) || 0) + nominal;
-  goal.status = dvHitungStatusTujuan(goal.terkumpul, Number(goal.target) || 0, goal.status);
-  list[idx] = goal;
-  dvSaveTujuan(list);
-  return goal;
+
+  const { error: progError } = await dvSupabase.from('goal_progress').insert({
+    goal_id: id, user_id: userId, nominal, tanggal: entry.tanggal || dvTodayISO(), catatan: entry.catatan || ''
+  });
+  if (progError) { console.error('[DVpoint] Gagal tambah progress:', progError.message); throw progError; }
+
+  const terkumpulBaru = (Number(goal.terkumpul) || 0) + nominal;
+  const statusBaru = dvHitungStatusTujuan(terkumpulBaru, Number(goal.target) || 0, goal.status);
+
+  return dvUpdateTujuan(id, { terkumpul: terkumpulBaru, status: statusBaru });
 }
 
 // Ringkasan 4 KPI di puncak halaman Tujuan Keuangan — murni data modul ini,
@@ -720,50 +790,52 @@ function dvGetTujuanSummary() {
 const DV_ANGGARAN_STATUS = ['Aktif', 'Selesai', 'Ditunda', 'Dibatalkan'];
 
 function dvGetAnggaranAll() {
-  try {
-    const list = JSON.parse(localStorage.getItem(DVPOINT_BUDGET_KEY) || '[]');
-    return Array.isArray(list) ? list : [];
-  } catch (e) {
-    return [];
-  }
+  return DV_ANGGARAN.slice();
 }
 
-function dvSaveAnggaranAll(list) {
-  localStorage.setItem(DVPOINT_BUDGET_KEY, JSON.stringify(list));
-  dvNotifyChange();
-}
-
-function dvAddAnggaran(data) {
-  const list = dvGetAnggaranAll();
-  const finalAnggaran = {
-    id: 'ang_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+async function dvAddAnggaran(data) {
+  const userId = await dvGetUserId();
+  const payload = {
+    user_id: userId,
     nama: data.nama,
     kategori: data.kategori,
     nominal: Number(data.nominal) || 0,
     periode: data.periode === 'tahunan' ? 'tahunan' : 'bulanan',
-    tanggalMulai: data.tanggalMulai || '',
-    tanggalSelesai: data.tanggalSelesai || '',
+    tanggal_mulai: data.tanggalMulai || null,
+    tanggal_selesai: data.tanggalSelesai || null,
     status: DV_ANGGARAN_STATUS.includes(data.status) ? data.status : 'Aktif',
     catatan: data.catatan || '',
-    arsip: false,
-    createdAt: new Date().toISOString()
+    arsip: false
   };
-  list.unshift(finalAnggaran);
-  dvSaveAnggaranAll(list);
+  const { data: row, error } = await dvSupabase.from('budgets').insert(payload).select().single();
+  if (error) { console.error('[DVpoint] Gagal tambah anggaran:', error.message); throw error; }
+
+  const finalAnggaran = dvBudgetRowToApp(row);
+  DV_ANGGARAN.unshift(finalAnggaran);
+  dvNotifyChange();
   return finalAnggaran;
 }
 
-function dvUpdateAnggaran(id, updates) {
-  const list = dvGetAnggaranAll();
-  const idx = list.findIndex(a => a.id === id);
-  if (idx === -1) return null;
-  const merged = { ...list[idx], ...updates };
-  merged.nominal = Number(updates.nominal != null ? updates.nominal : list[idx].nominal) || 0;
-  merged.periode = (updates.periode || list[idx].periode) === 'tahunan' ? 'tahunan' : 'bulanan';
-  if (updates.status && !DV_ANGGARAN_STATUS.includes(updates.status)) merged.status = list[idx].status;
-  list[idx] = merged;
-  dvSaveAnggaranAll(list);
-  return list[idx];
+async function dvUpdateAnggaran(id, updates) {
+  const payload = {};
+  if (updates.nama !== undefined) payload.nama = updates.nama;
+  if (updates.kategori !== undefined) payload.kategori = updates.kategori;
+  if (updates.nominal !== undefined) payload.nominal = Number(updates.nominal) || 0;
+  if (updates.periode !== undefined) payload.periode = updates.periode === 'tahunan' ? 'tahunan' : 'bulanan';
+  if (updates.tanggalMulai !== undefined) payload.tanggal_mulai = updates.tanggalMulai || null;
+  if (updates.tanggalSelesai !== undefined) payload.tanggal_selesai = updates.tanggalSelesai || null;
+  if (updates.status !== undefined && DV_ANGGARAN_STATUS.includes(updates.status)) payload.status = updates.status;
+  if (updates.catatan !== undefined) payload.catatan = updates.catatan;
+  if (updates.arsip !== undefined) payload.arsip = !!updates.arsip;
+
+  const { data: row, error } = await dvSupabase.from('budgets').update(payload).eq('id', id).select().single();
+  if (error) { console.error('[DVpoint] Gagal ubah anggaran:', error.message); throw error; }
+
+  const updated = dvBudgetRowToApp(row);
+  const idx = DV_ANGGARAN.findIndex(a => a.id === id);
+  if (idx !== -1) DV_ANGGARAN[idx] = updated;
+  dvNotifyChange();
+  return updated;
 }
 
 // Arsipkan / kembalikan dari arsip. Hanya menyembunyikan dari tampilan utama
@@ -772,9 +844,12 @@ function dvSetAnggaranArsip(id, arsip) {
   return dvUpdateAnggaran(id, { arsip: !!arsip });
 }
 
-function dvDeleteAnggaran(id) {
-  const list = dvGetAnggaranAll().filter(a => a.id !== id);
-  dvSaveAnggaranAll(list);
+async function dvDeleteAnggaran(id) {
+  const { error } = await dvSupabase.from('budgets').delete().eq('id', id);
+  if (error) { console.error('[DVpoint] Gagal hapus anggaran:', error.message); throw error; }
+  const idx = DV_ANGGARAN.findIndex(a => a.id === id);
+  if (idx !== -1) DV_ANGGARAN.splice(idx, 1);
+  dvNotifyChange();
 }
 
 // Ringkasan 4 KPI di puncak halaman Anggaran — murni menghitung data
@@ -801,7 +876,6 @@ function dvGetAnggaranSummary() {
 // Pengeluaran/Transfer, TIDAK mengubah saldo akun, dan TIDAK memengaruhi
 // Dashboard, Anggaran, Tujuan Keuangan, maupun Laporan.
 // ============================================================
-const DVPOINT_INVEST_KEY = 'dvpoint_investasi';
 const DV_INVEST_JENIS = ['Saham', 'Reksa Dana', 'Obligasi', 'Crypto', 'Emas', 'Properti', 'Deposito', 'Lainnya'];
 const DV_INVEST_STATUS = ['Aktif', 'Dijual', 'Ditutup', 'Arsip'];
 const DV_INVEST_ICON = {
@@ -826,90 +900,85 @@ const DV_INVEST_WARNA = {
 };
 
 function dvGetInvestasiAll() {
-  try {
-    const list = JSON.parse(localStorage.getItem(DVPOINT_INVEST_KEY) || '[]');
-    return Array.isArray(list) ? list : [];
-  } catch (e) {
-    return [];
-  }
+  return DV_INVESTASI.slice();
 }
 
-function dvSaveInvestasiAll(list) {
-  localStorage.setItem(DVPOINT_INVEST_KEY, JSON.stringify(list));
-  dvNotifyChange();
-}
-
-function dvAddInvestasi(data) {
-  const list = dvGetInvestasiAll();
+async function dvAddInvestasi(data) {
+  const userId = await dvGetUserId();
   const modalAwal = Number(data.modalAwal) || 0;
   const nilaiSaatIni = data.nilaiSaatIni != null && data.nilaiSaatIni !== '' ? Number(data.nilaiSaatIni) || 0 : modalAwal;
-  const finalInvest = {
-    id: 'inv_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+  const tanggalInvestasi = data.tanggalInvestasi || dvTodayISO();
+  const payload = {
+    user_id: userId,
     nama: data.nama,
     jenis: DV_INVEST_JENIS.includes(data.jenis) ? data.jenis : 'Lainnya',
-    modalAwal,
-    nilaiSaatIni,
-    tanggalInvestasi: data.tanggalInvestasi || dvTodayISO(),
+    modal_awal: modalAwal,
+    nilai_saat_ini: nilaiSaatIni,
+    tanggal_investasi: tanggalInvestasi,
     platform: data.platform || '',
     status: DV_INVEST_STATUS.includes(data.status) ? data.status : 'Aktif',
     catatan: data.catatan || '',
-    arsip: false,
-    createdAt: new Date().toISOString(),
-    riwayat: [{
-      id: 'rh_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
-      nilai: nilaiSaatIni,
-      tanggal: data.tanggalInvestasi || dvTodayISO(),
-      catatan: 'Nilai awal saat investasi dibuat'
-    }]
+    arsip: false
   };
-  list.unshift(finalInvest);
-  dvSaveInvestasiAll(list);
+  const { data: row, error } = await dvSupabase.from('investments').insert(payload).select().single();
+  if (error) { console.error('[DVpoint] Gagal tambah investasi:', error.message); throw error; }
+
+  await dvSupabase.from('investment_history').insert({
+    investment_id: row.id, user_id: userId, nilai: nilaiSaatIni, tanggal: tanggalInvestasi, catatan: 'Nilai awal saat investasi dibuat'
+  });
+
+  const finalInvest = dvInvestRowToApp({ ...row, investment_history: [{ nilai: nilaiSaatIni, tanggal: tanggalInvestasi, catatan: 'Nilai awal saat investasi dibuat' }] });
+  DV_INVESTASI.unshift(finalInvest);
+  dvNotifyChange();
   return finalInvest;
 }
 
-function dvUpdateInvestasi(id, updates) {
-  const list = dvGetInvestasiAll();
-  const idx = list.findIndex(i => i.id === id);
-  if (idx === -1) return null;
-  const merged = { ...list[idx], ...updates };
-  if (updates.modalAwal != null) merged.modalAwal = Number(updates.modalAwal) || 0;
-  if (updates.nilaiSaatIni != null) merged.nilaiSaatIni = Number(updates.nilaiSaatIni) || 0;
-  if (updates.jenis && !DV_INVEST_JENIS.includes(updates.jenis)) merged.jenis = list[idx].jenis;
-  if (updates.status && !DV_INVEST_STATUS.includes(updates.status)) merged.status = list[idx].status;
-  list[idx] = merged;
-  dvSaveInvestasiAll(list);
-  return list[idx];
+async function dvUpdateInvestasi(id, updates) {
+  const payload = {};
+  if (updates.nama !== undefined) payload.nama = updates.nama;
+  if (updates.jenis !== undefined && DV_INVEST_JENIS.includes(updates.jenis)) payload.jenis = updates.jenis;
+  if (updates.modalAwal !== undefined) payload.modal_awal = Number(updates.modalAwal) || 0;
+  if (updates.nilaiSaatIni !== undefined) payload.nilai_saat_ini = Number(updates.nilaiSaatIni) || 0;
+  if (updates.tanggalInvestasi !== undefined) payload.tanggal_investasi = updates.tanggalInvestasi;
+  if (updates.platform !== undefined) payload.platform = updates.platform;
+  if (updates.status !== undefined && DV_INVEST_STATUS.includes(updates.status)) payload.status = updates.status;
+  if (updates.catatan !== undefined) payload.catatan = updates.catatan;
+  if (updates.arsip !== undefined) payload.arsip = !!updates.arsip;
+
+  const { data: row, error } = await dvSupabase.from('investments').update(payload).eq('id', id).select('*, investment_history(*)').single();
+  if (error) { console.error('[DVpoint] Gagal ubah investasi:', error.message); throw error; }
+
+  const updated = dvInvestRowToApp(row);
+  const idx = DV_INVESTASI.findIndex(i => i.id === id);
+  if (idx !== -1) DV_INVESTASI[idx] = updated;
+  dvNotifyChange();
+  return updated;
 }
 
 // Update Nilai: mencatat nilai terbaru + menyimpan ke riwayat perubahan nilai.
 // Hanya berlaku pada modul Investasi — tidak menyentuh saldo akun/transaksi.
-function dvUpdateInvestasiNilai(id, entry) {
-  const list = dvGetInvestasiAll();
-  const idx = list.findIndex(i => i.id === id);
-  if (idx === -1) return null;
-  const inv = list[idx];
+async function dvUpdateInvestasiNilai(id, entry) {
+  const userId = await dvGetUserId();
   const nilai = Number(entry.nilai) || 0;
-  const riwayatEntry = {
-    id: 'rh_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
-    nilai,
-    tanggal: entry.tanggal || dvTodayISO(),
-    catatan: entry.catatan || ''
-  };
-  inv.riwayat = Array.isArray(inv.riwayat) ? inv.riwayat : [];
-  inv.riwayat.unshift(riwayatEntry);
-  inv.nilaiSaatIni = nilai;
-  list[idx] = inv;
-  dvSaveInvestasiAll(list);
-  return inv;
+
+  const { error: histError } = await dvSupabase.from('investment_history').insert({
+    investment_id: id, user_id: userId, nilai, tanggal: entry.tanggal || dvTodayISO(), catatan: entry.catatan || ''
+  });
+  if (histError) { console.error('[DVpoint] Gagal tambah riwayat nilai:', histError.message); throw histError; }
+
+  return dvUpdateInvestasi(id, { nilaiSaatIni: nilai });
 }
 
 function dvSetInvestasiArsip(id, arsip) {
   return dvUpdateInvestasi(id, { arsip: !!arsip, status: arsip ? 'Arsip' : 'Aktif' });
 }
 
-function dvDeleteInvestasi(id) {
-  const list = dvGetInvestasiAll().filter(i => i.id !== id);
-  dvSaveInvestasiAll(list);
+async function dvDeleteInvestasi(id) {
+  const { error } = await dvSupabase.from('investments').delete().eq('id', id);
+  if (error) { console.error('[DVpoint] Gagal hapus investasi:', error.message); throw error; }
+  const idx = DV_INVESTASI.findIndex(i => i.id === id);
+  if (idx !== -1) DV_INVESTASI.splice(idx, 1);
+  dvNotifyChange();
 }
 
 // Ringkasan 4 KPI di puncak halaman Investasi — murni data modul ini.

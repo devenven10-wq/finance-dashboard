@@ -33,9 +33,11 @@ let tjConfirmAction = null;
 document.addEventListener('DOMContentLoaded', () => {
   buildColorPicker();
   buildIconPicker();
-  renderAll();
   bindEvents();
-  dvOnChange(renderAll);
+  dvBootstrapPage(() => {
+    renderAll();
+    dvOnChange(renderAll);
+  });
 });
 
 function renderAll() {
@@ -301,16 +303,20 @@ function onSubmitTujuan(e) {
   };
   if (!data.nama || data.target <= 0) return;
 
-  dvShowConfirm(dvT(tjEditingId ? 'tj.confirm_simpan_edit' : 'tj.confirm_simpan_tambah'), () => {
-    if (tjEditingId) {
-      dvUpdateTujuan(tjEditingId, data);
-      showToast(dvT('tj.toast_diperbarui'));
-    } else {
-      data.terkumpul = dvParseRibuan(document.getElementById('gDanaAwal').value);
-      dvAddTujuan(data);
-      showToast(dvT('tj.toast_ditambahkan'));
+  dvShowConfirm(dvT(tjEditingId ? 'tj.confirm_simpan_edit' : 'tj.confirm_simpan_tambah'), async () => {
+    try {
+      if (tjEditingId) {
+        await dvUpdateTujuan(tjEditingId, data);
+        showToast(dvT('tj.toast_diperbarui'));
+      } else {
+        data.terkumpul = dvParseRibuan(document.getElementById('gDanaAwal').value);
+        await dvAddTujuan(data);
+        showToast(dvT('tj.toast_ditambahkan'));
+      }
+      closeTjModal();
+    } catch (err) {
+      showToast(err.message || 'Gagal menyimpan tujuan.');
     }
-    closeTjModal();
   });
 }
 
@@ -335,8 +341,8 @@ function onSubmitProgress(e) {
   if (!tjActiveGoalId) return;
   const nominal = dvParseRibuan(document.getElementById('pNominal').value);
   if (nominal <= 0) return;
-  dvShowConfirm(dvT('tj.confirm_tambah_progress'), () => {
-    dvAddTujuanProgress(tjActiveGoalId, {
+  dvShowConfirm(dvT('tj.confirm_tambah_progress'), async () => {
+    await dvAddTujuanProgress(tjActiveGoalId, {
       nominal,
       tanggal: document.getElementById('pTanggal').value || dvTodayISO(),
       catatan: document.getElementById('pCatatan').value.trim()
@@ -412,11 +418,11 @@ function renderDrawer(id) {
 }
 
 // ---------- Aksi: Arsip / Hapus ----------
-function tjToggleArsip(id) {
+async function tjToggleArsip(id) {
   closeAllDropdowns();
   const g = dvGetTujuan().find(x => x.id === id);
   if (!g) return;
-  dvSetTujuanArsip(id, !g.arsip);
+  await dvSetTujuanArsip(id, !g.arsip);
   showToast(g.arsip ? 'Tujuan diaktifkan kembali' : 'Tujuan diarsipkan');
   if (document.getElementById('tjDrawerOverlay').classList.contains('open')) renderDrawer(id);
 }
@@ -428,8 +434,8 @@ function tjConfirmHapus(id) {
   openConfirm(
     dvT('tj.confirm_hapus_title'),
     dvT('tj.confirm_hapus_desc', {nama: g.nama}),
-    () => {
-      dvDeleteTujuan(id);
+    async () => {
+      await dvDeleteTujuan(id);
       showToast(dvT('tj.toast_dihapus'));
       closeDrawer();
     }

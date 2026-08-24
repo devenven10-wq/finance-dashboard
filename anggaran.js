@@ -273,27 +273,31 @@ document.getElementById('formAnggaran').addEventListener('submit', (e) => {
   if (!tanggalMulai || !tanggalSelesai) { errEl.textContent = dvT('bg.err_tanggal_wajib'); return; }
   if (tanggalSelesai < tanggalMulai) { errEl.textContent = dvT('bg.err_tanggal_invalid'); return; }
 
-  dvShowConfirm(dvT(bgState.editingId ? 'bg.confirm_simpan_edit' : 'bg.confirm_simpan_tambah'), () => {
+  dvShowConfirm(dvT(bgState.editingId ? 'bg.confirm_simpan_edit' : 'bg.confirm_simpan_tambah'), async () => {
     const payload = { nama, kategori: bgState.selectedKategori, nominal, periode: bgState.selectedPeriode, tanggalMulai, tanggalSelesai, status, catatan };
 
-    if (bgState.editingId) {
-      dvUpdateAnggaran(bgState.editingId, payload);
-      bgToast(dvT('bg.toast_diperbarui'));
-    } else {
-      dvAddAnggaran(payload);
-      bgToast(dvT('bg.toast_ditambahkan'));
+    try {
+      if (bgState.editingId) {
+        await dvUpdateAnggaran(bgState.editingId, payload);
+        bgToast(dvT('bg.toast_diperbarui'));
+      } else {
+        await dvAddAnggaran(payload);
+        bgToast(dvT('bg.toast_ditambahkan'));
+      }
+      bgCloseModal();
+    } catch (err) {
+      errEl.textContent = err.message || 'Gagal menyimpan anggaran.';
     }
-    bgCloseModal();
   });
 });
 
 // ---------- Arsipkan / Hapus ----------
-function bgToggleArsip(e, id) {
+async function bgToggleArsip(e, id) {
   e.stopPropagation();
   bgCloseAllMenus();
   const a = dvGetAnggaranAll().find(x => x.id === id);
   if (!a) return;
-  dvSetAnggaranArsip(id, !a.arsip);
+  await dvSetAnggaranArsip(id, !a.arsip);
   bgToast(!a.arsip ? `${a.nama} diarsipkan.` : `${a.nama} dikembalikan dari arsip.`);
   bgCloseDrawer();
 }
@@ -303,8 +307,8 @@ function bgDeleteAnggaran(e, id) {
   bgCloseAllMenus();
   const a = dvGetAnggaranAll().find(x => x.id === id);
   if (!a) return;
-  dvShowConfirm(dvT('bg.confirm_hapus', {nama: a.nama}), () => {
-    dvDeleteAnggaran(id);
+  dvShowConfirm(dvT('bg.confirm_hapus', {nama: a.nama}), async () => {
+    await dvDeleteAnggaran(id);
     bgCloseDrawer();
     bgToast(dvT('bg.toast_dihapus'));
   }, { danger: true });
@@ -371,5 +375,7 @@ function bgRenderAll() {
   bgRenderGrid();
 }
 
-bgRenderAll();
-dvOnChange(bgRenderAll);
+dvBootstrapPage(() => {
+  bgRenderAll();
+  dvOnChange(bgRenderAll);
+});

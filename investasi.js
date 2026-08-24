@@ -279,7 +279,7 @@
     if (!tanggal) { errEl.textContent = dvT('iv.err_tanggal_wajib'); return; }
     errEl.textContent = '';
 
-    dvShowConfirm(dvT(editingId ? 'iv.confirm_simpan_edit' : 'iv.confirm_simpan_tambah'), () => {
+    dvShowConfirm(dvT(editingId ? 'iv.confirm_simpan_edit' : 'iv.confirm_simpan_tambah'), async () => {
       const payload = {
         nama,
         jenis: selectedJenis,
@@ -291,15 +291,19 @@
         catatan
       };
 
-      if (editingId) {
-        dvUpdateInvestasi(editingId, payload);
-        ivToast(dvT('iv.toast_diperbarui'));
-      } else {
-        dvAddInvestasi(payload);
-        ivToast(dvT('iv.toast_ditambahkan'));
+      try {
+        if (editingId) {
+          await dvUpdateInvestasi(editingId, payload);
+          ivToast(dvT('iv.toast_diperbarui'));
+        } else {
+          await dvAddInvestasi(payload);
+          ivToast(dvT('iv.toast_ditambahkan'));
+        }
+        closeAddModal();
+        renderAll();
+      } catch (err) {
+        errEl.textContent = err.message || 'Gagal menyimpan investasi.';
       }
-      closeAddModal();
-      renderAll();
     });
   });
 
@@ -339,8 +343,8 @@
     if (nilaiRaw.trim() === '') { errEl.textContent = dvT('iv.err_nilai_invalid'); return; }
     if (!tanggal) { errEl.textContent = dvT('iv.err_tanggal_update_wajib'); return; }
     if (!updateNilaiTargetId) return;
-    dvShowConfirm(dvT('iv.confirm_update_nilai'), () => {
-      dvUpdateInvestasiNilai(updateNilaiTargetId, { nilai, tanggal, catatan });
+    dvShowConfirm(dvT('iv.confirm_update_nilai'), async () => {
+      await dvUpdateInvestasiNilai(updateNilaiTargetId, { nilai, tanggal, catatan });
       ivToast(dvT('iv.toast_nilai_diperbarui'));
       closeUpdateNilaiModal();
       renderAll();
@@ -432,8 +436,8 @@
     ivConfirm(
       willArsip ? 'Arsipkan Investasi' : 'Batalkan Arsip',
       willArsip ? `Investasi "${inv.nama}" akan dipindahkan ke Diarsipkan.` : `Investasi "${inv.nama}" akan dikembalikan ke daftar aktif.`,
-      () => {
-        dvSetInvestasiArsip(inv.id, willArsip);
+      async () => {
+        await dvSetInvestasiArsip(inv.id, willArsip);
         ivToast(willArsip ? 'Investasi diarsipkan.' : 'Investasi dikembalikan dari arsip.');
         closeDrawer();
         renderAll();
@@ -443,8 +447,8 @@
   document.getElementById('ivDrawerBtnHapus').addEventListener('click', () => {
     const inv = dvGetInvestasiAll().find(i => i.id === activeDrawerId);
     if (!inv) return;
-    ivConfirm(dvT('iv.confirm_hapus_title'), dvT('iv.confirm_hapus_desc', {nama: inv.nama}), () => {
-      dvDeleteInvestasi(inv.id);
+    ivConfirm(dvT('iv.confirm_hapus_title'), dvT('iv.confirm_hapus_desc', {nama: inv.nama}), async () => {
+      await dvDeleteInvestasi(inv.id);
       ivToast(dvT('iv.toast_dihapus'));
       closeDrawer();
       renderAll();
@@ -459,6 +463,8 @@
     renderGrid();
   }
 
-  dvOnChange(renderAll);
-  renderAll();
+  dvBootstrapPage(() => {
+    renderAll();
+    dvOnChange(renderAll);
+  });
 })();
