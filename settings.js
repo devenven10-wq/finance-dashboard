@@ -43,7 +43,7 @@ function dvNotifySettingsChange() {
 function dvOnSettingsChange(callback) {
   window.addEventListener(DVPOINT_SETTINGS_EVENT, callback);
   window.addEventListener('storage', (e) => {
-    if (e.key === DVPOINT_THEME_KEY || e.key === DVPOINT_PROFILE_KEY || e.key === DVPOINT_PREF_KEY) callback();
+    if (e.key === DVPOINT_THEME_KEY || e.key === DVPOINT_PREF_KEY) callback();
   });
 }
 
@@ -101,21 +101,69 @@ function dvBindThemeToggleButtons() {
 // ============================================================
 // ---------- Profil Pengguna ----------
 // ============================================================
-function dvGetProfile() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(DVPOINT_PROFILE_KEY) || 'null');
-    return raw && typeof raw === 'object' ? Object.assign({}, DV_PROFILE_DEFAULT, raw) : Object.assign({}, DV_PROFILE_DEFAULT);
-  } catch (e) {
-    return Object.assign({}, DV_PROFILE_DEFAULT);
-  }
+// ⚠️ Profil sekarang tersambung ke tabel 'profiles' di Supabase
+// (bukan localStorage lagi) — data personal harus ikut akun, bukan
+// device. Pola sama seperti storage.js: dvGetProfile() tetap SINKRON
+// (baca dari cache in-memory), diisi oleh dvFetchProfile() (async,
+// dipanggil sekali di awal tiap halaman). dvSetProfile() jadi ASYNC
+// karena perlu kirim ke server.
+let DV_PROFILE_CACHE = Object.assign({}, DV_PROFILE_DEFAULT);
+let dvProfileReadyPromise = null;
+
+function dvProfileRowToApp(row) {
+  if (!row) return Object.assign({}, DV_PROFILE_DEFAULT);
+  return {
+    nama: row.nama || DV_PROFILE_DEFAULT.nama,
+    email: row.email || '',
+    telp: row.telp || '',
+    tanggalLahir: row.tanggal_lahir || '',
+    alamat: row.alamat || '',
+    bergabungSejak: row.bergabung_sejak || null,
+    foto: row.foto_url || null
+  };
 }
 
-function dvSetProfile(updates) {
-  const merged = Object.assign({}, dvGetProfile(), updates);
-  localStorage.setItem(DVPOINT_PROFILE_KEY, JSON.stringify(merged));
-  dvApplyProfileToDOM(merged);
+// Dipanggil sekali di awal tiap halaman (lihat applyAll di bawah).
+function dvFetchProfile() {
+  if (dvProfileReadyPromise) return dvProfileReadyPromise;
+
+  dvProfileReadyPromise = (async () => {
+    try {
+      const userId = await dvGetUserId();
+      if (!userId) return;
+      const { data, error } = await dvSupabase.from('profiles').select('*').eq('id', userId).single();
+      if (error) { console.error('[DVpoint] Gagal ambil profil:', error.message); return; }
+      DV_PROFILE_CACHE = dvProfileRowToApp(data);
+    } catch (e) {
+      console.error('[DVpoint] Gagal ambil profil:', e);
+    }
+  })();
+
+  return dvProfileReadyPromise;
+}
+
+// Tetap SINKRON — baca dari cache yang sudah diisi dvFetchProfile().
+function dvGetProfile() {
+  return Object.assign({}, DV_PROFILE_CACHE);
+}
+
+async function dvSetProfile(updates) {
+  const userId = await dvGetUserId();
+  const payload = {};
+  if (updates.nama !== undefined) payload.nama = updates.nama;
+  if (updates.email !== undefined) payload.email = updates.email;
+  if (updates.telp !== undefined) payload.telp = updates.telp;
+  if (updates.tanggalLahir !== undefined) payload.tanggal_lahir = updates.tanggalLahir || null;
+  if (updates.alamat !== undefined) payload.alamat = updates.alamat;
+  if (updates.foto !== undefined) payload.foto_url = updates.foto;
+
+  const { data, error } = await dvSupabase.from('profiles').update(payload).eq('id', userId).select().single();
+  if (error) { console.error('[DVpoint] Gagal simpan profil:', error.message); throw error; }
+
+  DV_PROFILE_CACHE = dvProfileRowToApp(data);
+  dvApplyProfileToDOM(DV_PROFILE_CACHE);
   dvNotifySettingsChange();
-  return merged;
+  return DV_PROFILE_CACHE;
 }
 
 function dvGetInisial(nama) {
@@ -243,12 +291,16 @@ function dvSetupMobileNav() {
 (function dvSettingsInit() {
   dvApplyTheme(dvGetTheme());
 
-  function applyAll() {
-    dvApplyProfileToDOM(dvGetProfile());
+  async function applyAll() {
     dvBindThemeToggleButtons();
     dvUpdateThemeToggleIcons(dvGetTheme());
     dvSetupMobileNav();
     if (typeof dvApplyLanguage === 'function') dvApplyLanguage();
+
+    // Profil butuh nunggu jaringan (Supabase), jadi diterapkan
+    // belakangan — setelah itu baru avatar/nama di sidebar terisi benar.
+    await dvFetchProfile();
+    dvApplyProfileToDOM(dvGetProfile());
   }
 
   if (document.readyState === 'loading') {

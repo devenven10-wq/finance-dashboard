@@ -1,386 +1,353 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="utf-8"/>
-<script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');var pr=JSON.parse(localStorage.getItem('dvpoint_preferences')||'null');if(pr&&pr.bahasa==='en'){document.documentElement.setAttribute('data-lang-loading','en');setTimeout(function(){document.documentElement.removeAttribute('data-lang-loading');},800);}}catch(e){}})();</script>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>DVpoint — Pengaturan</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-<link href="dashboard.css" rel="stylesheet"/>
-<link href="theme.css" rel="stylesheet"/>
-<link href="pengaturan.css" rel="stylesheet"/>
-</head>
-<body>
-<div class="app">
-  <!-- ================= SIDEBAR ================= -->
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-mark"><img src="logo.png" alt="DVpoint" width="60" height="60"/></div>
-      <span>DVpoint</span>
-    </div>
+// ============================================================
+// DVpoint — Halaman Pengaturan (pengaturan.js)
+// ============================================================
+// Halaman ini read/write untuk data PROFIL, TEMA, dan PREFERENSI saja
+// (lewat settings.js). Tidak ada logika terkait transaksi, dashboard,
+// laporan, anggaran, tujuan, atau investasi di sini.
+// ============================================================
 
-    <ul class="nav">
-      <li class="nav-item"><a href="dashboard.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg>
-        <span data-i18n="nav.dashboard">Dashboard</span>
-      </a></li>
-    </ul>
+(function () {
+  const el = {
+    navItems: document.querySelectorAll('.set-nav-item'),
+    sections: document.querySelectorAll('.set-section'),
 
-    <div class="nav-section-label" data-i18n="nav.section_keuangan">Keuangan</div>
-    <ul class="nav">
-      <li class="nav-item"><a href="transaksi.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h5"></path></svg>
-        <span data-i18n="nav.transaksi">Semua Transaksi</span>
-      </a></li>
-      <li class="nav-item"><a href="pemasukan.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 4v14M6 12l6 6 6-6"></path></svg>
-        <span data-i18n="nav.pemasukan">Pemasukan</span>
-      </a></li>
-      <li class="nav-item"><a href="pengeluaran.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20V6M6 12l6-6 6 6"></path></svg>
-        <span data-i18n="nav.pengeluaran">Pengeluaran</span>
-      </a></li>
-      <li class="nav-item"><a href="transfer.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"></path></svg>
-        <span data-i18n="nav.transfer">Transfer</span>
-      </a></li>
-    </ul>
+    // Profil
+    avatarPreview: document.getElementById('avatarPreview'),
+    inpFoto: document.getElementById('inpFoto'),
+    btnAvatarCamera: document.getElementById('btnAvatarCamera'),
+    btnAvatarRemove: document.getElementById('btnAvatarRemove'),
+    btnEditProfil: document.getElementById('btnEditProfil'),
+    btnBatalEditProfil: document.getElementById('btnBatalEditProfil'),
+    inpNama: document.getElementById('inpNama'),
+    inpEmail: document.getElementById('inpEmail'),
+    inpTelp: document.getElementById('inpTelp'),
+    inpTanggalLahir: document.getElementById('inpTanggalLahir'),
+    inpAlamat: document.getElementById('inpAlamat'),
+    heroName: document.getElementById('heroName'),
+    heroEmail: document.getElementById('heroEmail'),
+    heroPhone: document.getElementById('heroPhone'),
+    heroPhoneRow: document.getElementById('heroPhoneRow'),
+    heroJoined: document.getElementById('heroJoined'),
+    profilError: document.getElementById('profilError'),
+    btnSimpanProfil: document.getElementById('btnSimpanProfil'),
 
-    <div class="nav-section-label" data-i18n="nav.section_lainnya">Lainnya</div>
-    <ul class="nav">
-      <li class="nav-item"><a href="anggaran.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"></path></svg>
-        <span data-i18n="nav.anggaran">Anggaran</span>
-      </a></li>
-      <li class="nav-item"><a href="tujuan.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 2v2M12 20v2"></path></svg>
-        <span data-i18n="nav.tujuan">Tujuan Keuangan</span>
-      </a></li>
-      <li class="nav-item"><a href="akun.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="13" rx="2" width="20" x="2" y="6"></rect><path d="M2 10h20"></path></svg>
-        <span data-i18n="nav.akun">Akun &amp; Kartu</span>
-      </a></li>
-      <li class="nav-item"><a href="investasi.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 17l5-5 3 3 7-7M13 8h5v5"></path></svg>
-        <span data-i18n="nav.investasi">Investasi</span>
-      </a></li>
-      <li class="nav-item"><a href="laporan.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
-        <span data-i18n="nav.laporan">Laporan</span>
-      </a></li>
-      <li class="nav-item active"><a href="pengaturan.html">
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
-        <span data-i18n="nav.pengaturan">Pengaturan</span>
-      </a></li>
-    </ul>
+    // Tampilan
+    themeGrid: document.getElementById('themeGrid'),
 
-    <div class="sidebar-bottom">
-      <div class="user-card">
-        <div class="avatar">DA</div>
-        <div><div class="user-name">Dicky Ade</div></div>
-        <button class="logout-btn" id="btnSidebarLogout" title="Keluar" data-i18n-title="nav.logout_title">
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
-        </button>
-      </div>
-    </div>
-  </aside>
+    // Preferensi
+    prefBahasa: document.getElementById('prefBahasa'),
+    prefTanggal: document.getElementById('prefTanggal'),
+    prefHariAwal: document.getElementById('prefHariAwal'),
+    prefSaveIndicator: document.getElementById('prefSaveIndicator'),
 
-  <!-- ================= MAIN ================= -->
-  <main class="main">
-    <div class="page-header">
-      <div>
-        <h1 data-i18n="set.title">Pengaturan</h1>
-        <p data-i18n="set.subtitle">Kelola profil dan preferensi aplikasi Anda.</p>
-      </div>
-    </div>
+    // Keamanan
+    btnUbahPassword: document.getElementById('btnUbahPassword'),
+    btnLogout: document.getElementById('btnLogout'),
+    btnSidebarLogout: document.getElementById('btnSidebarLogout'),
+    logoutModal: document.getElementById('logoutModal'),
+    logoutModalClose: document.getElementById('logoutModalClose'),
+    logoutCancel: document.getElementById('logoutCancel'),
+    logoutConfirm: document.getElementById('logoutConfirm'),
+    passwordModal: document.getElementById('passwordModal'),
+    passwordModalClose: document.getElementById('passwordModalClose'),
+    passwordCancel: document.getElementById('passwordCancel'),
+    formPassword: document.getElementById('formPassword'),
+    passwordError: document.getElementById('passwordError'),
 
-    <!-- ================= SETTINGS LAYOUT (2 kolom) ================= -->
-    <div class="set-layout">
+    // Tentang
+    btnCekPembaruan: document.getElementById('btnCekPembaruan'),
 
-      <!-- Sidebar Pengaturan -->
-      <nav class="set-nav" id="setNav">
-        <button class="set-nav-item active" data-tab="profil" type="button">
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          <span data-i18n="set.tab_profil">Profil</span>
-        </button>
-        <button class="set-nav-item" data-tab="tampilan" type="button">
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
-          <span data-i18n="set.tab_tampilan">Tampilan</span>
-        </button>
-        <button class="set-nav-item" data-tab="preferensi" type="button">
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"></path><circle cx="18" cy="18" r="2"></circle></svg>
-          <span data-i18n="set.tab_preferensi">Preferensi</span>
-        </button>
-        <button class="set-nav-item" data-tab="keamanan" type="button">
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6z"></path><path d="M9.5 12l1.8 1.8L15 10"></path></svg>
-          <span data-i18n="set.tab_keamanan">Keamanan</span>
-        </button>
-        <button class="set-nav-item" data-tab="tentang" type="button">
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg>
-          <span data-i18n="set.tab_tentang">Tentang Aplikasi</span>
-        </button>
-      </nav>
+    toast: document.getElementById('setToast')
+  };
 
-      <!-- Panel konten -->
-      <div class="set-panel">
+  let pendingFotoDataUrl = undefined; // undefined = tidak diubah, null = dihapus, string = foto baru
 
-        <!-- ========== TAB: PROFIL ========== -->
-        <section class="set-section active" data-section="profil">
-          <div class="set-section-head-row">
-            <div class="set-section-head" style="margin-bottom:0;">
-              <h3 data-i18n="set.profil_title">Profil</h3>
-              <p data-i18n="set.profil_sub">Kelola informasi pribadi Anda.</p>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <button class="btn-ghost" id="btnEditProfil" type="button">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 3a2.85 2.85 0 114 4L7.5 20.5 2 22l1.5-5.5z"></path></svg>
-                <span data-i18n="set.edit_profil">Edit Profil</span>
-              </button>
-              <button class="btn-icon-x" id="btnBatalEditProfil" type="button" style="display:none;" title="Batal" data-i18n-title="set.batal_edit">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg>
-              </button>
-            </div>
-          </div>
+  // ============================================================
+  // ---------- Toast ----------
+  // ============================================================
+  let toastTimer = null;
+  function showToast(msg) {
+    el.toast.textContent = msg;
+    el.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.toast.classList.remove('show'), 2600);
+  }
 
-          <div class="set-profile-hero">
-            <div class="set-hero-avatar-wrap">
-              <div class="set-avatar-preview" id="avatarPreview">DA</div>
-              <button class="set-avatar-camera-btn" id="btnAvatarCamera" title="Upload foto" data-i18n-title="set.upload_foto_title" type="button">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-              </button>
-              <button class="set-avatar-remove-btn" id="btnAvatarRemove" style="display:none;" title="Hapus foto" data-i18n-title="set.hapus_foto_title" type="button">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg>
-              </button>
-              <input accept="image/*" id="inpFoto" style="display:none;" type="file"/>
-            </div>
+  // ============================================================
+  // ---------- Tab switching (tanpa pindah halaman) ----------
+  // ============================================================
+  function activateTab(tab) {
+    el.navItems.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+    el.sections.forEach(sec => sec.classList.toggle('active', sec.dataset.section === tab));
+    try { history.replaceState(null, '', '#' + tab); } catch (e) {}
+  }
 
-            <div class="set-hero-info">
-              <div class="set-hero-name-row">
-                <span class="set-hero-name" id="heroName">Dicky Ade</span>
-              </div>
-              <div class="set-hero-row">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" opacity="0"></path><path d="M22 6l-10 7L2 6"></path><rect height="16" rx="2" width="20" x="2" y="4"></rect></svg>
-                <span id="heroEmail">dicky.ade@email.com</span>
-              </div>
-              <div class="set-hero-row" id="heroPhoneRow">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.8 19.8 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0122 16.92z"></path></svg>
-                <span id="heroPhone">08745875646</span>
-              </div>
-            </div>
+  el.navItems.forEach(btn => {
+    btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+  });
 
-            <div class="set-hero-divider"></div>
+  // Buka tab sesuai hash URL jika ada (opsional, memudahkan deep-link)
+  const initialTab = (location.hash || '').replace('#', '');
+  if (initialTab && document.querySelector(`.set-nav-item[data-tab="${initialTab}"]`)) {
+    activateTab(initialTab);
+  }
 
-            <div class="set-hero-joined">
-              <div class="set-hero-joined-label" data-i18n="set.bergabung_sejak">Bergabung sejak</div>
-              <div class="set-hero-joined-value">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="16" rx="2" width="18" x="3" y="5"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>
-                <span id="heroJoined">—</span>
-              </div>
-            </div>
-          </div>
+  // ============================================================
+  // ---------- TAB: PROFIL ----------
+  // ============================================================
+  const BULAN_ID = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  function formatJoinedDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso + 'T00:00:00');
+    if (isNaN(d.getTime())) return '—';
+    return `${String(d.getDate()).padStart(2, '0')} ${BULAN_ID[d.getMonth()].slice(0, 3)} ${d.getFullYear()}`;
+  }
 
-          <div class="set-subsection-title" data-i18n="set.informasi_pribadi">Informasi Pribadi</div>
-          <div class="set-form-grid set-form-grid-2">
-            <div class="form-group"><label data-i18n="set.lbl_nama_lengkap">Nama Lengkap</label><input id="inpNama" placeholder="Nama lengkap Anda" type="text" disabled data-i18n-placeholder="set.nama_placeholder"/></div>
-            <div class="form-group"><label data-i18n="set.lbl_email">Email</label><input id="inpEmail" placeholder="nama@email.com" type="email" disabled data-i18n-placeholder="set.email_placeholder"/></div>
-            <div class="form-group"><div class="form-label-row"><label data-i18n="set.lbl_telp">Nomor Telepon</label><span class="opt" data-i18n="set.opsional">Opsional</span></div><input id="inpTelp" placeholder="08xxxxxxxxxx" type="text" disabled data-i18n-placeholder="set.telp_placeholder"/></div>
-            <div class="form-group"><div class="form-label-row"><label data-i18n="set.lbl_tanggal_lahir">Tanggal Lahir</label><span class="opt" data-i18n="set.opsional">Opsional</span></div><input id="inpTanggalLahir" type="date" disabled/></div>
-            <div class="form-group set-form-full"><div class="form-label-row"><label data-i18n="set.lbl_alamat">Alamat</label><span class="opt" data-i18n="set.opsional">Opsional</span></div><input id="inpAlamat" placeholder="Kota, Provinsi, Negara" type="text" disabled data-i18n-placeholder="set.alamat_placeholder"/></div>
-          </div>
+  function renderAvatarPreview(fotoDataUrl, nama) {
+    if (fotoDataUrl) {
+      el.avatarPreview.innerHTML = `<img alt="Foto profil" src="${fotoDataUrl}"/>`;
+      el.btnAvatarRemove.style.display = 'flex';
+    } else {
+      el.avatarPreview.textContent = dvGetInisial(nama);
+      el.btnAvatarRemove.style.display = 'none';
+    }
+  }
 
-          <div class="set-form-error" id="profilError"></div>
+  function renderHeroDisplay(p) {
+    el.heroName.textContent = p.nama || dvT('set.pengguna_default');
+    el.heroEmail.textContent = p.email || '-';
+    if (p.telp) {
+      el.heroPhone.textContent = p.telp;
+      el.heroPhoneRow.style.display = 'flex';
+    } else {
+      el.heroPhoneRow.style.display = 'none';
+    }
+    el.heroJoined.textContent = formatJoinedDate(p.bergabungSejak);
+  }
 
-          <div class="set-actions">
-            <button class="btn-primary" id="btnSimpanProfil" type="button">
-              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>
-              <span data-i18n="set.simpan_perubahan">Simpan Perubahan</span>
-            </button>
-          </div>
-        </section>
+  function loadProfilForm() {
+    const p = dvGetProfile();
+    el.inpNama.value = p.nama || '';
+    el.inpEmail.value = p.email || '';
+    el.inpTelp.value = p.telp || '';
+    el.inpTanggalLahir.max = new Date().toISOString().slice(0, 10); // tidak boleh pilih tanggal masa depan
+    el.inpTanggalLahir.value = p.tanggalLahir || '';
+    el.inpAlamat.value = p.alamat || '';
+    pendingFotoDataUrl = undefined;
+    renderAvatarPreview(p.foto, p.nama);
+    renderHeroDisplay(p);
+  }
 
-        <!-- ========== TAB: TAMPILAN ========== -->
-        <section class="set-section" data-section="tampilan">
-          <div class="set-section-head">
-            <h3 data-i18n="set.tampilan_title">Tampilan</h3>
-            <p data-i18n="set.tampilan_sub">Pilih tema yang diterapkan ke seluruh halaman aplikasi.</p>
-          </div>
+  el.btnAvatarCamera.addEventListener('click', () => el.inpFoto.click());
 
-          <div class="set-theme-grid" id="themeGrid">
-            <div class="set-theme-card" data-theme-choice="dark">
-              <div class="set-theme-swatch set-theme-swatch-dark">
-                <span class="sw-dot sw-blue"></span><span class="sw-dot sw-purple"></span><span class="sw-dot sw-pink"></span>
-              </div>
-              <div class="set-theme-name" data-i18n="set.dark_mode">🌙 Dark Mode</div>
-              <div class="set-theme-desc" data-i18n="set.dark_mode_desc">Latar gelap premium, nyaman untuk penggunaan malam hari.</div>
-              <div class="set-theme-check">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>
-              </div>
-            </div>
-            <div class="set-theme-card" data-theme-choice="light">
-              <div class="set-theme-swatch set-theme-swatch-light">
-                <span class="sw-dot sw-blue"></span><span class="sw-dot sw-purple"></span><span class="sw-dot sw-pink"></span>
-              </div>
-              <div class="set-theme-name" data-i18n="set.light_mode">☀️ Light Mode</div>
-              <div class="set-theme-desc" data-i18n="set.light_mode_desc">Latar terang bersih, cocok untuk ruangan yang cerah.</div>
-              <div class="set-theme-check">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>
-              </div>
-            </div>
-          </div>
+  el.inpFoto.addEventListener('change', () => {
+    const file = el.inpFoto.files && el.inpFoto.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      el.profilError.textContent = dvT('set.err_foto_harus_gambar');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      el.profilError.textContent = dvT('set.err_foto_max_size');
+      return;
+    }
+    el.profilError.textContent = '';
+    const reader = new FileReader();
+    reader.onload = () => {
+      pendingFotoDataUrl = reader.result; // preview dulu, belum disimpan
+      renderAvatarPreview(pendingFotoDataUrl, el.inpNama.value);
+    };
+    reader.readAsDataURL(file);
+  });
 
-          <div class="set-note">
-            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg>
-            <span data-i18n="set.tema_note">Tema berlaku langsung ke semua halaman (Dashboard, Transaksi, Anggaran, Tujuan Keuangan, Investasi, Laporan, dll) tanpa reload, dan tersimpan otomatis untuk kunjungan berikutnya.</span>
-          </div>
-        </section>
+  el.btnAvatarRemove.addEventListener('click', () => {
+    pendingFotoDataUrl = null; // preview terhapus, belum disimpan
+    el.inpFoto.value = '';
+    renderAvatarPreview(null, el.inpNama.value);
+  });
 
-        <!-- ========== TAB: PREFERENSI ========== -->
-        <section class="set-section" data-section="preferensi">
-          <div class="set-section-head">
-            <h3 data-i18n="set.preferensi_title">Preferensi</h3>
-            <p data-i18n="set.preferensi_sub">Pengaturan disimpan otomatis setiap kali diubah.</p>
-          </div>
+  el.inpNama.addEventListener('input', () => {
+    // Update preview inisial secara live jika sedang tidak menampilkan foto
+    const showingFoto = pendingFotoDataUrl !== undefined ? !!pendingFotoDataUrl : !!dvGetProfile().foto;
+    if (!showingFoto) renderAvatarPreview(null, el.inpNama.value);
+    el.heroName.textContent = el.inpNama.value.trim() || dvT('set.pengguna_default');
+  });
+  el.inpEmail.addEventListener('input', () => { el.heroEmail.textContent = el.inpEmail.value.trim() || '-'; });
+  el.inpTelp.addEventListener('input', () => {
+    const v = el.inpTelp.value.trim();
+    el.heroPhone.textContent = v;
+    el.heroPhoneRow.style.display = v ? 'flex' : 'none';
+  });
 
-          <div class="set-form-grid">
-            <div class="form-group">
-              <label data-i18n="set.bahasa">Bahasa</label>
-              <select id="prefBahasa">
-                <option value="id">Bahasa Indonesia</option>
-                <option value="en">English</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label data-i18n="set.format_tanggal">Format Tanggal</label>
-              <select id="prefTanggal">
-                <option value="DD/MM/YYYY">DD/MM/YYYY (31/12/2026)</option>
-                <option value="MM/DD/YYYY">MM/DD/YYYY (12/31/2026)</option>
-                <option value="YYYY-MM-DD">YYYY-MM-DD (2026-12-31)</option>
-                <option value="DD MMM YYYY">DD MMM YYYY (31 Des 2026)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label data-i18n="set.hari_awal_minggu">Hari Awal Minggu</label>
-              <select id="prefHariAwal">
-                <option value="senin">Senin</option>
-                <option value="minggu">Minggu</option>
-              </select>
-            </div>
-          </div>
+  // "Edit Profil" — fokus ke field pertama supaya pengguna langsung bisa mengedit.
+  const profilFields = [el.inpNama, el.inpEmail, el.inpTelp, el.inpTanggalLahir, el.inpAlamat];
 
-          <div class="set-save-indicator" id="prefSaveIndicator">
-            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>
-            <span data-i18n="set.tersimpan_otomatis">Tersimpan otomatis</span>
-          </div>
-        </section>
+  function unlockProfilFields() {
+    profilFields.forEach(f => f.disabled = false);
+    el.btnEditProfil.style.display = 'none';
+    el.btnBatalEditProfil.style.display = '';
+  }
+  function lockProfilFields() {
+    profilFields.forEach(f => f.disabled = true);
+    el.btnEditProfil.style.display = '';
+    el.btnBatalEditProfil.style.display = 'none';
+    el.profilError.textContent = '';
+  }
 
-        <!-- ========== TAB: KEAMANAN ========== -->
-        <section class="set-section" data-section="keamanan">
-          <div class="set-section-head">
-            <h3 data-i18n="set.keamanan_title">Keamanan</h3>
-            <p data-i18n="set.keamanan_sub">Kelola kata sandi dan sesi masuk Anda.</p>
-          </div>
+  el.btnEditProfil.addEventListener('click', () => {
+    unlockProfilFields();
+    el.inpNama.focus();
+    el.inpNama.select();
+    document.querySelector('.set-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 
-          <div class="set-security-list">
-            <div class="set-security-row" id="btnUbahPassword">
-              <div class="set-security-icon" style="background:rgba(79,125,255,.16); color:var(--blue);">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="11" rx="2" width="18" x="3" y="11"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>
-              </div>
-              <div class="set-security-body">
-                <div class="set-security-title" data-i18n="set.ubah_password">Ubah Password</div>
-                <div class="set-security-sub" data-i18n="set.ubah_password_desc">Perbarui kata sandi akun Anda secara berkala.</div>
-              </div>
-              <svg class="set-security-arrow" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
-            </div>
+  // "Batal" — buang perubahan yang belum disimpan (termasuk foto yang baru
+  // dipilih/dihapus tapi belum di-Simpan), kembalikan ke data tersimpan, kunci lagi.
+  el.btnBatalEditProfil.addEventListener('click', () => {
+    loadProfilForm();
+    lockProfilFields();
+  });
 
-            <div class="set-security-row set-security-danger" id="btnLogout">
-              <div class="set-security-icon" style="background:rgba(239,77,143,.16); color:var(--pink);">
-                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
-              </div>
-              <div class="set-security-body">
-                <div class="set-security-title" data-i18n="set.logout">Logout</div>
-                <div class="set-security-sub" data-i18n="set.logout_desc">Keluar dari akun DVpoint di perangkat ini.</div>
-              </div>
-              <svg class="set-security-arrow" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
-            </div>
-          </div>
-        </section>
+  el.btnSimpanProfil.addEventListener('click', async () => {
+    const nama = el.inpNama.value.trim();
+    const email = el.inpEmail.value.trim();
+    const telp = el.inpTelp.value.trim();
+    const tanggalLahir = el.inpTanggalLahir.value.trim();
+    const alamat = el.inpAlamat.value.trim();
 
-        <!-- ========== TAB: TENTANG APLIKASI ========== -->
-        <section class="set-section" data-section="tentang">
-          <div class="set-section-head">
-            <h3 data-i18n="set.tentang_title">Tentang Aplikasi</h3>
-          </div>
+    if (!nama) { el.profilError.textContent = dvT('set.err_nama_wajib'); return; }
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) { el.profilError.textContent = dvT('set.err_email_invalid'); return; }
+    el.profilError.textContent = '';
 
-          <div class="set-about-card">
-            <div class="set-about-mark"><img src="logo.png" alt="DVpoint" width="60" height="60"/></div>
-            <div class="set-about-name">DVpoint</div>
-            <div class="set-about-tagline" data-i18n="set.about_tagline">Aplikasi manajemen keuangan pribadi.</div>
-          </div>
+    const updates = { nama, email, telp, tanggalLahir, alamat };
+    if (pendingFotoDataUrl !== undefined) updates.foto = pendingFotoDataUrl;
 
-          <div class="set-about-rows">
-            <div class="set-about-row"><span data-i18n="set.about_nama_aplikasi">Nama Aplikasi</span><strong>DVpoint</strong></div>
-            <div class="set-about-row"><span data-i18n="set.about_versi">Versi</span><strong>1.0.0</strong></div>
-            <div class="set-about-row"><span data-i18n="set.about_copyright">Copyright</span><strong data-i18n="set.about_copyright_val">© 2026 DVpoint. Seluruh hak cipta dilindungi.</strong></div>
-            <div class="set-about-row"><span data-i18n="set.about_developer">Developer</span><strong>Dicky Ade</strong></div>
-          </div>
+    try {
+      const saved = await dvSetProfile(updates);
+      pendingFotoDataUrl = undefined;
+      renderHeroDisplay(saved);
+      lockProfilFields();
+      showToast(dvT('set.toast_profil_tersimpan'));
+    } catch (err) {
+      el.profilError.textContent = err.message || 'Gagal menyimpan profil.';
+    }
+  });
 
-          <div class="set-actions">
-            <button class="btn-ghost" id="btnCekPembaruan" type="button">
-              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3.2-6.9"></path><path d="M21 4v5h-5"></path></svg>
-              <span data-i18n="set.cek_pembaruan">Cek Pembaruan</span>
-            </button>
-          </div>
-        </section>
+  // ============================================================
+  // ---------- TAB: TAMPILAN ----------
+  // ============================================================
+  function renderThemeSelection() {
+    const current = dvGetTheme();
+    el.themeGrid.querySelectorAll('.set-theme-card').forEach(card => {
+      card.classList.toggle('selected', card.dataset.themeChoice === current);
+    });
+  }
 
-      </div>
-    </div>
-  </main>
-</div>
+  el.themeGrid.querySelectorAll('.set-theme-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const choice = card.dataset.themeChoice;
+      dvSetTheme(choice);
+      renderThemeSelection();
+      showToast(choice === 'light' ? dvT('set.toast_light_aktif') : dvT('set.toast_dark_aktif'));
+    });
+  });
 
-<!-- ================= MODAL: Konfirmasi Logout ================= -->
-<div class="modal-overlay" id="logoutModal">
-  <div class="modal" style="max-width:380px;">
-    <div class="modal-head">
-      <h3 data-i18n="set.modal_logout_title">Konfirmasi Logout</h3>
-      <button class="modal-close" id="logoutModalClose"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
-    </div>
-    <p style="font-size:13.5px; color:var(--text-dim); line-height:1.6; margin-bottom:22px;" data-i18n="set.modal_logout_desc">Anda yakin ingin keluar dari akun DVpoint di perangkat ini? Anda perlu masuk kembali untuk mengakses data Anda.</p>
-    <div class="modal-actions">
-      <button class="btn-ghost" id="logoutCancel" type="button" data-i18n="set.batal">Batal</button>
-      <button class="btn-primary red" id="logoutConfirm" type="button" data-i18n="set.ya_keluar">Ya, Keluar</button>
-    </div>
-  </div>
-</div>
+  // ============================================================
+  // ---------- TAB: PREFERENSI (auto-save) ----------
+  // ============================================================
+  function loadPreferensiForm() {
+    const pref = dvGetPreferences();
+    el.prefBahasa.value = pref.bahasa;
+    el.prefTanggal.value = pref.formatTanggal;
+    el.prefHariAwal.value = pref.hariAwalMinggu;
+  }
 
-<!-- ================= MODAL: Ubah Password ================= -->
-<div class="modal-overlay" id="passwordModal">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 data-i18n="set.modal_password_title">Ubah Password</h3>
-      <button class="modal-close" id="passwordModalClose"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
-    </div>
-    <form id="formPassword">
-      <div class="form-group"><label data-i18n="set.lbl_password_lama">Password Saat Ini</label><input id="pwLama" required type="password"/></div>
-      <div class="form-group"><label data-i18n="set.lbl_password_baru">Password Baru</label><input id="pwBaru" required type="password"/></div>
-      <div class="form-group"><label data-i18n="set.lbl_password_konfirmasi">Konfirmasi Password Baru</label><input id="pwKonfirmasi" required type="password"/></div>
-      <div class="set-form-error" id="passwordError"></div>
-      <div class="modal-actions">
-        <button class="btn-ghost" id="passwordCancel" type="button" data-i18n="set.batal">Batal</button>
-        <button class="btn-primary" type="submit" data-i18n="set.simpan_password">Simpan Password</button>
-      </div>
-    </form>
-  </div>
-</div>
+  let prefIndicatorTimer = null;
+  function flashSaveIndicator() {
+    el.prefSaveIndicator.classList.add('show');
+    clearTimeout(prefIndicatorTimer);
+    prefIndicatorTimer = setTimeout(() => el.prefSaveIndicator.classList.remove('show'), 1800);
+  }
 
-<div class="set-toast" id="setToast"></div>
+  [
+    [el.prefBahasa, 'bahasa'],
+    [el.prefTanggal, 'formatTanggal'],
+    [el.prefHariAwal, 'hariAwalMinggu']
+  ].forEach(([node, key]) => {
+    node.addEventListener('change', () => {
+      dvSetPreferences({ [key]: node.value });
+      flashSaveIndicator();
+    });
+  });
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="supabase-client.js"></script>
-<script src="storage.js"></script>
-<script src="i18n.js"></script>
-<script src="settings.js"></script>
-<script src="guard.js"></script>
-<script src="pengaturan.js"></script>
-</body>
-</html>
+  // ============================================================
+  // ---------- TAB: KEAMANAN ----------
+  // ============================================================
+  function openModal(overlay) { overlay.classList.add('open'); }
+  function closeModal(overlay) { overlay.classList.remove('open'); }
+
+  el.btnUbahPassword.addEventListener('click', () => {
+    el.passwordError.textContent = '';
+    el.formPassword.reset();
+    openModal(el.passwordModal);
+  });
+  el.passwordModalClose.addEventListener('click', () => closeModal(el.passwordModal));
+  el.passwordCancel.addEventListener('click', () => closeModal(el.passwordModal));
+  el.passwordModal.addEventListener('click', (e) => { if (e.target === el.passwordModal) closeModal(el.passwordModal); });
+
+  el.formPassword.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const lama = document.getElementById('pwLama').value;
+    const baru = document.getElementById('pwBaru').value;
+    const konfirmasi = document.getElementById('pwKonfirmasi').value;
+
+    if (!lama || !baru || !konfirmasi) { el.passwordError.textContent = dvT('set.err_semua_kolom_wajib'); return; }
+    if (baru.length < 6) { el.passwordError.textContent = dvT('set.err_password_min'); return; }
+    if (baru !== konfirmasi) { el.passwordError.textContent = dvT('set.err_konfirmasi_tidak_cocok'); return; }
+
+    el.passwordError.textContent = '';
+    closeModal(el.passwordModal);
+    showToast(dvT('set.toast_password_updated'));
+  });
+
+  async function doLogout() {
+    closeModal(el.logoutModal);
+    if (typeof dvSupabase !== 'undefined') {
+      await dvSupabase.auth.signOut();
+    }
+    showToast(dvT('set.toast_logout'));
+    // Beri jeda sebentar supaya toast sempat terlihat sebelum halaman berpindah.
+    setTimeout(() => { window.location.href = 'index.html'; }, 700);
+  }
+
+  el.btnLogout.addEventListener('click', () => openModal(el.logoutModal));
+  if (el.btnSidebarLogout) {
+    el.btnSidebarLogout.addEventListener('click', () => openModal(el.logoutModal));
+  }
+  el.logoutModalClose.addEventListener('click', () => closeModal(el.logoutModal));
+  el.logoutCancel.addEventListener('click', () => closeModal(el.logoutModal));
+  el.logoutConfirm.addEventListener('click', doLogout);
+  el.logoutModal.addEventListener('click', (e) => { if (e.target === el.logoutModal) closeModal(el.logoutModal); });
+
+  // ============================================================
+  // ---------- TAB: TENTANG APLIKASI ----------
+  // ============================================================
+  el.btnCekPembaruan.addEventListener('click', () => {
+    showToast(dvT('set.toast_versi_terbaru'));
+  });
+
+  // ============================================================
+  // ---------- Init ----------
+  // ============================================================
+  // Tunggu profil selesai ditarik dari Supabase dulu (dvFetchProfile()
+  // di settings.js — aman dipanggil lagi di sini, cukup nunggu promise
+  // yang sama, tidak fetch ulang) baru isi form Profil.
+  dvFetchProfile().then(() => {
+    loadProfilForm();
+  });
+  renderThemeSelection();
+  loadPreferensiForm();
+
+  // Jika tema berubah dari tab/tempat lain, refresh kartu terpilih.
+  dvOnSettingsChange(renderThemeSelection);
+})();
