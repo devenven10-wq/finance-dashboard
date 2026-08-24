@@ -134,9 +134,14 @@ function dvFetchProfile() {
     try {
       const userId = await dvGetUserId();
       if (!userId) return;
-      const { data, error } = await dvSupabase.from('profiles').select('*').eq('id', userId).single();
+      // Tanpa .single() — kalau baris belum ada, cukup diamkan (DV_PROFILE_CACHE
+      // tetap default), bukan crash. dvSetProfile() yang nanti akan buatkan
+      // barisnya otomatis begitu user pertama kali simpan sesuatu.
+      const { data, error } = await dvSupabase.from('profiles').select('*').eq('id', userId);
       if (error) { console.error('[DVpoint] Gagal ambil profil:', error.message); return; }
-      DV_PROFILE_CACHE = dvProfileRowToApp(data);
+      if (data && data.length > 0) {
+        DV_PROFILE_CACHE = dvProfileRowToApp(data[0]);
+      }
     } catch (e) {
       console.error('[DVpoint] Gagal ambil profil:', e);
     }
@@ -152,6 +157,9 @@ function dvGetProfile() {
 
 async function dvSetProfile(updates) {
   const userId = await dvGetUserId();
+  if (!userId) {
+    throw new Error('Sesi login tidak ditemukan. Coba logout, lalu login ulang.');
+  }
   const payload = {};
   if (updates.nama !== undefined) payload.nama = updates.nama;
   if (updates.email !== undefined) payload.email = updates.email;
@@ -160,10 +168,31 @@ async function dvSetProfile(updates) {
   if (updates.alamat !== undefined) payload.alamat = updates.alamat;
   if (updates.foto !== undefined) payload.foto_url = updates.foto;
 
-  const { data, error } = await dvSupabase.from('profiles').update(payload).eq('id', userId).select().single();
+  // ⚠️ Sengaja TIDAK pakai .single() di sini — kalau baris profil ternyata
+  // belum ada (misal trigger pembuatan profil gagal jalan waktu akun ini
+  // dibuat), .single() akan crash keras dengan error PostgREST yang
+  // membingungkan ("Cannot coerce..."). Di sini dicek manual, dan kalau
+  // memang belum ada baris, langsung dibuatkan sebagai jaring pengaman —
+  // supaya user tidak macet tidak bisa simpan profil selamanya.
+  const { data, error } = await dvSupabase.from('profiles').update(payload).eq('id', userId).select();
   if (error) { console.error('[DVpoint] Gagal simpan profil:', error.message); throw error; }
 
-  DV_PROFILE_CACHE = dvProfileRowToApp(data);
+  let finalRow;
+  if (!data || data.length === 0) {
+    const { data: inserted, error: insertError } = await dvSupabase
+      .from('profiles')
+      .insert({ id: userId, ...payload })
+      .select();
+    if (insertError || !inserted || !inserted.length) {
+      console.error('[DVpoint] Gagal buat baris profil (fallback):', insertError?.message);
+      throw new Error('Baris profil tidak ditemukan & gagal dibuat otomatis. Coba logout lalu login ulang.');
+    }
+    finalRow = inserted[0];
+  } else {
+    finalRow = data[0];
+  }
+
+  DV_PROFILE_CACHE = dvProfileRowToApp(finalRow);
   dvApplyProfileToDOM(DV_PROFILE_CACHE);
   dvNotifySettingsChange();
   return DV_PROFILE_CACHE;
