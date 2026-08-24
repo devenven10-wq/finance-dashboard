@@ -467,12 +467,12 @@
 
     if (!allData.length) {
       el.laporanContent.style.display = 'none';
+      document.getElementById('laporanPeriodEmpty').style.display = 'none';
       el.laporanEmptyState.style.display = 'block';
       el.filterPanel.style.display = 'none';
       document.querySelector('.lap-header-actions').style.display = 'none';
       return;
     }
-    el.laporanContent.style.display = 'block';
     el.laporanEmptyState.style.display = 'none';
     el.filterPanel.style.display = 'block';
     document.querySelector('.lap-header-actions').style.display = 'flex';
@@ -483,6 +483,17 @@
     el.periodLabel.textContent = periodLabelText(range);
 
     const filtered = getFiltered();
+
+    // Akun PUNYA transaksi (di periode/filter lain), tapi periode/filter
+    // yang sedang dipilih sekarang tidak ketemu apa-apa — tampilkan pesan
+    // "tidak ada di periode ini" BUKAN struktur KPI penuh berisi nol semua.
+    if (!filtered.length) {
+      el.laporanContent.style.display = 'none';
+      document.getElementById('laporanPeriodEmpty').style.display = 'block';
+      return;
+    }
+    document.getElementById('laporanPeriodEmpty').style.display = 'none';
+    el.laporanContent.style.display = 'block';
 
     renderSummary(filtered, range);
     renderCashflow(filtered, range);

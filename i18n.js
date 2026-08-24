@@ -501,6 +501,8 @@ const DV_I18N = {
     'lap.no_result_desc': 'Tidak ada transaksi yang cocok dengan filter yang dipilih.',
     'lap.global_empty_title': 'Belum ada data transaksi.',
     'lap.global_empty_desc': 'Tambahkan transaksi terlebih dahulu agar laporan dapat ditampilkan.',
+    'lap.period_empty_title': 'Tidak ada transaksi di periode ini.',
+    'lap.period_empty_desc': 'Coba pilih periode lain atau ubah filter di atas.',
     'lap.buka_transaksi': 'Buka Semua Transaksi',
     'tx.belum_ada_data': 'Belum ada data',
     'tx.n_ditemukan': '{n} transaksi ditemukan',
@@ -1221,6 +1223,8 @@ const DV_I18N = {
     'lap.no_result_desc': 'No transactions match the selected filter.',
     'lap.global_empty_title': 'No transaction data yet.',
     'lap.global_empty_desc': 'Add transactions first so reports can be displayed.',
+    'lap.period_empty_title': 'No transactions in this period.',
+    'lap.period_empty_desc': 'Try selecting a different period or adjusting the filters above.',
     'lap.buka_transaksi': 'Open All Transactions',
 
     // ---------- All Transactions ----------

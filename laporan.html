@@ -163,6 +163,21 @@
       <div class="lap-period-label" id="periodLabel"></div>
     </div>
 
+    <!-- ================= EMPTY STATE: akun punya transaksi, tapi
+         periode/filter yang dipilih sekarang tidak ketemu apa-apa.
+         Filter panel TETAP kelihatan (beda dari laporanEmptyState di
+         bawah) supaya user gampang ganti periode/filter. ================= -->
+    <div id="laporanPeriodEmpty" class="lap-empty-global" style="display:none;">
+      <div class="lap-empty-illustration">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" viewBox="0 0 24 24">
+          <rect height="16" rx="2" width="18" x="3" y="5"></rect>
+          <path d="M3 10h18M8 3v4M16 3v4"></path>
+        </svg>
+      </div>
+      <h4 data-i18n="lap.period_empty_title">Tidak ada transaksi di periode ini.</h4>
+      <p data-i18n="lap.period_empty_desc">Coba pilih periode lain atau ubah filter di atas.</p>
+    </div>
+
     <!-- ================= CONTENT (hidden when no data at all) ================= -->
     <div id="laporanContent">
 
