@@ -28,12 +28,9 @@ function dvInitTransaksiPage(tipe) {
     inpCatatan: document.getElementById('inpCatatan')
   };
 
-  // Isi opsi kategori & akun
+  // Isi opsi kategori (tidak bergantung data Supabase, aman diisi langsung)
   if (els.inpKategori) {
     els.inpKategori.innerHTML = kategoriList.map(k => `<option value="${k}">${k}</option>`).join('');
-  }
-  if (els.inpAkun) {
-    els.inpAkun.innerHTML = DV_AKUN.map(a => `<option value="${a.id}">${a.nama}</option>`).join('');
   }
   if (els.inpTanggal) els.inpTanggal.value = dvTodayISO();
 
@@ -131,6 +128,10 @@ function dvInitTransaksiPage(tipe) {
   });
 
   dvBootstrapPage(() => {
+    // Isi dropdown Akun setelah data akun selesai ditarik dari Supabase
+    if (els.inpAkun) {
+      els.inpAkun.innerHTML = DV_AKUN.map(a => `<option value="${a.id}">${a.nama}</option>`).join('');
+    }
     render();
     dvOnChange(render);
   });

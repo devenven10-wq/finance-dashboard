@@ -603,6 +603,7 @@
   initStaticUI();
   showSkeleton();
   dvBootstrapPage(() => {
+    initStaticUI(); // isi ulang dropdown akun setelah data Supabase siap
     renderTable();
     dvOnChange(renderTable);
   });
