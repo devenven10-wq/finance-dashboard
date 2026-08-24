@@ -124,7 +124,15 @@ button{font-family:inherit;}
   display:flex; align-items:center; justify-content:center;
   font-weight:700; font-size:14px; flex-shrink:0;
 }
-.user-name{font-size:13.5px; font-weight:600;}
+/* Nama profil: transparan selama masih kosong (data profil belum
+   selesai ditarik dari Supabase), fade-in halus begitu terisi —
+   supaya tidak ada "kedipan" nama lama/salah yang sempat kelihatan
+   pas pindah halaman (dulu masalahnya teks "Dicky Ade" hardcode). */
+.user-name{
+  font-size:13.5px; font-weight:600;
+  opacity:1; transition:opacity 320ms ease;
+}
+.user-name:empty{ opacity:0; }
 .logout-btn{
   margin-left:auto; width:30px; height:30px; border-radius:9px;
   display:flex; align-items:center; justify-content:center;

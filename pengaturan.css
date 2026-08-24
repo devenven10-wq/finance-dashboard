@@ -138,7 +138,11 @@
 
 .set-hero-info{display:flex; flex-direction:column; gap:7px; min-width:180px;}
 .set-hero-name-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
-.set-hero-name{font-size:19px; font-weight:700; color:var(--text);}
+.set-hero-name{
+  font-size:19px; font-weight:700; color:var(--text);
+  opacity:1; transition:opacity 320ms ease;
+}
+.set-hero-name:empty{ opacity:0; }
 .set-hero-row{display:flex; align-items:center; gap:9px; font-size:13px; color:var(--text-dim);}
 .set-hero-row svg{width:14px; height:14px; flex-shrink:0; color:var(--text-dimmer);}
 
