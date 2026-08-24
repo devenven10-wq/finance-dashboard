@@ -582,9 +582,9 @@
   el.btnExportExcel.addEventListener('click', exportExcel);
   el.btnPrint.addEventListener('click', () => window.print());
 
-  // ---------- Sinkronisasi real-time ----------
-  dvOnChange(render);
-
   // ---------- Init ----------
-  render();
+  dvBootstrapPage(() => {
+    render();
+    dvOnChange(render);
+  });
 })();
