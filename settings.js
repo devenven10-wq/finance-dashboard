@@ -20,8 +20,11 @@ const DVPOINT_PREF_KEY = 'dvpoint_preferences';
 const DVPOINT_SETTINGS_EVENT = 'dvpoint:settingschanged';
 
 const DV_PROFILE_DEFAULT = {
-  nama: 'Dicky Ade',
-  email: 'dicky.ade@email.com',
+  nama: '...', // placeholder netral selama profil masih dimuat dari Supabase —
+               // BUKAN nama orang tertentu, supaya tidak ada "kedipan nama salah"
+               // waktu pindah halaman (dulu 'Dicky Ade', ketinggalan dari versi
+               // sebelum migrasi Supabase).
+  email: '',
   telp: '',
   tanggalLahir: '',
   alamat: '',

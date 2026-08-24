@@ -299,7 +299,7 @@
   el.passwordCancel.addEventListener('click', () => closeModal(el.passwordModal));
   el.passwordModal.addEventListener('click', (e) => { if (e.target === el.passwordModal) closeModal(el.passwordModal); });
 
-  el.formPassword.addEventListener('submit', (e) => {
+  el.formPassword.addEventListener('submit', async (e) => {
     e.preventDefault();
     const lama = document.getElementById('pwLama').value;
     const baru = document.getElementById('pwBaru').value;
@@ -308,10 +308,34 @@
     if (!lama || !baru || !konfirmasi) { el.passwordError.textContent = dvT('set.err_semua_kolom_wajib'); return; }
     if (baru.length < 6) { el.passwordError.textContent = dvT('set.err_password_min'); return; }
     if (baru !== konfirmasi) { el.passwordError.textContent = dvT('set.err_konfirmasi_tidak_cocok'); return; }
-
     el.passwordError.textContent = '';
-    closeModal(el.passwordModal);
-    showToast(dvT('set.toast_password_updated'));
+
+    const submitBtn = el.formPassword.querySelector('button[type="submit"]');
+    const originalLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '...';
+
+    try {
+      // Verifikasi dulu password LAMA-nya beneran benar, sebelum diganti —
+      // supaya field "Password Saat Ini" bukan cuma formalitas di layar.
+      const email = window.dvCurrentUser?.email || dvGetProfile().email;
+      const { error: verifyError } = await dvSupabase.auth.signInWithPassword({ email, password: lama });
+      if (verifyError) {
+        el.passwordError.textContent = dvT('set.err_password_lama_salah');
+        return;
+      }
+
+      const { error: updateError } = await dvSupabase.auth.updateUser({ password: baru });
+      if (updateError) throw updateError;
+
+      closeModal(el.passwordModal);
+      showToast(dvT('set.toast_password_updated'));
+    } catch (err) {
+      el.passwordError.textContent = err.message || 'Gagal mengubah password.';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+    }
   });
 
   async function doLogout() {
