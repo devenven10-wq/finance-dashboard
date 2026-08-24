@@ -79,6 +79,7 @@
 .lap-period-label{
   margin-top:14px; font-size:12px; color:var(--text-dimmer);
   border-top:1px solid var(--border-soft); padding-top:12px;
+  cursor:default; pointer-events:none; user-select:text;
 }
 
 /* ---------- Two-column layout: Ringkasan Kategori + Insight ---------- */
