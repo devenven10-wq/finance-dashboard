@@ -59,14 +59,8 @@
   }
 
   // ---------- Toast ----------
-  let toastTimer = null;
-  function ivToast(msg) {
-    const el = document.getElementById('ivToast');
-    el.innerHTML = `<span class="dot"></span>${msg}`;
-    el.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
-  }
+  // Toast: pakai dvShowGenericToast() standar (storage.js) — pojok
+  // kanan atas, konsisten dengan halaman lain.
 
   // ---------- Confirm dialog ----------
   let confirmCallback = null;
@@ -294,10 +288,10 @@
       try {
         if (editingId) {
           await dvUpdateInvestasi(editingId, payload);
-          ivToast(dvT('iv.toast_diperbarui'));
+          dvShowGenericToast(dvT('iv.toast_diperbarui'));
         } else {
           await dvAddInvestasi(payload);
-          ivToast(dvT('iv.toast_ditambahkan'));
+          dvShowGenericToast(dvT('iv.toast_ditambahkan'));
         }
         closeAddModal();
         renderAll();
@@ -345,7 +339,7 @@
     if (!updateNilaiTargetId) return;
     dvShowConfirm(dvT('iv.confirm_update_nilai'), async () => {
       await dvUpdateInvestasiNilai(updateNilaiTargetId, { nilai, tanggal, catatan });
-      ivToast(dvT('iv.toast_nilai_diperbarui'));
+      dvShowGenericToast(dvT('iv.toast_nilai_diperbarui'));
       closeUpdateNilaiModal();
       renderAll();
       if (activeDrawerId === updateNilaiTargetId) openDrawer(activeDrawerId);
@@ -438,7 +432,7 @@
       willArsip ? `Investasi "${inv.nama}" akan dipindahkan ke Diarsipkan.` : `Investasi "${inv.nama}" akan dikembalikan ke daftar aktif.`,
       async () => {
         await dvSetInvestasiArsip(inv.id, willArsip);
-        ivToast(willArsip ? 'Investasi diarsipkan.' : 'Investasi dikembalikan dari arsip.');
+        dvShowGenericToast(willArsip ? 'Investasi diarsipkan.' : 'Investasi dikembalikan dari arsip.');
         closeDrawer();
         renderAll();
       }
@@ -449,7 +443,7 @@
     if (!inv) return;
     ivConfirm(dvT('iv.confirm_hapus_title'), dvT('iv.confirm_hapus_desc', {nama: inv.nama}), async () => {
       await dvDeleteInvestasi(inv.id);
-      ivToast(dvT('iv.toast_dihapus'));
+      dvShowGenericToast(dvT('iv.toast_dihapus'));
       closeDrawer();
       renderAll();
     });

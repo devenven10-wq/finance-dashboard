@@ -179,16 +179,8 @@
 .iv-history-empty{font-size:12.5px; color:var(--text-dimmer); padding:16px 0; text-align:center;}
 
 /* ---------- Toast ---------- */
-.iv-toast{
-  position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
-  background:#211f36; border:1px solid var(--border); border-radius:12px;
-  padding:13px 20px; font-size:13px; color:var(--text);
-  box-shadow:0 14px 34px rgba(0,0,0,.4);
-  opacity:0; pointer-events:none; transition:opacity var(--ease), transform var(--ease);
-  z-index:400; display:flex; align-items:center; gap:9px;
-}
-.iv-toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
-.iv-toast .dot{width:7px; height:7px; border-radius:50%; background:var(--teal); flex-shrink:0;}
+/* Toast: memakai style .dv-generic-toast standar (dashboard.css) —
+   pojok kanan atas, konsisten dengan halaman lain. */
 
 /* ---------- Confirm dialog (hapus / arsip) ---------- */
 .iv-confirm-overlay{

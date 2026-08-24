@@ -108,7 +108,7 @@
           <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><rect height="8" rx="2" width="14" x="5" y="9"></rect><path d="M17 9V4H7v5"></path><path d="M7 17H5a2 2 0 01-2-2v-3a2 2 0 012-2h14a2 2 0 012 2v3a2 2 0 01-2 2h-2"></path></svg>
           <span data-i18n="lap.print">Print</span>
         </button>
-        <button class="lap-btn lap-btn-primary" id="btnToggleFilter" title="Filter">
+        <button class="lap-btn lap-btn-primary" id="btnToggleFilter">
           <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>
           <span data-i18n="lap.filter">Filter</span>
         </button>
@@ -209,14 +209,14 @@
                 <span><span class="dot" style="background:#ef4d8f"></span><span data-i18n="pk.title">Pengeluaran</span></span>
               </div>
             </div>
-            <div class="select-pill" id="cashflowRangeLabel" data-i18n="lap.sesuai_filter">Sesuai Filter</div>
+            <div class="lap-static-badge" id="cashflowRangeLabel" data-i18n="lap.sesuai_filter">Sesuai Filter</div>
           </div>
           <div class="chart-wrap"><canvas id="cashflowChart"></canvas></div>
         </div>
         <div class="panel">
           <div class="panel-head">
             <h3 data-i18n="dash.pengeluaran_kategori">Pengeluaran per Kategori</h3>
-            <div class="select-pill" id="donutRangeLabel" data-i18n="lap.sesuai_filter">Sesuai Filter</div>
+            <div class="lap-static-badge" id="donutRangeLabel" data-i18n="lap.sesuai_filter">Sesuai Filter</div>
           </div>
           <div class="donut-wrap">
             <canvas id="expenseDonut"></canvas>

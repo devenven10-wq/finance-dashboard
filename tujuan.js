@@ -307,15 +307,15 @@ function onSubmitTujuan(e) {
     try {
       if (tjEditingId) {
         await dvUpdateTujuan(tjEditingId, data);
-        showToast(dvT('tj.toast_diperbarui'));
+        dvShowGenericToast(dvT('tj.toast_diperbarui'));
       } else {
         data.terkumpul = dvParseRibuan(document.getElementById('gDanaAwal').value);
         await dvAddTujuan(data);
-        showToast(dvT('tj.toast_ditambahkan'));
+        dvShowGenericToast(dvT('tj.toast_ditambahkan'));
       }
       closeTjModal();
     } catch (err) {
-      showToast(err.message || 'Gagal menyimpan tujuan.');
+      dvShowGenericToast(err.message || 'Gagal menyimpan tujuan.', true);
     }
   });
 }
@@ -347,7 +347,7 @@ function onSubmitProgress(e) {
       tanggal: document.getElementById('pTanggal').value || dvTodayISO(),
       catatan: document.getElementById('pCatatan').value.trim()
     });
-    showToast(dvT('tj.toast_progress_ditambahkan'));
+    dvShowGenericToast(dvT('tj.toast_progress_ditambahkan'));
     closeProgressModal();
     if (document.getElementById('tjDrawerOverlay').classList.contains('open')) {
       renderDrawer(tjActiveGoalId);
@@ -423,7 +423,7 @@ async function tjToggleArsip(id) {
   const g = dvGetTujuan().find(x => x.id === id);
   if (!g) return;
   await dvSetTujuanArsip(id, !g.arsip);
-  showToast(g.arsip ? 'Tujuan diaktifkan kembali' : 'Tujuan diarsipkan');
+  dvShowGenericToast(g.arsip ? 'Tujuan diaktifkan kembali' : 'Tujuan diarsipkan');
   if (document.getElementById('tjDrawerOverlay').classList.contains('open')) renderDrawer(id);
 }
 
@@ -436,7 +436,7 @@ function tjConfirmHapus(id) {
     dvT('tj.confirm_hapus_desc', {nama: g.nama}),
     async () => {
       await dvDeleteTujuan(id);
-      showToast(dvT('tj.toast_dihapus'));
+      dvShowGenericToast(dvT('tj.toast_dihapus'));
       closeDrawer();
     }
   );
@@ -458,12 +458,6 @@ function closeConfirm() {
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-// ---------- Toast ----------
-let tjToastTimer = null;
-function showToast(msg) {
-  const el = document.getElementById('dvToast');
-  el.innerHTML = `<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>${escapeHtml(msg)}`;
-  el.classList.add('show');
-  clearTimeout(tjToastTimer);
-  tjToastTimer = setTimeout(() => el.classList.remove('show'), 2600);
-}
+// Toast: pakai dvShowGenericToast() standar (storage.js) — pojok kanan
+// atas, konsisten dengan halaman lain. Definisi lokal lama yang posisinya
+// di tengah bawah sudah dihapus.

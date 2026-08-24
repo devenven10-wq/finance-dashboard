@@ -35,14 +35,8 @@ function akIconFor(jenis) {
 }
 
 // ---------- Toast ----------
-let akToastTimer = null;
-function akToast(msg) {
-  const el = document.getElementById('akToast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(akToastTimer);
-  akToastTimer = setTimeout(() => el.classList.remove('show'), 2400);
-}
+// Toast: pakai dvShowGenericToast() standar (storage.js) — pojok kanan
+// atas, konsisten dengan halaman lain.
 
 // ---------- Ringkasan ----------
 function akRenderSummary() {
@@ -284,10 +278,10 @@ document.getElementById('formAkun').addEventListener('submit', (e) => {
     try {
       if (akState.editingId) {
         await dvUpdateAkunAccount(akState.editingId, payload);
-        akToast(dvT('akun.toast_diperbarui'));
+        dvShowGenericToast(dvT('akun.toast_diperbarui'));
       } else {
         await dvAddAkunAccount(payload);
-        akToast(dvT('akun.toast_ditambahkan'));
+        dvShowGenericToast(dvT('akun.toast_ditambahkan'));
       }
       akCloseModal();
     } catch (err) {
@@ -304,7 +298,7 @@ function akToggleStatus(e, id) {
   if (!akun) return;
   const next = akun.status === 'nonaktif' ? 'aktif' : 'nonaktif';
   dvSetAkunStatus(id, next).then(() => {
-    akToast(next === 'nonaktif' ? dvT('akun.toast_dinonaktifkan', {nama: akun.nama}) : dvT('akun.toast_diaktifkan', {nama: akun.nama}));
+    dvShowGenericToast(next === 'nonaktif' ? dvT('akun.toast_dinonaktifkan', {nama: akun.nama}) : dvT('akun.toast_diaktifkan', {nama: akun.nama}));
   });
 }
 
@@ -314,12 +308,12 @@ function akDeleteAkun(e, id) {
   const akun = dvGetAkunAll().find(a => a.id === id);
   if (!akun) return;
   if (dvAkunHasTransaksi(id)) {
-    akToast(dvT('akun.toast_hanya_nonaktif'));
+    dvShowGenericToast(dvT('akun.toast_hanya_nonaktif'));
     return;
   }
   dvShowConfirm(dvT('akun.confirm_hapus', {nama: akun.nama}), async () => {
     const res = await dvDeleteAkunAccount(id);
-    if (res.success) akToast(dvT('akun.toast_dihapus'));
+    if (res.success) dvShowGenericToast(dvT('akun.toast_dihapus'));
   }, { danger: true });
 }
 

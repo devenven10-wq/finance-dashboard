@@ -266,19 +266,8 @@
 .confirm-box p{ font-size:13.5px; color:var(--tj-text-dim); margin:0 0 18px; line-height:1.5; }
 .confirm-actions{ display:flex; justify-content:flex-end; gap:10px; }
 
-/* ---------- Toast ---------- */
-.dv-toast{
-  position:fixed; bottom:26px; left:50%; transform:translate(-50%, 20px);
-  background:#211f36; border:1px solid var(--tj-border);
-  color:var(--tj-text); font-size:13.5px; font-weight:500;
-  padding:12px 20px; border-radius:12px;
-  box-shadow:0 16px 32px -12px rgba(0,0,0,.55);
-  opacity:0; pointer-events:none;
-  transition:opacity 220ms ease, transform 220ms ease;
-  z-index:400; display:flex; align-items:center; gap:9px;
-}
-.dv-toast.show{ opacity:1; transform:translate(-50%, 0); }
-.dv-toast svg{ width:16px; height:16px; color:var(--tj-teal); flex-shrink:0; }
+/* Toast: memakai style .dv-generic-toast standar (dashboard.css),
+   dipasang di semua halaman lain juga — pojok kanan atas. */
 
 /* ---------- Responsive ---------- */
 @media (max-width: 720px){

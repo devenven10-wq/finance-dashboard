@@ -39,14 +39,8 @@ let bgState = {
 };
 
 // ---------- Toast ----------
-let bgToastTimer = null;
-function bgToast(msg) {
-  const el = document.getElementById('bgToast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(bgToastTimer);
-  bgToastTimer = setTimeout(() => el.classList.remove('show'), 2400);
-}
+// Toast: pakai dvShowGenericToast() standar (storage.js) — pojok kanan
+// atas, konsisten dengan halaman lain.
 
 function bgEsc(s) {
   const div = document.createElement('div');
@@ -279,10 +273,10 @@ document.getElementById('formAnggaran').addEventListener('submit', (e) => {
     try {
       if (bgState.editingId) {
         await dvUpdateAnggaran(bgState.editingId, payload);
-        bgToast(dvT('bg.toast_diperbarui'));
+        dvShowGenericToast(dvT('bg.toast_diperbarui'));
       } else {
         await dvAddAnggaran(payload);
-        bgToast(dvT('bg.toast_ditambahkan'));
+        dvShowGenericToast(dvT('bg.toast_ditambahkan'));
       }
       bgCloseModal();
     } catch (err) {
@@ -298,7 +292,7 @@ async function bgToggleArsip(e, id) {
   const a = dvGetAnggaranAll().find(x => x.id === id);
   if (!a) return;
   await dvSetAnggaranArsip(id, !a.arsip);
-  bgToast(!a.arsip ? `${a.nama} diarsipkan.` : `${a.nama} dikembalikan dari arsip.`);
+  dvShowGenericToast(!a.arsip ? `${a.nama} diarsipkan.` : `${a.nama} dikembalikan dari arsip.`);
   bgCloseDrawer();
 }
 
@@ -310,7 +304,7 @@ function bgDeleteAnggaran(e, id) {
   dvShowConfirm(dvT('bg.confirm_hapus', {nama: a.nama}), async () => {
     await dvDeleteAnggaran(id);
     bgCloseDrawer();
-    bgToast(dvT('bg.toast_dihapus'));
+    dvShowGenericToast(dvT('bg.toast_dihapus'));
   }, { danger: true });
 }
 

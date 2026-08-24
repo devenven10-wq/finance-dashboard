@@ -180,3 +180,15 @@
   .lap-field{min-width:0;}
   .lap-btn-ghost-reset{align-self:stretch; justify-content:center;}
 }
+/* Badge statis "Sesuai Filter" — murni informasi (chart otomatis ikut
+   filter di atas), BUKAN dropdown/tombol. Sengaja class terpisah dari
+   .select-pill (dashboard.css) supaya tidak ikut kebawa cursor:pointer
+   dan kesan "bisa diklik" milik dropdown asli. */
+.lap-static-badge{
+  font-size:12.5px; color:var(--text-dim);
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--border);
+  border-radius:9px; padding:7px 12px;
+  cursor:default; pointer-events:none;
+  display:flex; align-items:center; gap:6px;
+}
