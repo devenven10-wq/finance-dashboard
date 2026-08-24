@@ -571,8 +571,66 @@
   // ---------- Sinkronisasi real-time lintas halaman/modul ----------
   dvOnChange(render);
 
+  // ---------- Onboarding: modal "Lengkapi Profil" buat akun baru ----------
+  // Muncul kalau nama profil masih default "Pengguna" (belum pernah diisi
+  // sama sekali) — biasanya ini akun baru yang baru dibuatkan Owner lewat
+  // Supabase Dashboard, jadi belum ada info nama/tanggal lahir sama sekali.
+  async function checkOnboarding() {
+    await dvFetchProfile();
+    const profile = dvGetProfile();
+    if (profile.nama === 'Pengguna') {
+      document.getElementById('onboardingModalOverlay').classList.add('open');
+    }
+  }
+
+  const obChkGantiPw = document.getElementById('obChkGantiPw');
+  const obPasswordFields = document.getElementById('obPasswordFields');
+  obChkGantiPw?.addEventListener('change', () => {
+    obPasswordFields.style.display = obChkGantiPw.checked ? 'block' : 'none';
+  });
+
+  document.getElementById('obBtnLewati')?.addEventListener('click', () => {
+    document.getElementById('onboardingModalOverlay').classList.remove('open');
+  });
+
+  document.getElementById('formOnboarding')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nama = document.getElementById('obInpNama').value.trim();
+    const tanggalLahir = document.getElementById('obInpTanggalLahir').value;
+    const gantiPw = obChkGantiPw.checked;
+    const pwBaru = document.getElementById('obInpPasswordBaru').value;
+    const pwKonfirmasi = document.getElementById('obInpPasswordKonfirmasi').value;
+    const errEl = document.getElementById('obFormError');
+    errEl.textContent = '';
+
+    if (gantiPw) {
+      if (pwBaru.length < 6) { errEl.textContent = dvT('dash.onboarding_err_password_min'); return; }
+      if (pwBaru !== pwKonfirmasi) { errEl.textContent = dvT('dash.onboarding_err_password_mismatch'); return; }
+    }
+
+    try {
+      const updates = {};
+      if (nama) updates.nama = nama;
+      if (tanggalLahir) updates.tanggalLahir = tanggalLahir;
+      if (Object.keys(updates).length > 0) {
+        await dvSetProfile(updates);
+      }
+      if (gantiPw) {
+        const { error } = await dvSupabase.auth.updateUser({ password: pwBaru });
+        if (error) throw error;
+      }
+      document.getElementById('onboardingModalOverlay').classList.remove('open');
+      dvShowGenericToast(dvT('dash.onboarding_toast_sukses'));
+    } catch (err) {
+      errEl.textContent = err.message || 'Gagal menyimpan.';
+    }
+  });
+
   // ---------- Init ----------
   // dvBootstrapPage() nunggu dulu data akun+transaksi selesai ditarik
   // dari Supabase (proses jaringan, tidak instan), baru render() jalan.
-  dvBootstrapPage(render);
+  dvBootstrapPage(() => {
+    render();
+    checkOnboarding();
+  });
 })();

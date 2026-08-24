@@ -1072,16 +1072,27 @@ body::before{
       fpBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>&nbsp; Memproses...';
       fpBtn.disabled = true;
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      try {
+        const { error } = await dvSupabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + window.location.pathname.replace('index.html', '') + 'reset-password.html'
+        });
 
-      fpSucc.innerHTML = `
-        <i class="fas fa-circle-info" style="flex-shrink:0;margin-top:1px;"></i>
-        <span>
-          Untuk mereset password, hubungi <strong>Admin DVpoint</strong> Anda.
-          <br><small style="opacity:0.8;margin-top:4px;display:block;">Email: <strong>${email}</strong></small>
-        </span>`;
-      fpSucc.style.display = "flex";
-      fpBtn.style.display = "none";
+        if (error) throw error;
+
+        fpSucc.innerHTML = `
+          <i class="fas fa-circle-check" style="flex-shrink:0;margin-top:1px;"></i>
+          <span>
+            Link reset password sudah dikirim ke email kamu.
+            <br><small style="opacity:0.8;margin-top:4px;display:block;">Cek inbox (dan folder Spam) di: <strong>${email}</strong></small>
+          </span>`;
+        fpSucc.style.display = "flex";
+        fpBtn.style.display = "none";
+      } catch (err) {
+        fpError.innerHTML = `<i class="fas fa-circle-exclamation"></i> ${err.message || 'Gagal mengirim link reset. Coba lagi.'}`;
+        fpError.style.display = "flex";
+        fpBtn.innerHTML = '<i class="fas fa-paper-plane"></i>&nbsp; Kirim Link Reset';
+        fpBtn.disabled = false;
+      }
     }
 
     function loadRememberedEmail() {

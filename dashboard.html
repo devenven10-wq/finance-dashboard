@@ -238,6 +238,63 @@
     </div>
   </main>
 </div>
+
+<!-- ================= MODAL: Lengkapi Profil (onboarding akun baru) ================= -->
+<div class="modal-overlay" id="onboardingModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 data-i18n="dash.onboarding_title">Selamat Datang di DVpoint! 👋</h3>
+    </div>
+    <p style="font-size:13px; color:var(--text-dim); margin:-8px 0 18px; line-height:1.6;" data-i18n="dash.onboarding_desc">
+      Lengkapi profil kamu supaya lebih personal. Semua field ini opsional, bisa dilewati dan diisi belakangan lewat Pengaturan.
+    </p>
+    <form id="formOnboarding">
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="dash.onboarding_lbl_nama">Nama Lengkap</label>
+          <input id="obInpNama" placeholder="Contoh: Kutut" type="text" data-i18n-placeholder="dash.onboarding_nama_placeholder"/>
+        </div>
+        <div class="form-group">
+          <label data-i18n="dash.onboarding_lbl_tanggal_lahir">Tanggal Lahir</label>
+          <input id="obInpTanggalLahir" type="date"/>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:4px;">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; color:var(--text-dim);">
+          <input id="obChkGantiPw" type="checkbox" style="width:auto;"/>
+          <span data-i18n="dash.onboarding_ganti_password">Sekalian ganti password (opsional)</span>
+        </label>
+      </div>
+
+      <div id="obPasswordFields" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="dash.onboarding_lbl_password_baru">Password Baru</label>
+            <input id="obInpPasswordBaru" placeholder="Minimal 6 karakter" type="password" data-i18n-placeholder="dash.onboarding_password_placeholder"/>
+          </div>
+          <div class="form-group">
+            <label data-i18n="dash.onboarding_lbl_password_konfirmasi">Konfirmasi Password</label>
+            <input id="obInpPasswordKonfirmasi" placeholder="Ulangi password" type="password" data-i18n-placeholder="dash.onboarding_password_konfirmasi_placeholder"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="tim-modal-error" id="obFormError" style="color:var(--pink); font-size:12.5px; min-height:16px; margin-bottom:6px;"></div>
+
+      <div class="modal-actions">
+        <button class="btn-ghost" id="obBtnLewati" type="button" data-i18n="dash.onboarding_lewati">Lewati</button>
+        <button class="btn-primary" type="submit" data-i18n="dash.onboarding_simpan">Simpan Profil</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="dv-generic-toast" id="dvGenericToast">
+  <div class="dv-toast-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg></div>
+  <span class="dv-toast-text" id="dvGenericToastMsg"></span>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-client.js"></script>
 <script src="storage.js"></script>

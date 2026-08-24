@@ -126,14 +126,12 @@
   }
 
   function loadProfilForm() {
-    let p = dvGetProfile();
-    // Set tanggal bergabung sekali di kunjungan pertama, lalu persist.
-    if (!p.bergabungSejak) {
-      const todayIso = new Date().toISOString().slice(0, 10);
-      p = dvSetProfile({ bergabungSejak: todayIso });
-    }
+    const p = dvGetProfile();
     el.inpNama.value = p.nama || '';
-    el.inpEmail.value = p.email || '';
+    // Email SELALU diambil dari akun login (window.dvCurrentUser, di-set guard.js),
+    // bukan dari tabel profiles — supaya pasti akurat & tidak bisa didobel dengan
+    // email lain. Field ini dikunci permanen (lihat profilFields di bawah).
+    el.inpEmail.value = window.dvCurrentUser?.email || p.email || '';
     el.inpTelp.value = p.telp || '';
     el.inpTanggalLahir.max = new Date().toISOString().slice(0, 10); // tidak boleh pilih tanggal masa depan
     el.inpTanggalLahir.value = p.tanggalLahir || '';
@@ -185,7 +183,10 @@
   });
 
   // "Edit Profil" — fokus ke field pertama supaya pengguna langsung bisa mengedit.
-  const profilFields = [el.inpNama, el.inpEmail, el.inpTelp, el.inpTanggalLahir, el.inpAlamat];
+  // inpEmail SENGAJA tidak dimasukkan — email dikunci permanen (tidak pernah
+  // ikut kebuka lewat "Edit Profil"), karena harus selalu sama dengan email
+  // login, tidak boleh diubah manual dari sini.
+  const profilFields = [el.inpNama, el.inpTelp, el.inpTanggalLahir, el.inpAlamat];
 
   function unlockProfilFields() {
     profilFields.forEach(f => f.disabled = false);
@@ -213,25 +214,27 @@
     lockProfilFields();
   });
 
-  el.btnSimpanProfil.addEventListener('click', () => {
+  el.btnSimpanProfil.addEventListener('click', async () => {
     const nama = el.inpNama.value.trim();
-    const email = el.inpEmail.value.trim();
     const telp = el.inpTelp.value.trim();
     const tanggalLahir = el.inpTanggalLahir.value.trim();
     const alamat = el.inpAlamat.value.trim();
 
     if (!nama) { el.profilError.textContent = dvT('set.err_nama_wajib'); return; }
-    if (!email || !/^\S+@\S+\.\S+$/.test(email)) { el.profilError.textContent = dvT('set.err_email_invalid'); return; }
     el.profilError.textContent = '';
 
-    const updates = { nama, email, telp, tanggalLahir, alamat };
+    const updates = { nama, telp, tanggalLahir, alamat };
     if (pendingFotoDataUrl !== undefined) updates.foto = pendingFotoDataUrl;
 
-    const saved = dvSetProfile(updates);
-    pendingFotoDataUrl = undefined;
-    renderHeroDisplay(saved);
-    lockProfilFields();
-    showToast(dvT('set.toast_profil_tersimpan'));
+    try {
+      const saved = await dvSetProfile(updates);
+      pendingFotoDataUrl = undefined;
+      renderHeroDisplay(saved);
+      lockProfilFields();
+      showToast(dvT('set.toast_profil_tersimpan'));
+    } catch (err) {
+      el.profilError.textContent = err.message || 'Gagal menyimpan profil.';
+    }
   });
 
   // ============================================================
@@ -340,7 +343,12 @@
   // ============================================================
   // ---------- Init ----------
   // ============================================================
-  loadProfilForm();
+  // Tunggu profil selesai ditarik dari Supabase dulu (dvFetchProfile()
+  // di settings.js — aman dipanggil lagi di sini, cukup nunggu promise
+  // yang sama, tidak fetch ulang) baru isi form Profil.
+  dvFetchProfile().then(() => {
+    loadProfilForm();
+  });
   renderThemeSelection();
   loadPreferensiForm();
 
