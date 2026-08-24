@@ -4,6 +4,13 @@
 <meta charset="utf-8"/>
 <script>(function(){try{var t=localStorage.getItem('dvpoint_theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');var pr=JSON.parse(localStorage.getItem('dvpoint_preferences')||'null');if(pr&&pr.bahasa==='en'){document.documentElement.setAttribute('data-lang-loading','en');setTimeout(function(){document.documentElement.removeAttribute('data-lang-loading');},800);}}catch(e){}})();</script>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="icons/favicon-32.png" rel="icon" type="image/png"/>
+<link href="icons/apple-touch-icon.png" rel="apple-touch-icon"/>
+<meta content="#171625" name="theme-color"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="DVpoint" name="apple-mobile-web-app-title"/>
 <title>DVpoint — Anggaran</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -213,5 +220,6 @@
 <script src="settings.js"></script>
 <script src="guard.js"></script>
 <script src="anggaran.js"></script>
+<script src="pwa-register.js"></script>
 </body>
 </html>
